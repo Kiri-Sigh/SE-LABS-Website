@@ -22,9 +22,7 @@ function MainNavigation() {
             <NavLink
               to={`/${key}`}
               className={({ isActive }) =>
-                isActive
-                  ? "hover:underline focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
-                  : "hover:underline focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
+                isActive ? "underline  " : "hover:underline "
               }
             >
               {value}

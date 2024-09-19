@@ -7,6 +7,19 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
+import {
+  ChakraBaseProvider,
+  extendBaseTheme,
+  theme as chakraTheme,
+} from "@chakra-ui/react";
+
+const { Button } = chakraTheme.components;
+
+const theme = extendBaseTheme({
+  components: {
+    Button,
+  },
+});
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const queryClient = new QueryClient();
 
@@ -14,7 +27,9 @@ root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       {/* <Provider store={store}> */}
-      <App />
+      <ChakraBaseProvider theme={theme}>
+        <App />
+      </ChakraBaseProvider>
       {/* </Provider> */}
     </QueryClientProvider>
   </React.StrictMode>

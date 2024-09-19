@@ -5,6 +5,8 @@ import AboutPage from "./routes/user/About-Page";
 import LeadResearcherPage from "./routes/admin/Lead-Researcher-page";
 import ResearcherPage from "./routes/admin/Researcher-Page";
 import AdminPage from "./routes/admin/Admin-Page";
+import "./App.css";
+import PublicationsPage from "./routes/user/Publications-Page";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -16,7 +18,7 @@ const router = createBrowserRouter([
       { path: "events" },
       { path: "labs" },
       { path: "news" },
-      { path: "publications" },
+      { path: "publications", element: <PublicationsPage /> },
       { path: "research" },
       { path: "events" },
       { path: "people" },

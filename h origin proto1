@@ -1,0 +1,17 @@
+[33mcommit c419a07878634f8c1ab36ba29bb5e9aa58463fc3[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mproto1[m[33m)[m
+Author: Kiri-Sigh <Sigh.tul.1@gmail.com>
+Date:   Thu Sep 19 14:54:40 2024 +0700
+
+    change img bg
+
+[33mcommit 14483a04e495b26ec36dc4e69790d47d0425815c[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m
+Author: Kiri-Sigh <Sigh.tul.1@gmail.com>
+Date:   Thu Sep 19 14:04:17 2024 +0700
+
+    Initial commit
+
+[33mcommit 6f273a96859169b22c27007c831f448320292864[m
+Author: Kiri-Sigh <Sigh.tul.1@gmail.com>
+Date:   Tue Sep 17 19:04:35 2024 +0700
+
+    Initialize project using Create React App
