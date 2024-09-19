@@ -36,3 +36,22 @@
     transform: rotate(360deg);
   }
 }
+
+.bg-container {
+  background-image: url("../public/background.jpg"); /* Adjust path as needed */
+  background-size: cover; /* Cover the whole screen */
+  background-position: center; /* Center the image */
+  background-attachment: fixed; /* Make the background fixed */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  height: 100vh; /* Full viewport height */
+  width: 100vw; /* Full viewport width */
+  position: absolute; /* Positioning context for the background */
+  top: 0;
+  left: 0;
+  z-index: -1; /* Send the background behind content */
+}
+
+.content {
+  position: relative; /* Content will be placed above the background */
+  z-index: 1;
+}
