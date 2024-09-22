@@ -1,86 +1,51 @@
 import React from "react";
-import { Fragment } from "react";
 import HeroBox from "../../component/others/Hero/Hero-box";
 import RecentNews from "../../component/News/Recent-News/Recent-News";
 import RecentEvents from "../../component/Events/Recent-Events/Recent-Events";
-
-function LandingPage() {
-  return (
-    <>
-      <HeroBox />
-      <RecentNews newsItems={newsItems} />
-      <RecentEvents eventItems={eventItems} />
-    </>
-  );
+import { useLocation } from "react-router-dom";
+import AboutDescription from "../../component/Description/About-Description/About-Description";
+import TopicAndImage from "../../component/others/Big-Image/Topic-And-Image";
+import { eventItems, newsItems } from "../../PlaceHolder-Data/data";
+function MainPages() {
+  const location = useLocation();
+  switch (location.pathname) {
+    case "/":
+      return (
+        <>
+          <HeroBox />
+          <RecentNews newsItems={newsItems} />
+          <RecentEvents eventItems={eventItems} />
+        </>
+      );
+    case "/about":
+      return (
+        <>
+          <TopicAndImage />
+          <AboutDescription />
+          <RecentNews newsItems={newsItems} />
+          <RecentEvents eventItems={eventItems} />
+        </>
+      );
+    case "/events":
+      return <></>;
+    case "/news":
+      return <></>;
+    case "/publications":
+      return <></>;
+    case "/research":
+      return <></>;
+    default:
+      <></>;
+  }
+  // { index: true, element: <MainPages /> },
+  // { path: "about", element: <MainPages /> },
+  // { path: "events", element: <MainPages /> },
+  // { path: "labs", element: <MainPages /> },
+  // { path: "news", element: <MainPages /> },
+  // { path: "publications", element: <MainPages /> },
+  // { path: "research", element: <MainPages /> },
+  // { path: "events", element: <MainPages /> },
+  // { path: "people", element: <MainPages /> },
+  // { path: "labs/:labID", element: <DynamicLabPage /> },
 }
-export default LandingPage;
-
-const newsItems = [
-  {
-    image: "https://picsum.photos/300/200",
-
-    title: "Blog title heading will go here",
-    content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.",
-    author: "AI Laboratory",
-    date: "11 Jan 2022",
-  },
-  {
-    image: "https://picsum.photos/300/200",
-
-    title: "Blog title heading will go here",
-    content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.",
-    author: "AI Laboratory",
-    date: "11 Jan 2022",
-  },
-  {
-    image: "https://picsum.photos/300/200",
-
-    title: "Blog title heading will go here",
-    content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.",
-    author: "AI Laboratory",
-    date: "11 Jan 2022",
-  },
-  {
-    image: "https://picsum.photos/300/200",
-
-    title: "Blog title heading will go here",
-    content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.",
-    author: "AI Laboratory",
-    date: "11 Jan 2022",
-  },
-  // Repeat the above object 3 more times for the other news items
-];
-
-const eventItems = [
-  {
-    title: "Job Title",
-    status: "ON GOING",
-    statusClass: "bg-green-500",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.",
-    location: "Location",
-    duration: "Duration",
-  },
-  {
-    title: "Job Title",
-    status: "COMING",
-    statusClass: "bg-yellow-200",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.",
-    location: "Location",
-    duration: "Duration",
-  },
-  {
-    title: "Job Title",
-    status: "FINISHED",
-    statusClass: "bg-neutral-300",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.",
-    location: "Location",
-    duration: "Duration",
-  },
-];
+export default MainPages;

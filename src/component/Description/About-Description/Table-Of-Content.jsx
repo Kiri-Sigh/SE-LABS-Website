@@ -14,12 +14,7 @@ const TableOfContents = () => {
       <h2 className="text-2xl font-bold leading-snug">Table of contents</h2>
       <ul className="flex flex-col mt-4 w-full text-lg">
         {items.map((item, index) => (
-          <li
-            key={index}
-            className={`gap-2.5 px-${4 + item.level * 4} py-3 w-full ${
-              item.level === 0 ? "font-bold bg-zinc-100" : ""
-            }`}
-          >
+          <li key={index} className={`gap-2.5 px-${4} py-3 w-full `}>
             {item.title}
           </li>
         ))}
