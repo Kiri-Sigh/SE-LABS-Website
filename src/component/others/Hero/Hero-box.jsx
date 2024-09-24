@@ -10,7 +10,7 @@ function HeroBox() {
             title="Software can change the WORLD!?"
             description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat."
           />
-          <HeroImg imageSrc="https://cdn.builder.io/api/v1/image/assets/TEMP/83cf755eb6df5e17cbf1d6fce3a88204a274c84cb238e63afa4f2d928db06372?placeholderIfAbsent=true&apiKey=48b4d741997c411b883c3a9cff6347e7" />
+          <HeroImg imageSrc="https://picsum.photos/300/295" />
         </article>
       </section>
     </main>

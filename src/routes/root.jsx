@@ -1,6 +1,7 @@
 import { Outlet, useNavigation } from "react-router-dom";
-import Footer from "../../component/footer";
-import Header from "../../component/Header.jsx/Header";
+import Header from "../component/Header/Header";
+import Footer from "../component/Footer/footer";
+//import ThumbnailCard from "../component/etc/Thumbnail-test";
 
 function RootLayout() {
   // const navigation = useNavigation();

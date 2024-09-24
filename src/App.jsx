@@ -1,25 +1,26 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import RootLayout from "./routes/user/root";
-import LandingPage from "./routes/user/Landing-Page";
-import AboutPage from "./routes/user/About-Page";
+import RootLayout from "./routes/root";
 import LeadResearcherPage from "./routes/admin/Lead-Researcher-page";
 import ResearcherPage from "./routes/admin/Researcher-Page";
 import AdminPage from "./routes/admin/Admin-Page";
+import DynamicLabPage from "./routes/user/Dynamic-Lab-Page";
+import MainPages from "./routes/user/Landing-Page";
 const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
     //errorElement: <ErrorPage />,
     children: [
-      { index: true, element: <LandingPage /> },
-      { path: "about", element: <AboutPage /> },
-      { path: "events" },
-      { path: "labs" },
-      { path: "news" },
-      { path: "publications" },
-      { path: "research" },
-      { path: "events" },
-      { path: "people" },
+      { index: true, element: <MainPages /> },
+      { path: "about", element: <MainPages /> },
+      { path: "events", element: <MainPages /> },
+      { path: "labs", element: <MainPages /> },
+      { path: "news", element: <MainPages /> },
+      { path: "publications", element: <MainPages /> },
+      { path: "research", element: <MainPages /> },
+      { path: "events", element: <MainPages /> },
+      { path: "people", element: <MainPages /> },
+      { path: "labs/:labID", element: <DynamicLabPage /> },
     ],
   },
   { path: "admin", element: <AdminPage /> },

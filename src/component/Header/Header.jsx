@@ -1,6 +1,6 @@
 import MainNavigation from "./MainNavigation";
 import React from "react";
-import Logo from "../etc/Logo";
+import Logo from "./Main-Logo";
 function Header() {
   return (
     <header className="flex flex-col justify-center px-16 w-full bg-cyan-600 min-h-[72px] max-md:px-5 max-md:max-w-full">
