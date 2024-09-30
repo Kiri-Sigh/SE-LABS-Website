@@ -4,9 +4,11 @@ from typing import Optional, List
 from uuid import uuid4
 
 from ..database import Base
-from .credentials import Credentials
-from .person_lab import PersonLab
-from .person_project import PersonProject
+
+if __name__ == "__main__":
+    from .credentials import Credentials
+    from .person_lab import PersonLab
+    from .person_project import PersonProject
 
 class People(Base):
     __tablename__ = "people"

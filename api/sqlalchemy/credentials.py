@@ -1,7 +1,9 @@
 from sqlalchemy import Integer, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..database import Base
-from .people import People
+
+if __name__ == "__main__":
+    from .people import People
 
 class Credentials(Base):
     __tablename__ = "credentials"

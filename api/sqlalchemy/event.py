@@ -5,9 +5,11 @@ from datetime import datetime
 from uuid import uuid4
 
 from ..database import Base
-from .lab import Lab
-from .project import Project
-from .publication import Publication
+
+if __name__ == "__main__":
+    from .lab import Lab
+    from .project import Project
+    from .publication import Publication
 
 class Events(Base):
     __tablename__ = "events"

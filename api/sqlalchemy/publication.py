@@ -4,9 +4,12 @@ from typing import Optional, List
 from uuid import uuid4
 
 from ..database import Base
-from .lab import Lab
-from .news import News
-from .event import Events
+
+if __name__ == "__main__":
+    from .lab import Lab
+    from .person_project import PersonProject
+    from .news import News
+    from .event import Events
 
 class Publication(Base):
     __tablename__ = "publication"

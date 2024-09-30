@@ -2,8 +2,10 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..database import Base
-from .people import People
-from .lab import Lab
+
+if __name__ == "__main__":
+    from .people import People
+    from .lab import Lab
 
 class PersonLab(Base):
     __tablename__ = "person_lab"
