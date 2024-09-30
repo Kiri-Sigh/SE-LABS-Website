@@ -1,4 +1,4 @@
-from fastapi.testclient import TestClient
-from ..event import router
+# from fastapi.testclient import TestClient
+# from ..event import router
 
-client = TestClient(router)
+# client = TestClient(router)

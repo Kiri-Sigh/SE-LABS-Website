@@ -1,12 +1,14 @@
 from fastapi import FastAPI
 from .routers import admin, lead_researcher, researcher_folder, user
-from .routers.admin import event, laboratory, news, publication, research, researcher
-from .routers.lead_researcher import event, laboratory, news, publication, research, researcher
-from .routers.researcher_folder import event, laboratory, news, publication, research, researcher
-from .routers.user import event, laboratory, news, publication, research, researcher
+# from .routers.admin import event, laboratory, news, publication, research, researcher
+# from .routers.lead_researcher import event, laboratory, news, publication, research, researcher
+# from .routers.researcher_folder import event, laboratory, news, publication, research, researcher
+# from .routers.user import event, laboratory, news, publication, research, researcher
+from .database import Base, engine
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-
 
 app.include_router(admin.event.router)
 app.include_router(admin.laboratory.router)

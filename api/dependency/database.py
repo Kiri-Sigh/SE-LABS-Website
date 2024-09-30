@@ -1,4 +1,4 @@
-from ..database import SessionLocal, engine, Base
+from ..database import SessionLocal
 
 def get_db():
     db = SessionLocal()

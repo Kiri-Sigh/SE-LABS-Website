@@ -1,24 +1,27 @@
 from datetime import datetime
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict
+from typing import Optional
+from uuid import UUID
 
-class Event(BaseModel):
-    EID: str
-    title: str
-    description: str | None = None
+from .image import ImageInterface
+
+class EventsBase(BaseModel):
+    event_name: str
+    body: str
     location: str
-    start: datetime
-    end: datetime
-    laboratory_id: int | None = Field(default=None, gt=0)
-    research_id: int | None = Field(default=None, gt=0)
+    date_start: datetime
+    date_end: datetime
+    posted: bool
+    lab_id: Optional[str] = None
+    project_id: Optional[str] = None
+    publication_id: Optional[str] = None
 
-    @field_validator('end')
-    def end_date_must_be_after_start_date(cls, v: datetime, info):
-        if 'start' in info.data and v <= info.data['start']:
-            raise ValueError('end date must be after start date')
-        return v
+class EventsCreate(EventsBase, ImageInterface):
+    pass
 
-    @field_validator('laboratory_id', 'research_id')
-    def ids_must_be_positive(cls, v: int | None):
-        if v is not None and v <= 0:
-            raise ValueError('laboratory_id and research_id must be positive integers')
-        return v
+class EventsDB(EventsBase):
+    event_id: UUID
+    image_high: bytes
+    image_low: bytes
+
+    model_config = ConfigDict(from_attributes=True)

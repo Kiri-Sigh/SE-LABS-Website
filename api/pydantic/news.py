@@ -1,16 +1,25 @@
 from datetime import datetime
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict
+from typing import Optional
+from uuid import UUID
 
-class News(BaseModel):
-    NID: str
-    title: str
+from .image import ImageInterface
+
+class NewsBase(BaseModel):
+    news_name: str
     body: str
     date: datetime
-    laboratory_id: int | None = Field(default=None, gt=0)
-    research_id: int | None = Field(default=None, gt=0)
+    posted: bool
+    lab_id: Optional[str] = None
+    project_id: Optional[str] = None
+    publication_id: Optional[str] = None
 
-    @field_validator('laboratory_id', 'research_id')
-    def ids_must_be_positive(cls, v: int | None):
-        if v is not None and v <= 0:
-            raise ValueError('laboratory_id and research_id must be positive integers')
-        return v
+class NewsCreate(NewsBase, ImageInterface):
+    pass
+
+class NewsDB(NewsBase):
+    news_id: UUID
+    image_high: bytes
+    image_low: bytes
+
+    model_config = ConfigDict(from_attributes=True)
