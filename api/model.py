@@ -1,132 +1,164 @@
-from .database import Base
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, func
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from typing import List, Optional
-from uuid import uuid4
-from datetime import datetime
+from sqlalchemy import create_engine, Column, UUID, String, ForeignKey, DateTime, Text, LargeBinary, Boolean, Table
+from sqlalchemy.orm import relationship, backref, Mapped
+from sqlalchemy.sql import func
+from database import Base
+import uuid
 
-class Credentials(Base):
-    __tablename__ = "credentials"
+# Association Table
 
-    credential_id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    user_id: Mapped[str] = mapped_column(ForeignKey("people.user_id"), unique=True)
-    hashed_password: Mapped[str]
+person_lab = Table(
+    'person_lab', Base.metadata,
+    Column('user_id', UUID(as_uuid=True), ForeignKey(
+        'people.user_id'), primary_key=True),
+    Column('lab_id', UUID(as_uuid=True), ForeignKey(
+        'labs.lab_id'), primary_key=True),
+    Column('role', String(64))
+)
 
-    user: Mapped["People"] = relationship(back_populates="credentials")
+person_project = Table(
+    'person_project', Base.metadata,
+    Column('user_id', UUID(as_uuid=True), ForeignKey(
+        'people.user_id'), primary_key=True),
+    Column('project_id', UUID(as_uuid=True), ForeignKey(
+        'projects.project_id'), primary_key=True),
+    Column('role', String(64))
+)
 
-class Events(Base):
-    __tablename__ = "events"
+# Tables
 
-    event_id: Mapped[str] = mapped_column(String, primary_key=True, index=True, default=lambda: str(uuid4()))
-    event_name: Mapped[str]
-    image_high: Mapped[bytes]
-    image_low: Mapped[Optional[bytes]]
-    body: Mapped[str]
-    location: Mapped[str]
-    date_start: Mapped[datetime]
-    date_end: Mapped[datetime]
-    posted: Mapped[bool] = mapped_column(Boolean, default=False)
-    lab_id: Mapped[Optional[str]] = mapped_column(ForeignKey("lab.lab_id"))
-    project_id: Mapped[Optional[str]] = mapped_column(ForeignKey("project.project_id"))
-    publication_id: Mapped[Optional[str]] = mapped_column(ForeignKey("publication.publication_id"))
-
-    lab: Mapped[Optional["Lab"]] = relationship(back_populates="events")
-    project: Mapped[Optional["Project"]] = relationship(back_populates="events")
-    publication: Mapped[Optional["Publication"]] = relationship(back_populates="events")
 
 class Lab(Base):
-    __tablename__ = "lab"
+    __tablename__ = 'labs'
 
-    lab_id: Mapped[str] = mapped_column(String, primary_key=True, index=True, default=lambda: str(uuid4()))
-    lab_name: Mapped[str]
-    image_high: Mapped[bytes]
-    image_low: Mapped[Optional[bytes]]
-    body: Mapped[str]
+    lab_id = Column(UUID(as_uuid=True), primary_key=True)
+    lab_name = Column(String(100), nullable=False)
+    image_high = Column(LargeBinary)
+    image_low = Column(LargeBinary)
+    body = Column(Text)
 
-    person_labs: Mapped[List["PersonLab"]] = relationship(back_populates="lab")
-    news: Mapped[List["News"]] = relationship(back_populates="lab")
-    events: Mapped[List["Events"]] = relationship(back_populates="lab")
-    projects: Mapped[List["Project"]] = relationship(back_populates="lab")
-    publications: Mapped[List["Publication"]] = relationship(back_populates="lab")
+    # Relationships back populating
+    projects: Mapped[list['Project']] = relationship(back_populates="lab")
+    publications: Mapped[list['Publication']
+                         ] = relationship(back_populates="lab")
+    news: Mapped[list['News']] = relationship(back_populates="lab")
+    events: Mapped[list['Event']] = relationship(back_populates="lab")
 
-class News(Base):
-    __tablename__ = "news"
-
-    news_id: Mapped[str] = mapped_column(String, primary_key=True, index=True, default=lambda: str(uuid4()))
-    news_name: Mapped[str]
-    image_high: Mapped[bytes]
-    image_low: Mapped[Optional[bytes]]
-    body: Mapped[str]
-    date: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
-    posted: Mapped[bool] = mapped_column(Boolean, default=False)
-    lab_id: Mapped[Optional[str]] = mapped_column(ForeignKey("lab.lab_id"))
-    project_id: Mapped[Optional[str]] = mapped_column(ForeignKey("project.project_id"))
-    publication_id: Mapped[Optional[str]] = mapped_column(ForeignKey("publication.publication_id"))
-
-    lab: Mapped[Optional["Lab"]] = relationship(back_populates="news")
-    project: Mapped[Optional["Project"]] = relationship(back_populates="news")
-    publication: Mapped[Optional["Publication"]] = relationship(back_populates="news")
-
-class People(Base):
-    __tablename__ = "people"
-
-    user_id: Mapped[str] = mapped_column(String, primary_key=True, index=True, default=lambda: str(uuid4()))
-    fullname: Mapped[str]
-    image_high: Mapped[bytes]
-    image_low: Mapped[Optional[bytes]]
-    gmail: Mapped[str]
-    token: Mapped[str]
-
-    credentials: Mapped["Credentials"] = relationship(back_populates="user", uselist=False)
-    person_labs: Mapped[List["PersonLab"]] = relationship(back_populates="person")
-    person_projects: Mapped[List["PersonProject"]] = relationship(back_populates="person")
-
-class PersonLab(Base):
-    __tablename__ = "person_lab"
-
-    user_id: Mapped[str] = mapped_column(ForeignKey("people.user_id"), primary_key=True)
-    lab_id: Mapped[str] = mapped_column(ForeignKey("lab.lab_id"), primary_key=True)
-    role: Mapped[str]
-
-    person: Mapped["People"] = relationship(back_populates="person_labs")
-    lab: Mapped["Lab"] = relationship(back_populates="person_labs")
-
-class PersonProject(Base):
-    __tablename__ = "person_project"
-
-    user_id: Mapped[str] = mapped_column(ForeignKey("people.user_id"), primary_key=True)
-    project_id: Mapped[str] = mapped_column(ForeignKey("project.project_id"), primary_key=True)
-    role: Mapped[str]
-
-    person: Mapped["People"] = relationship(back_populates="person_projects")
-    project: Mapped["Project"] = relationship(back_populates="person_projects")
 
 class Project(Base):
-    __tablename__ = "project"
+    __tablename__ = 'projects'
 
-    project_id: Mapped[str] = mapped_column(String, primary_key=True, index=True, default=lambda: str(uuid4()))
-    project_name: Mapped[str]
-    image_high: Mapped[bytes]
-    image_low: Mapped[Optional[bytes]]
-    body: Mapped[str]
-    lab_id: Mapped[str] = mapped_column(ForeignKey("lab.lab_id"))
+    project_id = Column(UUID(as_uuid=True), primary_key=True)
+    project_name = Column(String(100), nullable=False)
+    image_high = Column(LargeBinary)
+    image_low = Column(LargeBinary)
+    body = Column(Text)
 
-    lab: Mapped["Lab"] = relationship(back_populates="projects")
-    person_projects: Mapped[List["PersonProject"]] = relationship(back_populates="project")
-    news: Mapped[List["News"]] = relationship(back_populates="project")
-    events: Mapped[List["Events"]] = relationship(back_populates="project")
+    # Foreign Keys
+    lab_id = Column(UUID(as_uuid=True), ForeignKey('labs.lab_id'))
+
+    # Relationships back populating
+    lab: Mapped['Lab'] = relationship(back_populates="projects")
+    news: Mapped[list['News']] = relationship(back_populates="project")
+    events: Mapped[list['Event']] = relationship(back_populates="project")
+
 
 class Publication(Base):
-    __tablename__ = "publication"
+    __tablename__ = 'publications'
 
-    publication_id: Mapped[str] = mapped_column(String, primary_key=True, index=True, default=lambda: str(uuid4()))
-    publication_name: Mapped[str]
-    image_high: Mapped[bytes]
-    image_low: Mapped[Optional[bytes]]
-    body: Mapped[str]
-    publication_link: Mapped[str]
-    lab_id: Mapped[str] = mapped_column(ForeignKey("lab.lab_id"))
+    publication_id = Column(UUID(as_uuid=True), primary_key=True)
+    publication_name = Column(String(100), nullable=False)
+    image_high = Column(LargeBinary)
+    image_low = Column(LargeBinary)
+    body = Column(Text)
+    url = Column(Text)
 
-    lab: Mapped["Lab"] = relationship(back_populates="publications")
-    news: Mapped[List["News"]] = relationship(back_populates="publication")
-    events: Mapped[List["Events"]] = relationship(back_populates="publication")
+    # Foreign Keys
+    lab_id = Column(UUID(as_uuid=True), ForeignKey('labs.lab_id'))
+
+    # Relationships back populating
+    lab: Mapped['Lab'] = relationship(back_populates="publications")
+    news: Mapped[list['News']] = relationship(back_populates="publication")
+    events: Mapped[list['Event']] = relationship(back_populates="publication")
+
+
+class News(Base):
+    __tablename__ = 'news'
+
+    news_id = Column(UUID(as_uuid=True), primary_key=True)
+    news_name = Column(String(100), nullable=False)
+    image_high = Column(LargeBinary)
+    image_low = Column(LargeBinary)
+    body = Column(Text)
+    date = Column(DateTime, default=func.now())
+    posted = Column(Boolean)
+
+    # Foreign Keys
+    lab_id = Column(UUID(as_uuid=True), ForeignKey(
+        'labs.lab_id'), nullable=True)
+    project_id = Column(UUID(as_uuid=True), ForeignKey(
+        'projects.project_id'), nullable=True)
+    publication_id = Column(UUID(as_uuid=True), ForeignKey(
+        'publications.publication_id'), nullable=True)
+
+    # Relationships back populating
+    lab: Mapped['Lab'] = relationship(back_populates="news")
+    project: Mapped['Project'] = relationship(back_populates="news")
+    publication: Mapped['Publication'] = relationship(back_populates="news")
+
+
+class Event(Base):
+    __tablename__ = 'events'
+
+    event_id = Column(UUID(as_uuid=True), primary_key=True)
+    event_name = Column(String(100), nullable=False)
+    image_high = Column(LargeBinary)
+    image_low = Column(LargeBinary)
+    body = Column(Text)
+    location = Column(String(100))
+    date_start = Column(DateTime, default=func.now())
+    date_end = Column(DateTime)
+
+    # Foreign Keys
+    lab_id = Column(UUID(as_uuid=True), ForeignKey(
+        'labs.lab_id'), nullable=True)
+    project_id = Column(UUID(as_uuid=True), ForeignKey(
+        'projects.project_id'), nullable=True)
+    publication_id = Column(UUID(as_uuid=True), ForeignKey(
+        'publications.publication_id'), nullable=True)
+
+    # Relationships back populating
+    lab: Mapped['Lab'] = relationship(back_populates="events")
+    project: Mapped['Project'] = relationship(back_populates="events")
+    publication: Mapped['Publication'] = relationship(back_populates="events")
+
+
+class UserCredentials(Base):
+    __tablename__ = 'user_credentials'
+
+    user_id = Column(UUID(as_uuid=True), ForeignKey(
+        'people.user_id'), primary_key=True)
+    password_hash = Column(String(255), nullable=False)
+
+    # Relationship
+    person: Mapped['Person'] = relationship(backref=backref(
+        "user_credentials", uselist=False))
+
+
+class Person(Base):
+    __tablename__ = 'people'
+
+    user_id = Column(UUID(as_uuid=True), primary_key=True)
+    full_name = Column(String(100), nullable=False)
+    image_high = Column(LargeBinary)
+    image_low = Column(LargeBinary)
+    gmail = Column(String(100))
+    highest_role = Column(String(100))
+    admin = Column(Boolean)
+    token = Column(String(100))
+
+    # Many-to-Many relationships
+    # backref = not needed in lab and project
+    labs: Mapped[list['Lab']] = relationship(secondary=person_lab,
+                                             backref=backref('people', lazy='dynamic'))
+    projects: Mapped[list['Project']] = relationship(
+        secondary=person_project, backref=backref('people', lazy='dynamic'))
