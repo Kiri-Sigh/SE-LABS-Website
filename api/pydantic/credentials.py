@@ -1,11 +1,4 @@
-from sqlalchemy import Column, Integer, String, LargeBinary, DateTime, Boolean, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy.sql import func
-from datetime import datetime
-from pydantic import BaseModel, Field, EmailStr, HttpUrl, ConfigDict
-from typing import Optional, List
-from uuid import UUID, uuid4
-
+from pydantic import BaseModel, ConfigDict
 
 class CredentialsBase(BaseModel):
     user_id: str
