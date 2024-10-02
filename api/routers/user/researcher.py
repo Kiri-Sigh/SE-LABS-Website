@@ -11,7 +11,7 @@ router = APIRouter(
     tags=["researcher"],
 )
 
-@router.get("/thumbnail", list[RT01])
+@router.get("/thumbnail", response_model_by_alias=list[RT01])
 async def get_researcher_thumbnail(
         laboratory_id: Optional[str] = None,
         research_id: Optional[str] = None,

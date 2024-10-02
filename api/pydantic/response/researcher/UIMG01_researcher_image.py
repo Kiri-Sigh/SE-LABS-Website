@@ -1,5 +1,5 @@
 from pydantic import BaseModel
 
-class NIMG01(BaseModel):
+class UIMG01(BaseModel):
     uid: str
     image: bytes

@@ -64,7 +64,7 @@ from .routers.user.research import router as user_research_router
 from .routers.user.researcher import router as user_researcher_router
 
 from fastapi import FastAPI
-from .database import Base, engine
+from .database.database import Base, engine
 
 Base.metadata.create_all(bind=engine)
 

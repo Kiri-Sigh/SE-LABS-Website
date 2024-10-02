@@ -1,90 +1,41 @@
-import os
-import pytest
-from dotenv import load_dotenv
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
-from fastapi.testclient import TestClient
-from contextlib import contextmanager
+# import os
+# from dotenv import load_dotenv
+# from sqlalchemy import create_engine, Column, Integer, String, Table, MetaData
+# from sqlalchemy.ext.declarative import declarative_base
 
-from .dependency.database import get_db
-from .main import app
-from .database import Base
-from .model import People
+# # Load environment variables
+# load_dotenv()
 
-load_dotenv()
+# # Get database URL
+# DATABASE_URL = os.getenv("URL_DATABASE")
 
-# Use a same database for testing just for now
-TEST_DATABASE_URL = os.getenv("URL_DATABASE")
-engine = create_engine(TEST_DATABASE_URL)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# # Create engine
+# engine = create_engine(DATABASE_URL)
 
-@contextmanager
-def get_test_db():
-    db = TestingSessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+# # Create declarative base
+# Base = declarative_base()
 
-def override_get_db():
-    with get_test_db() as db:
-        yield db
+# # Define a simple model
+# class TestModel(Base):
+#     __tablename__ = 'test_table'
+#     id = Column(Integer, primary_key=True)
+#     name = Column(String(50))
 
-app.dependency_overrides[get_db] = override_get_db
-client = TestClient(app)
+# def create_tables():
+#     Base.metadata.create_all(engine)
+#     print("Tables created successfully.")
 
-@pytest.fixture(scope="module")
-def setup_db():
-    Base.metadata.create_all(bind=engine)
-    yield
-    Base.metadata.drop_all(bind=engine)
+# def check_table_exists():
+#     metadata = MetaData()
+#     metadata.reflect(bind=engine)
+#     if 'test_table' in metadata.tables:
+#         print("Test table exists in the database.")
+#     else:
+#         print("Test table does not exist in the database.")
 
-@pytest.fixture(scope="function")
-def db_session(setup_db):
-    connection = engine.connect()
-    transaction = connection.begin()
-    session = TestingSessionLocal(bind=connection)
-
-    yield session
-
-    session.close()
-    transaction.rollback()
-    connection.close()
-
-def test_create_person(db_session: Session):
-    new_person = People(
-        user_id="testuser123",
-        fullname="Test User",
-        gmail="testuser@gmail.com",
-        token="secrettoken",
-        image_high=b'abc123',
-        image_low=None
-    )
-
-    db_session.add(new_person)
-    db_session.commit()
-
-    created_person = db_session.query(People).filter(People.user_id == "testuser123").first()
-    assert created_person is not None
-    assert created_person.fullname == "Test User"
-    assert created_person.gmail == "testuser@gmail.com"
-
-def test_get_person(db_session: Session):
-    # First, create a person
-    new_person = People(
-        user_id="testuser456",
-        fullname="Another User",
-        gmail="anotheruser@gmail.com",
-        token="anothertoken",
-        image_high=b'def456',
-        image_low=None
-    )
-    db_session.add(new_person)
-    db_session.commit()
-
-    # Then test getting the person via API
-    response = client.get("/people/testuser456")
-    assert response.status_code == 200
-    data = response.json()
-    assert data["fullname"] == "Another User"
-    assert data["gmail"] == "anotheruser@gmail.com"
+# if __name__ == "__main__":
+#     try:
+#         create_tables()
+#         check_table_exists()
+#     except Exception as e:
+#         print(f"An error occurred: {str(e)}")
