@@ -3,8 +3,8 @@ from typing import Optional
 from sqlalchemy.orm import Session
 
 from ...dependency.database import get_db
-from ...pydantic.response.research.RT01_research_thumbnail import RT01
-from ...pydantic.response.research.RIMG01_research_image import RIMG01
+from ...schemas.response.research.RT01_research_thumbnail import RT01
+from ...schemas.response.research.RIMG01_research_image import RIMG01
 
 router = APIRouter(
     prefix="/user/research",

@@ -4,9 +4,10 @@ from sqlalchemy.orm import Session
 from uuid import UUID
 
 from ...dependency.database import get_db
-from ...pydantic.response.event.RET01_response_event_thumbnail import RET01
-from ...pydantic.response.event.EIMG01_event_image import EIMG01
-from ...models.model import Events
+from ...schemas.response.event.RET01_response_event_thumbnail import RET01
+from ...schemas.response.event.EIMGL01_event_image_low import EIMGL01
+from ...schemas.response.event.EIMGH01_event_image_high import EIMGH01
+from ...models import model as models
 
 router = APIRouter(
     prefix="/user/event",
@@ -21,33 +22,34 @@ async def get_event_thumbnail(
         page: int = Query(1, ge=1, description="Page number"),
         db: Session = Depends(get_db)
         ):
-    query = db.query(Events).filter(Events.posted == True)
+    query = db.query(models.Event).filter(models.Event.posted == True)
     if laboratory_id:
-        query = query.filter(Events.lab_id == laboratory_id)
+        query = query.filter(models.Event.lab_id == laboratory_id)
     if research_id:
-        query = query.filter(Events.research_id == research_id)
+        query = query.filter(models.Event.research_id == research_id)
     offset = (page - 1) * amount
     events = query.offset(offset).limit(amount).all()
+    print(events)
     return [RET01.model_validate(event) for event in events]
 
-@router.get("/image-high", response_model=EIMG01)
+@router.get("/image-high", response_model=EIMGH01)
 async def get_event_image_high(
         event_id: UUID,
         db: Session = Depends(get_db)
         ):
-    event = db.query(Events).filter(Events.event_id == event_id).first()
+    event = db.query(models.Event).filter(models.Event.event_id == event_id).first()
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
     if not event.image_high:
         raise HTTPException(status_code=404, detail="High resolution image not found for this event")
     return EIMG01(eid=str(event.id), image=event.image_high)
 
-@router.get("/image-low", response_model=EIMG01)
+@router.get("/image-low", response_model=EIMGL01)
 async def get_event_image_low(
         event_id: UUID,
         db: Session = Depends(get_db)
         ):
-    event = db.query(Events).filter(Events.event_id == event_id).first()
+    event = db.query(models.Event).filter(models.Event.event_id == event_id).first()
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
     if not event.image_low:
