@@ -2,11 +2,10 @@ from datetime import datetime
 from pydantic import BaseModel, ConfigDict
 from typing import Optional
 from uuid import UUID
-from abc import ABC
 
 from ..util.image import ImageInterface
 
-class EventsInterface(BaseModel, ImageInterface, ABC):
+class EventsInterface(BaseModel, ImageInterface):
     event_name: str
     body: str
     location: str
@@ -15,11 +14,6 @@ class EventsInterface(BaseModel, ImageInterface, ABC):
     lab_id: Optional[UUID] = None
     research_id: Optional[UUID] = None
     publication_id: Optional[UUID] = None
-
-    def __new__(cls, *args, **kwargs):
-        if cls is EventsInterface:
-            raise TypeError(f"{cls.__name__} is an abstract class and cannot be instantiated directly.")
-        return super().__new__(cls)
     
 class EventsCreate(EventsInterface):
     pass

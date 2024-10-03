@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Body
+from fastapi import APIRouter, Body, Header
 
 from ...schemas.request.news.readable import NewsCreate as schema
 
@@ -9,6 +9,7 @@ router = APIRouter(
 
 @router.post("/")
 async def create_news(
-    body: schema.NewsCreate = Body(...)
+    body: schema.NewsCreate = Body(...),
+    token: str = Header()
         ):
     return {"message": "News posted"}

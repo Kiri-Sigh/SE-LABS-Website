@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Header
 
 router = APIRouter(
     prefix="/lead-researcher/news",
@@ -7,19 +7,22 @@ router = APIRouter(
 
 @router.get("/commit")
 async def get_commit(
-    laboratory_id: int
+    laboratory_id: int,
+    token: str = Header()
         ):
     return {"message": "News committed"}
 
 @router.patch("/")
 async def update_news(
     news_id: int,
-    approve: bool
+    approve: bool,
+    token: str = Header()
         ):
     return {"message": "News updated"}
 
 @router.delete("/")
 async def delete_news(
-    news_id: int
+    news_id: int,
+    token: str = Header()
         ):
     return {"message": "News deleted"}
