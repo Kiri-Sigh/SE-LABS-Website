@@ -1,5 +1,5 @@
 How to run backend
-  api\.venv\Scripts\activate.bat
+  api\ .venv\Scripts\activate.bat
   cd api
   fastapi dev main.py
 
