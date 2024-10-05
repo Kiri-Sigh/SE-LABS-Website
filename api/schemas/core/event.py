@@ -5,7 +5,7 @@ from uuid import UUID
 
 from ..util.image import ImageInterface
 
-class EventsInterface(BaseModel, ImageInterface):
+class EventsInterface(ImageInterface):
     event_name: str
     body: str
     location: str

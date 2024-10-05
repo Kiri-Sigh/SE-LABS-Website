@@ -47,6 +47,13 @@ def db_session():
     session = TestingSessionLocal(bind=connection)
     session_context.set(session)
 
+    # Clear specific tables to ensure a clean state
+    session.query(Event).delete()
+    session.query(Laboratory).delete()
+    session.query(Research).delete()
+    session.query(Publication).delete()
+    session.commit()
+
     yield session
 
     session_context.set(None)
@@ -54,14 +61,16 @@ def db_session():
     transaction.rollback()
     connection.close()
 
+
 app.dependency_overrides[get_db] = override_get_db
 
 @pytest.fixture(scope="function")
-def sample_Laboratory(db_session):
-    # Correction: Change 'Laboratory' to 'laboratory' for consistency
+def sample_laboratory(db_session):
     laboratory = Laboratory(
-        lab_id=uuid4(),  # Changed from Laboratory_id to lab_id
-        lab_name="Test Laboratory",  # Changed from Laboratory_name to lab_name
+        lab_id=uuid4(),
+        lab_name="Test Laboratory",
+        image_high=b"high_image_data",
+        image_low=b"low_image_data",
         body="Test Laboratory Body"
     )
     db_session.add(laboratory)
@@ -69,52 +78,56 @@ def sample_Laboratory(db_session):
     return laboratory
 
 @pytest.fixture(scope="function")
-def sample_Research(db_session):
-    # Correction: Change 'Research' to 'research' for consistency
+def sample_research(db_session, sample_laboratory):
     research = Research(
-        research_id=uuid4(),  # Changed from Research_id to research_id
+        research_id=uuid4(),
         research_name="Test Research",
-        body="Test Research Body"
+        image_high=b"high_image_data",
+        image_low=b"low_image_data",
+        body="Test Research Body",
+        lab_id=sample_laboratory.lab_id  # Ensure this is passed correctly
     )
     db_session.add(research)
     db_session.commit()
     return research
 
 @pytest.fixture(scope="function")
-def sample_publication(db_session):
+def sample_publication(db_session, sample_laboratory):
     publication = Publication(
-        publication_id=uuid4(),  # Changed from str(uuid4()) to uuid4()
+        publication_id=uuid4(),
         publication_name="Test Publication",
-        body="Test Publication Body"
+        image_high=b"high_image_data",
+        image_low=b"low_image_data",
+        body="Test Publication Body",
+        url="https://example.com",
+        lab_id=sample_laboratory.lab_id  # Ensure this is passed correctly
     )
     db_session.add(publication)
     db_session.commit()
     return publication
 
 @pytest.fixture(scope="function")
-def sample_Event(db_session, sample_Laboratory, sample_Research, sample_publication):
-    # Correction: Change 'Event' to 'events' for consistency
-    events = [
-        Event(
-            event_id=uuid4(),  # Changed from str(uuid4()) to uuid4()
-            event_name=f"Event {i}",
-            image_high=b"high_image_data",
-            image_low=b"low_image_data",
-            body=f"Body content for Event {i}",
-            location=f"Location {i}",
-            date_start=datetime.now(),
-            date_end=datetime.now() + timedelta(days=1),
-            posted=True,
-            lab_id=sample_Laboratory.lab_id,  # Changed from Laboratory_id to lab_id
-            research_id=sample_Research.research_id,
-            publication_id=sample_publication.publication_id,
-        ) for i in range(15)
-    ]
-    db_session.add_all(events)
+def sample_event(db_session, sample_laboratory, sample_research, sample_publication):
+    event = Event(
+        event_id=uuid4(),
+        event_name="Test Event",
+        image_high=b"high_image_data",
+        image_low=b"low_image_data",
+        body="Body content for Test Event",
+        location="Test Location",
+        date_start=datetime.now(),
+        date_end=datetime.now() + timedelta(days=1),
+        posted=True,
+        lab_id=sample_laboratory.lab_id,
+        research_id=sample_research.research_id,
+        publication_id=sample_publication.publication_id,
+    )
+    db_session.add(event)
     db_session.commit()
-    return events
+    return event
 
-def test_get_event_thumbnail(sample_Event, db_session):
+
+def test_get_event_thumbnail(sample_event, db_session):
     response = client.get("/user/event/thumbnail?amount=5&page=1")
     assert response.status_code == 200
     assert len(response.json()) == 5
@@ -123,58 +136,35 @@ def test_get_event_thumbnail(sample_Event, db_session):
     assert response.status_code == 200
     assert len(response.json()) == 5
 
-def test_get_event_thumbnail_with_filters(sample_Event, db_session):
-    lab_id = sample_Event[0].lab_id  # Changed from Laboratory_id to lab_id
+def test_get_event_thumbnail_with_filters(sample_event, db_session):
+    lab_id = sample_event[0].lab_id  # Changed from Laboratory_id to lab_id
     response = client.get(f"/user/event/thumbnail?lab_id={lab_id}")  # Changed from Laboratoryoratory_id to lab_id
     assert response.status_code == 200
     assert len(response.json()) == 1
 
-    research_id = sample_Event[1].research_id
+    research_id = sample_event[1].research_id
     response = client.get(f"/user/event/thumbnail?research_id={research_id}")
     assert response.status_code == 200
     assert len(response.json()) == 1
 
-def test_get_event_image_high(sample_Event, db_session):
-    event_id = sample_Event[0].event_id
+def test_get_event_image_high(sample_event, db_session):
+    event_id = sample_event[0].event_id
     response = client.get(f"/user/event/image-high?event_id={event_id}")
     assert response.status_code == 200
-    assert response.json()["image_url"] == sample_Event[0].image_high
+    assert response.json()["image_url"] == sample_event[0].image_high
 
 def test_get_event_image_high_not_found(db_session):
     non_existent_id = uuid4()
     response = client.get(f"/user/event/image-high?event_id={non_existent_id}")
     assert response.status_code == 404
 
-def test_get_event_image_low(sample_Event, db_session):
-    event_id = sample_Event[0].event_id
+def test_get_event_image_low(sample_event, db_session):
+    event_id = sample_event[0].event_id
     response = client.get(f"/user/event/image-low?event_id={event_id}")
     assert response.status_code == 200
-    assert response.json()["image_url"] == sample_Event[0].image_low
+    assert response.json()["image_url"] == sample_event[0].image_low
 
 def test_get_event_image_low_not_found(db_session):
     non_existent_id = uuid4()
     response = client.get(f"/user/event/image-low?event_id={non_existent_id}")
     assert response.status_code == 404
-
-# The following async tests are commented out. If you want to use them, 
-# you'll need to adjust your test setup to support async testing.
-
-# @pytest.mark.asyncio
-# async def test_get_event_thumbnail_async(sample_Event, db_session):
-#     response = await client.get("/user/event/thumbnail?amount=5&page=1")
-#     assert response.status_code == 200
-#     assert len(response.json()) == 5
-
-# @pytest.mark.asyncio
-# async def test_get_event_image_high_async(sample_Event, db_session):
-#     event_id = sample_Event[0].event_id
-#     response = await client.get(f"/user/event/image-high?event_id={event_id}")
-#     assert response.status_code == 200
-#     assert response.json()["image_url"] == sample_Event[0].image_high
-
-# @pytest.mark.asyncio
-# async def test_get_event_image_low_async(sample_Event, db_session):
-#     event_id = sample_Event[0].event_id
-#     response = await client.get(f"/user/event/image-low?event_id={event_id}")
-#     assert response.status_code == 200
-#     assert response.json()["image_url"] == sample_Event[0].image_low

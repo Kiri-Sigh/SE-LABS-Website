@@ -9,7 +9,7 @@ def get_event_list(db: Session, skip: int = 0, limit: int = 100) -> list[EventsD
     return db.query(Event).offset(skip).limit(limit).all()
 
 def create_event(db: Session, event: EventsCreate) -> EventsDB:
-    db_event = Event(**event.dict())
+    db_event = Event(**event.model_dump())
     db.add(db_event)
     db.commit()
     db.refresh(db_event)

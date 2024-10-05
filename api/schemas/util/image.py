@@ -1,10 +1,11 @@
-from pydantic import model_validator
+from pydantic import BaseModel, model_validator
 from PIL import Image
 import io
 
-class ImageInterface:
+
+class ImageInterface(BaseModel):
     image_high: bytes
-    image_low: bytes
+    image_low: bytes = None  # Default to None, as this will be generated
 
     @model_validator(mode='before')
     @staticmethod
