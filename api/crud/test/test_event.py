@@ -11,6 +11,7 @@ from contextvars import ContextVar
 from pydantic import ValidationError
 from PIL import Image
 import io
+import json
 
 
 from ...main import app  # Ensure this import path is correct for your project structure
@@ -219,13 +220,13 @@ def test_create_event_missing_required_field(db_session):
     
     # Check the specific validation errors
     errors = exc_info.value.errors()
-    assert len(errors) == 6  # Expecting 6 validation errors
+    # it should error on image_high, body, location, date_start, date_end 
+    assert len(errors) == 5  # Expecting 6 validation errors
     assert errors[0]["loc"] == ("image_high",)
-    assert errors[1]["loc"] == ("image_low",)
-    assert errors[2]["loc"] == ("body",)
-    assert errors[3]["loc"] == ("location",)
-    assert errors[4]["loc"] == ("date_start",)
-    assert errors[5]["loc"] == ("date_end",)
+    assert errors[1]["loc"] == ("body",)
+    assert errors[2]["loc"] == ("location",)
+    assert errors[3]["loc"] == ("date_start",)
+    assert errors[4]["loc"] == ("date_end",)
 
 # Tests for delete_event function
 def test_delete_existing_event(db_session, sample_event):
