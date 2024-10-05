@@ -1,25 +1,21 @@
 from pydantic import BaseModel, model_validator
 from PIL import Image
 import io
-from abc import ABC
 
-class ImageInterface(BaseModel, ABC):
+
+class ImageInterface(BaseModel):
     image_high: bytes
-    image_low: bytes
-
-    def __new__(cls, *args, **kwargs):
-        if cls is ImageInterface:
-            raise TypeError(f"{cls.__name__} is an abstract class and cannot be instantiated directly.")
-        return super().__new__(cls)
+    image_low: bytes = None  # Default to None, as this will be generated
 
     @model_validator(mode='before')
-    def generate_image_low(cls, values):
+    @staticmethod
+    def generate_image_low(values):
         if 'image_high' in values:
-            values['image_low'] = cls._create_low_resolution(values['image_high'])
+            values['image_low'] = ImageInterface._create_low_resolution(values['image_high'])
         return values
 
-    @classmethod
-    def _create_low_resolution(cls, image: bytes) -> bytes:
+    @staticmethod
+    def _create_low_resolution(image: bytes) -> bytes:
         try:
             with Image.open(io.BytesIO(image)) as img:
                 width, height = img.size

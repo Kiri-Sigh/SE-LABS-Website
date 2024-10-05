@@ -1,17 +1,11 @@
 from pydantic import BaseModel, EmailStr, ConfigDict
 from uuid import UUID
-from abc import ABC
 
 from ..util.image import ImageInterface
 
-class ResearcherInterface(BaseModel, ImageInterface, ABC):
+class ResearcherInterface(BaseModel, ImageInterface):
     full_name: str
     gmail: EmailStr
-
-    def __new__(cls, *args, **kwargs):
-        if cls is ResearcherInterface:
-            raise TypeError(f"{cls.__name__} is an abstract class and cannot be instantiated directly.")
-        return super().__new__(cls)
     
 class ResearcherCreate(ResearcherInterface):
     pass

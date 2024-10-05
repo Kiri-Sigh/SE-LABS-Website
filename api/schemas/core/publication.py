@@ -1,19 +1,13 @@
 from pydantic import BaseModel, HttpUrl, ConfigDict
 from uuid import UUID
-from abc import ABC
 
 from ..util.image import ImageInterface
 
-class PublicationInterface(BaseModel, ImageInterface, ABC):
+class PublicationInterface(BaseModel, ImageInterface):
     publication_name: str
     body: str
     publication_link: HttpUrl
     lab_id: UUID
-
-    def __new__(cls, *args, **kwargs):
-        if cls is PublicationInterface:
-            raise TypeError(f"{cls.__name__} is an abstract class and cannot be instantiated directly.")
-        return super().__new__(cls)
     
 class PublicationCreate(PublicationInterface):
     pass

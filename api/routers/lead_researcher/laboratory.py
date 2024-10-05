@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Header
 
 from ...schemas.request.laboratory.readable import LaboratoryUpdate as readable
 
@@ -10,6 +10,7 @@ router = APIRouter(
 @router.patch("/")
 async def update_laboratory(
     laboratory_id: int,
-    body: readable.LaboratoryUpdate
+    body: readable.LaboratoryUpdate,
+    token: str = Header()
         ):
     return {"message": "Laboratory updated"}
