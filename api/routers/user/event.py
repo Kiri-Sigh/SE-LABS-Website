@@ -1,5 +1,7 @@
+import base64
 from fastapi import APIRouter, Depends, Query, HTTPException
 from typing import Optional
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from uuid import UUID
 
@@ -10,6 +12,7 @@ from ...schemas.response.event.EIMGH01_event_image_high import EIMGH01
 from ...schemas.response.event.EIMGL01_event_image_low import EIMGL01
 from ...schemas.util.ImageResponse import ImageResponse
 from ...models import model as models
+from ...schemas.util.image import ImageInterface
 
 router = APIRouter(
     prefix="/user/event",
@@ -43,7 +46,11 @@ async def get_event_image_high(
         raise HTTPException(status_code=404, detail="Event not found")
     if not event.image_high:
         raise HTTPException(status_code=404, detail="High resolution image not found for this event")
-    return ImageResponse(image=EIMGH01.from_orm(event))
+    
+    image_data = ImageInterface._ensure_jpg(event.image_high)
+    return ImageResponse(
+        image=EIMGH01(eid=str(event.event_id), image=base64.b64encode(image_data).decode('utf-8'))
+    )
 
 @router.get("/image-low", response_model=ImageResponse)
 async def get_event_image_low(
@@ -55,4 +62,8 @@ async def get_event_image_low(
         raise HTTPException(status_code=404, detail="Event not found")
     if not event.image_low:
         raise HTTPException(status_code=404, detail="Low resolution image not found for this event")
-    return ImageResponse(image=EIMGL01.from_orm(event))
+    
+    image_data = ImageInterface._ensure_jpg(event.image_low)
+    return ImageResponse(
+        image=EIMGL01(eid=str(event.event_id), image=base64.b64encode(image_data).decode('utf-8'))
+    )

@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 
+from ...util.image import ImageInterface
+
 class EIMGL01(BaseModel):
     eid: str
     image: bytes
@@ -8,5 +10,5 @@ class EIMGL01(BaseModel):
     def from_orm(cls, obj):
         return cls(
             eid=str(obj.event_id),
-            image=obj.image_low
+            image=ImageInterface._ensure_jpg(obj.image_high)
         )

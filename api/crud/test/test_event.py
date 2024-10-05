@@ -123,7 +123,7 @@ def sample_event(db_session, sample_laboratory, sample_research, sample_publicat
         event_id=uuid4(),
         event_name="Test Event",
         image_high=create_test_image(),
-        image_low=create_test_image(),
+        image_low=create_test_image(),  # Ensure low-res image is also set
         body="Body content for Test Event",
         location="Test Location",
         date_start=datetime.now(),

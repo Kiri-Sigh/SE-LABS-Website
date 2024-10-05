@@ -1,5 +1,6 @@
 # Original test code with inline comments and corrections
 
+import base64
 import os
 import pytest
 from dotenv import load_dotenv
@@ -11,6 +12,8 @@ from uuid import uuid4
 from datetime import datetime, timedelta
 from contextvars import ContextVar
 from uuid import UUID
+from PIL import Image
+import io
 
 from ....main import app  # Ensure this import path is correct for your project structure
 from ....dependency.database import get_db
@@ -109,13 +112,19 @@ def sample_publication(db_session, sample_laboratory):
 
 @pytest.fixture(scope="function")
 def sample_events(db_session, sample_laboratory, sample_research, sample_publication):
+    # Create a JPEG test image
+    def create_test_image():
+        img = Image.new("RGB", (100, 100), color=(255, 0, 0))  # Red image
+        buffer = io.BytesIO()
+        img.save(buffer, format="JPEG")
+        return buffer.getvalue()
     events = []
     for i in range(15):  # Create 15 events
         event = Event(
             event_id=uuid4(),
             event_name=f"Test Event {i+1}",
-            image_high=b"high_image_data",
-            image_low=b"low_image_data",
+            image_high=create_test_image(),
+            image_low=create_test_image(),
             body=f"Body content for Test Event {i+1}",
             location=f"Test Location {i+1}",
             date_start=datetime.now() + timedelta(days=i),
@@ -163,7 +172,14 @@ def test_get_event_image_high(sample_events, db_session):
     assert "eid" in data["image"]
     assert "image" in data["image"]
     assert data["image"]["eid"] == str(event_id)
-    assert isinstance(data["image"]["image"], str)  # Base64 encoded image data
+    assert isinstance(data["image"]["image"], str)
+    
+    # Verify that the image data is valid base64
+    try:
+        image_data = base64.b64decode(data["image"]["image"])
+        assert image_data[:2] == b'\xFF\xD8', "Image is not a JPEG"
+    except:
+        pytest.fail("Image data is not valid base64")
 
 def test_get_event_image_low(sample_events, db_session):
     event_id = sample_events[0].event_id
@@ -176,7 +192,14 @@ def test_get_event_image_low(sample_events, db_session):
     assert "eid" in data["image"]
     assert "image" in data["image"]
     assert data["image"]["eid"] == str(event_id)
-    assert isinstance(data["image"]["image"], str)  # Base64 encoded image data
+    assert isinstance(data["image"]["image"], str)
+    
+    # Verify that the image data is valid base64
+    try:
+        image_data = base64.b64decode(data["image"]["image"])
+        assert image_data[:2] == b'\xFF\xD8', "Image is not a JPEG"
+    except:
+        pytest.fail("Image data is not valid base64")
 
 def test_get_event_image_high_not_found(db_session):
     non_existent_id = UUID('00000000-0000-0000-0000-000000000000')
