@@ -1,19 +1,37 @@
 from pydantic import BaseModel, model_validator
 from PIL import Image
 import io
-
+import base64
 
 class ImageInterface(BaseModel):
-    image_high: bytes
-    image_low: bytes = None
+    image_high: str  # Base64 encoded string
+    image_low: str = None  # Base64 encoded string, optional
 
     @model_validator(mode='before')
     @classmethod
     def validate_and_process_image(cls, values):
         if 'image_high' in values:
-            values['image_high'] = cls._ensure_jpg(values['image_high'])
-            values['image_low'] = cls._create_low_resolution(values['image_high'])
+            # Convert base64 to bytes
+            image_bytes = cls._base64_to_bytes(values['image_high'])
+            # Ensure it's a JPG
+            jpg_bytes = cls._ensure_jpg(image_bytes)
+            # Convert back to base64
+            values['image_high'] = cls._bytes_to_base64(jpg_bytes)
+            # Create and set low resolution image
+            low_res_bytes = cls._create_low_resolution(jpg_bytes)
+            values['image_low'] = cls._bytes_to_base64(low_res_bytes)
         return values
+
+    @staticmethod
+    def _base64_to_bytes(base64_string: str) -> bytes:
+        try:
+            return base64.b64decode(base64_string)
+        except Exception as e:
+            raise ValueError("Invalid base64 encoded image data provided") from e
+
+    @staticmethod
+    def _bytes_to_base64(image_bytes: bytes) -> str:
+        return base64.b64encode(image_bytes).decode('utf-8')
 
     @staticmethod
     def _ensure_jpg(image: bytes) -> bytes:
@@ -43,3 +61,11 @@ class ImageInterface(BaseModel):
                 return buffer.getvalue()
         except Exception as e:
             raise ValueError("Invalid image data provided") from e
+
+    @property
+    def image_high_bytes(self) -> bytes:
+        return self._base64_to_bytes(self.image_high)
+
+    @property
+    def image_low_bytes(self) -> bytes:
+        return self._base64_to_bytes(self.image_low) if self.image_low else None

@@ -2,20 +2,26 @@ from fastapi import Depends, HTTPException, status, Header
 from sqlalchemy.orm import Session
 from .database import get_db
 from ..models.model import Person
-from typing import Optional
 from ..token.token import jwt, SECRET_KEY, ALGORITHM, JWTError
 
 async def get_current_user(
-    token: str = Header(),
+    authorization: str = Header(...),
     db: Session = Depends(get_db)
 ):
-    if not token:
+    if not authorization:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Authorization header is missing"
         )
     
-    if token.lower() == 'none':
+    scheme, _, token = authorization.partition(" ")
+    if scheme.lower() != "bearer":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authentication scheme"
+        )
+    
+    if not token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token"
@@ -24,18 +30,20 @@ async def get_current_user(
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email: str = payload.get("sub")
+        print(f"Decoded email from token: {email}")
         if email is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Could not validate credentials"
+                detail="Could not validate credentials (email)"
             )
     except JWTError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Could not validate credentials"
+            detail="Could not validate credentials (token)"
         )
     
     user = db.query(Person).filter(Person.gmail == email).first()
+    print(f"User query result: {user}")
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

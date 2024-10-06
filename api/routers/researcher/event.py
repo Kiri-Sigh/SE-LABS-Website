@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from ...schemas.request.event.readable.EventCreate import EventCreate
-from ...schemas.core.event import EventDB
+from ...schemas.request.event.readable.EventCreate import EventCreate as EventCreate_request
+from ...schemas.core.event import EventDB, EventCreate
 from ...dependency.get_current_user import get_current_user
 from ...dependency.database import get_db
 from ...models.model import Person
@@ -15,7 +15,7 @@ router = APIRouter(
 
 @router.post("/", response_model=EventDB)
 async def create_event(
-    body: EventCreate,
+    body: EventCreate_request,
     current_user: Person = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
@@ -31,5 +31,13 @@ async def create_event(
     Returns:
         EventDB: The created event.
     """
+    EventCreate(
+        event_name=body.Event.title,
+        body=body.Event.body,
+        location=body.Event.location,
+        date_start=body.Event.date_start,
+        date_end=body.Event.date_end,
+        image_high=body.Event.image_high
+    )
     event = create_event(db, body)
     return event
