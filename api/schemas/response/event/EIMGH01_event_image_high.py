@@ -1,9 +1,10 @@
 from pydantic import BaseModel
+from uuid import UUID
 
 from ...util.image import ImageInterface
 
 class EIMGH01(BaseModel):
-    eid: str
+    eid: UUID
     image: bytes
 
     @classmethod
