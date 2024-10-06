@@ -5,11 +5,9 @@ from dotenv import load_dotenv
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
-from uuid import uuid4
+from uuid import uuid4, UUID
 from datetime import datetime, timedelta
 from contextvars import ContextVar
-from uuid import UUID
 from PIL import Image
 import io
 
@@ -21,16 +19,17 @@ from ....database.database import Base
 # Load environment variables
 load_dotenv()
 
-# Set up test database
-TEST_DATABASE_URL = os.getenv("URL_DATABASE")
+# Constants
+TEST_DATABASE_URL = os.getenv("URL_DATABASE_TEST")
+SAMPLE_EVENT_COUNT = 15
+
+# Test database setup
 engine = create_engine(TEST_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
 Base.metadata.create_all(bind=engine)
-
 session_context = ContextVar("session_context", default=None)
 
-# Override database dependency for testing
+# Helper functions
 def override_get_db():
     session = session_context.get()
     if session is None:
@@ -42,9 +41,17 @@ def override_get_db():
     else:
         yield session
 
+def create_test_image():
+    img = Image.new("RGB", (100, 100), color=(255, 0, 0))
+    buffer = io.BytesIO()
+    img.save(buffer, format="JPEG")
+    return buffer.getvalue()
+
+# Override database dependency
+app.dependency_overrides[get_db] = override_get_db
 client = TestClient(app)
 
-# Fixture to create a database session for each test
+# Fixtures
 @pytest.fixture(scope="function")
 def db_session():
     connection = engine.connect()
@@ -53,10 +60,8 @@ def db_session():
     session_context.set(session)
 
     # Clear specific tables to ensure a clean state
-    session.query(Event).delete()
-    session.query(Laboratory).delete()
-    session.query(Research).delete()
-    session.query(Publication).delete()
+    for model in [Event, Laboratory, Research, Publication]:
+        session.query(model).delete()
     session.commit()
 
     yield session
@@ -66,9 +71,6 @@ def db_session():
     transaction.rollback()
     connection.close()
 
-app.dependency_overrides[get_db] = override_get_db
-
-# Fixture to create a sample laboratory
 @pytest.fixture(scope="function")
 def sample_laboratory(db_session):
     laboratory = Laboratory(
@@ -82,7 +84,6 @@ def sample_laboratory(db_session):
     db_session.commit()
     return laboratory
 
-# Fixture to create a sample research
 @pytest.fixture(scope="function")
 def sample_research(db_session, sample_laboratory):
     research = Research(
@@ -97,7 +98,6 @@ def sample_research(db_session, sample_laboratory):
     db_session.commit()
     return research
 
-# Fixture to create a sample publication
 @pytest.fixture(scope="function")
 def sample_publication(db_session, sample_laboratory):
     publication = Publication(
@@ -113,17 +113,10 @@ def sample_publication(db_session, sample_laboratory):
     db_session.commit()
     return publication
 
-# Fixture to create sample events
 @pytest.fixture(scope="function")
 def sample_events(db_session, sample_laboratory, sample_research, sample_publication):
-    def create_test_image():
-        img = Image.new("RGB", (100, 100), color=(255, 0, 0))  # Red image
-        buffer = io.BytesIO()
-        img.save(buffer, format="JPEG")
-        return buffer.getvalue()
-    
     events = []
-    for i in range(15):  # Create 15 events
+    for i in range(SAMPLE_EVENT_COUNT):
         event = Event(
             event_id=uuid4(),
             event_name=f"Test Event {i+1}",
@@ -144,7 +137,7 @@ def sample_events(db_session, sample_laboratory, sample_research, sample_publica
     db_session.commit()
     return events
 
-# Test getting event thumbnails
+# Tests
 def test_get_event_thumbnail(sample_events, db_session):
     response = client.get("/user/event/thumbnail?amount=5&page=1")
     assert response.status_code == 200
@@ -152,9 +145,8 @@ def test_get_event_thumbnail(sample_events, db_session):
 
     response = client.get("/user/event/thumbnail?amount=10&page=2")
     assert response.status_code == 200
-    assert len(response.json()) == 5  # Because we have 15 events in total
+    assert len(response.json()) == SAMPLE_EVENT_COUNT - 10  # Because we have 15 events in total
 
-# Test getting event thumbnails with filters
 def test_get_event_thumbnail_with_filters(sample_events, db_session):
     lab_id = sample_events[0].lab_id
     response = client.get(f"/user/event/thumbnail?laboratory_id={lab_id}")
@@ -166,31 +158,24 @@ def test_get_event_thumbnail_with_filters(sample_events, db_session):
     assert response.status_code == 200
     assert len(response.json()) > 0
 
-# Test getting high-resolution event image
 def test_get_event_image_high(sample_events, db_session):
     event_id = sample_events[0].event_id
     response = client.get(f"/user/event/image-high?event_id={event_id}")
-    assert response.status_code == 200
-    assert response.headers["Content-Type"] == "application/json"
-    
-    data = response.json()
-    assert "image" in data
-    assert "eid" in data["image"]
-    assert "image" in data["image"]
-    assert data["image"]["eid"] == str(event_id)
-    assert isinstance(data["image"]["image"], str)
-    
-    # Verify that the image data is valid base64
-    try:
-        image_data = base64.b64decode(data["image"]["image"])
-        assert image_data[:2] == b'\xFF\xD8', "Image is not a JPEG"
-    except:
-        pytest.fail("Image data is not valid base64")
+    assert_valid_image_response(response, event_id)
 
-# Test getting low-resolution event image
 def test_get_event_image_low(sample_events, db_session):
     event_id = sample_events[0].event_id
     response = client.get(f"/user/event/image-low?event_id={event_id}")
+    assert_valid_image_response(response, event_id)
+
+def test_get_event_image_high_not_found(db_session):
+    assert_image_not_found("/user/event/image-high")
+
+def test_get_event_image_low_not_found(db_session):
+    assert_image_not_found("/user/event/image-low")
+
+# Helper assertion functions
+def assert_valid_image_response(response, event_id):
     assert response.status_code == 200
     assert response.headers["Content-Type"] == "application/json"
     
@@ -201,23 +186,14 @@ def test_get_event_image_low(sample_events, db_session):
     assert data["image"]["eid"] == str(event_id)
     assert isinstance(data["image"]["image"], str)
     
-    # Verify that the image data is valid base64
     try:
         image_data = base64.b64decode(data["image"]["image"])
         assert image_data[:2] == b'\xFF\xD8', "Image is not a JPEG"
     except:
         pytest.fail("Image data is not valid base64")
 
-# Test getting high-resolution image for non-existent event
-def test_get_event_image_high_not_found(db_session):
+def assert_image_not_found(endpoint):
     non_existent_id = UUID('00000000-0000-0000-0000-000000000000')
-    response = client.get(f"/user/event/image-high?event_id={non_existent_id}")
-    assert response.status_code == 404
-    assert response.json()["detail"] == "Event not found"
-
-# Test getting low-resolution image for non-existent event
-def test_get_event_image_low_not_found(db_session):
-    non_existent_id = UUID('00000000-0000-0000-0000-000000000000')
-    response = client.get(f"/user/event/image-low?event_id={non_existent_id}")
+    response = client.get(f"{endpoint}?event_id={non_existent_id}")
     assert response.status_code == 404
     assert response.json()["detail"] == "Event not found"
