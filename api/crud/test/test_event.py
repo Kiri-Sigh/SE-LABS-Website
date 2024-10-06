@@ -11,6 +11,7 @@ from pydantic import ValidationError
 from PIL import Image
 import io
 from fastapi import HTTPException
+import base64
 
 from ...main import app
 from ...dependency.database import get_db
@@ -76,6 +77,12 @@ def create_test_image():
     img.save(buffer, format="PNG")  # Save as PNG format
     return buffer.getvalue()
 
+def create_test_image_base64():
+    img = Image.new("RGB", (100, 100), color=(255, 0, 0))
+    buffer = io.BytesIO()
+    img.save(buffer, format="JPEG")
+    return base64.b64encode(buffer.getvalue()).decode('utf-8')
+
 # Fixtures for sample data
 @pytest.fixture(scope="function")
 def sample_laboratory(db_session):
@@ -124,7 +131,7 @@ def sample_event(db_session, sample_laboratory, sample_research, sample_publicat
     event = Event(
         event_id=uuid4(),
         event_name="Test Event",
-        image_high=create_test_image(),
+        image_high=create_test_image_base64(),
         image_low=create_test_image(),
         body="Body content for Test Event",
         location="Test Location",
