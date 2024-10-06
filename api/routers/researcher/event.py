@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Header, Depends
 from sqlalchemy.orm import Session
 
 from ...schemas.request.event.readable.EventCreate import EventCreate as EventCreate_request
@@ -13,7 +13,7 @@ router = APIRouter(
     tags=["event"],
 )
 
-@router.post("/", response_model=EventDB)
+@router.post("/")
 async def create_event(
     body: EventCreate_request,
     current_user: Person = Depends(get_current_user),
