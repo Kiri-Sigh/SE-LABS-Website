@@ -74,7 +74,8 @@ app.dependency_overrides[get_db] = override_get_db
 def create_test_image():
     img = Image.new("RGB", (10, 10), color=(255, 0, 0))  # Red pixel
     buffer = io.BytesIO()
-    img.save(buffer, format="PNG")  # Save as PNG format
+    # Save as JPG format
+    img.save(buffer, format="JPEG")
     return buffer.getvalue()
 
 def create_test_image_base64():

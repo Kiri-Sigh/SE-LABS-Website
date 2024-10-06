@@ -11,6 +11,7 @@ from uuid import uuid4
 import io
 from PIL import Image
 import base64
+from pprint import pprint
 
 from ....main import app
 from ....database.database import Base
@@ -75,14 +76,12 @@ def test_user(db_session):
     db_session.add(user)
     db_session.add(credentials)
     db_session.commit()
-    print(f"Test user created: {user.user_id}, {user.gmail}")
     db_session.refresh(user)
     return user
 
 @pytest.fixture
 def user_token(test_user):
     token = create_access_token(data={"sub": test_user.gmail})
-    print(f"Generated token for user {test_user.gmail}: {token}")
     return token
 
 @pytest.fixture
@@ -91,28 +90,29 @@ def authenticated_client(user_token):
         return TestClient(app, headers={"Authorization": f"Bearer {token}"})
     return _authenticated_client
 
+from ....schemas.request.event.readable.EventCreate import EventCreate as EventCreate_request
+from ....schemas.request.event.unreadable.EC01_event_create import EC01
+
 @pytest.fixture
 def sample_event_data():
-    inner_data = {
-        "event_name": "Test Event",
-        "body": "This is a test event",
-        "location": "Test Location",
-        "date_start": (datetime.now() + timedelta(days=1)).isoformat(),
-        "date_end": (datetime.now() + timedelta(days=2)).isoformat(),
-        "image_high": create_test_image_base64(),
-        "image_low": None  # or provide a lower resolution image if needed
-    }
-    return {"Event": inner_data}
+    event_data = EventCreate_request(
+        Event=EC01(
+            title="New Test Event",
+            image_high=create_test_image(),
+            body="New body content for Test Event",
+            location="New Test Location",
+            date_start=datetime.now(),
+            date_end=datetime.now() + timedelta(days=1),
+            # Include other required fields here
+        )
+    )
+    return event_data
 
 def test_create_event_success(authenticated_client, sample_event_data, db_session):
     # Verify the user exists in the database
     user = db_session.query(Person).filter(Person.gmail == "test@example.com").first()
-    print(f"User in database: {user.user_id if user else 'Not found'}")
 
     response = authenticated_client().post("/researcher/event/", json=sample_event_data)
-    print(f"Response status code: {response.status_code}")
-    print(f"Response content: {response.content}")
-    
     assert response.status_code == 200
     data = response.json()
     assert data["event_name"] == sample_event_data["Event"]["event_name"]

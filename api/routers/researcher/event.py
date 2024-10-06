@@ -31,13 +31,13 @@ async def create_event(
     Returns:
         EventDB: The created event.
     """
-    EventCreate(
-        event_name=body.Event.title,
+    event_create = EventCreate(
+        event_name=body.Event.event_name,
         body=body.Event.body,
         location=body.Event.location,
         date_start=body.Event.date_start,
         date_end=body.Event.date_end,
         image_high=body.Event.image_high
     )
-    event = create_event(db, body)
+    event = create_event(db, event_create)
     return event

@@ -30,7 +30,6 @@ async def get_current_user(
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email: str = payload.get("sub")
-        print(f"Decoded email from token: {email}")
         if email is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -43,7 +42,6 @@ async def get_current_user(
         )
     
     user = db.query(Person).filter(Person.gmail == email).first()
-    print(f"User query result: {user}")
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
