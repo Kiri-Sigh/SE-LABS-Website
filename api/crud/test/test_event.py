@@ -23,7 +23,7 @@ from ...crud.event import get_event, get_event_list, create_event, delete_event
 load_dotenv()
 
 # Set up test database
-TEST_DATABASE_URL = os.getenv("URL_DATABASE")
+TEST_DATABASE_URL = os.getenv("URL_DATABASE_TEST")
 engine = create_engine(TEST_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
