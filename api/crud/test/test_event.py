@@ -13,17 +13,17 @@ from PIL import Image
 import io
 import json
 
-
-from ...main import app  # Ensure this import path is correct for your project structure
+from ...main import app
 from ...dependency.database import get_db
 from ...models.model import Event, Laboratory, Research, Publication
 from ...schemas.core.event import EventsCreate, EventsDB
 from ...database.database import Base
 from ...crud.event import get_event, get_event_list, create_event, delete_event
 
+# Load environment variables
 load_dotenv()
 
-# Use a single database for testing just for now
+# Set up test database
 TEST_DATABASE_URL = os.getenv("URL_DATABASE")
 engine = create_engine(TEST_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -32,6 +32,7 @@ Base.metadata.create_all(bind=engine)
 
 session_context = ContextVar("session_context", default=None)
 
+# Override database dependency for testing
 def override_get_db():
     session = session_context.get()
     if session is None:
@@ -45,6 +46,7 @@ def override_get_db():
 
 client = TestClient(app)
 
+# Fixture to create a database session for each test
 @pytest.fixture(scope="function")
 def db_session():
     connection = engine.connect()
@@ -66,15 +68,16 @@ def db_session():
     transaction.rollback()
     connection.close()
 
-
 app.dependency_overrides[get_db] = override_get_db
 
+# Utility function to create a test image
 def create_test_image():
     img = Image.new("RGB", (10, 10), color=(255, 0, 0))  # Red pixel
     buffer = io.BytesIO()
     img.save(buffer, format="PNG")  # Save as PNG format
     return buffer.getvalue()
 
+# Fixtures for sample data
 @pytest.fixture(scope="function")
 def sample_laboratory(db_session):
     laboratory = Laboratory(
@@ -96,7 +99,7 @@ def sample_research(db_session, sample_laboratory):
         image_high=create_test_image(),
         image_low=create_test_image(),
         body="Test Research Body",
-        lab_id=sample_laboratory.lab_id  # Ensure this is passed correctly
+        lab_id=sample_laboratory.lab_id
     )
     db_session.add(research)
     db_session.commit()
@@ -111,7 +114,7 @@ def sample_publication(db_session, sample_laboratory):
         image_low=create_test_image(),
         body="Test Publication Body",
         url="https://example.com",
-        lab_id=sample_laboratory.lab_id  # Ensure this is passed correctly
+        lab_id=sample_laboratory.lab_id
     )
     db_session.add(publication)
     db_session.commit()
@@ -123,7 +126,7 @@ def sample_event(db_session, sample_laboratory, sample_research, sample_publicat
         event_id=uuid4(),
         event_name="Test Event",
         image_high=create_test_image(),
-        image_low=create_test_image(),  # Ensure low-res image is also set
+        image_low=create_test_image(),
         body="Body content for Test Event",
         location="Test Location",
         date_start=datetime.now(),
@@ -155,9 +158,7 @@ def test_get_event_list_with_results(db_session, sample_event):
     assert len(events) >= 1
     assert any(event.event_id == sample_event.event_id for event in events)
 
-
 def test_get_event_list_empty(db_session):
-    # Clear all events from the database
     db_session.query(Event).delete()
     db_session.commit()
     
@@ -177,9 +178,9 @@ def test_get_event_list_pagination(db_session):
             date_start=datetime.now(),
             date_end=datetime.now() + timedelta(days=1),
             posted=True,
-            lab_id=None,  # Use appropriate lab_id if necessary
-            research_id=None,  # Use appropriate research_id if necessary
-            publication_id=None,  # Use appropriate publication_id if necessary
+            lab_id=None,
+            research_id=None,
+            publication_id=None,
         )
         db_session.add(event)
     db_session.commit()
@@ -196,7 +197,7 @@ def test_get_event_list_pagination(db_session):
 def test_create_event_success(db_session, sample_laboratory, sample_research, sample_publication):
     event_data = EventsCreate(
         event_name="New Test Event",
-        image_high=create_test_image(),  # Provide high-res image data
+        image_high=create_test_image(),
         body="New body content for Test Event",
         location="New Test Location",
         date_start=datetime.now(),
@@ -220,8 +221,7 @@ def test_create_event_missing_required_field(db_session):
     
     # Check the specific validation errors
     errors = exc_info.value.errors()
-    # it should error on image_high, body, location, date_start, date_end 
-    assert len(errors) == 5  # Expecting 6 validation errors
+    assert len(errors) == 5
     assert errors[0]["loc"] == ("image_high",)
     assert errors[1]["loc"] == ("body",)
     assert errors[2]["loc"] == ("location",)
@@ -239,4 +239,4 @@ def test_delete_existing_event(db_session, sample_event):
 def test_delete_non_existent_event(db_session):
     non_existent_id = str(uuid4())
     result = delete_event(db_session, non_existent_id)
-    assert result == {"message": "Event deleted successfully."}  # Adjust based on your error handling logic
+    assert result == {"message": "Event deleted successfully."}

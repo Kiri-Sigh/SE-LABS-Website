@@ -14,6 +14,7 @@ from ...schemas.util.ImageResponse import ImageResponse
 from ...models import model as models
 from ...schemas.util.image import ImageInterface
 
+# Define router for event-related endpoints
 router = APIRouter(
     prefix="/user/event",
     tags=["event"],
@@ -27,6 +28,9 @@ async def get_event_thumbnail(
         page: int = Query(1, ge=1, description="Page number"),
         db: Session = Depends(get_db)
         ):
+    """
+    Retrieve event thumbnails with optional filtering and pagination.
+    """
     query = db.query(models.Event).filter(models.Event.posted == True)
     if laboratory_id:
         query = query.filter(models.Event.lab_id == laboratory_id)
@@ -41,6 +45,9 @@ async def get_event_image_high(
         event_id: UUID,
         db: Session = Depends(get_db)
         ):
+    """
+    Retrieve high-resolution image for a specific event.
+    """
     event = db.query(models.Event).filter(models.Event.event_id == event_id).first()
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
@@ -57,6 +64,9 @@ async def get_event_image_low(
         event_id: UUID,
         db: Session = Depends(get_db)
         ):
+    """
+    Retrieve low-resolution image for a specific event.
+    """
     event = db.query(models.Event).filter(models.Event.event_id == event_id).first()
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
