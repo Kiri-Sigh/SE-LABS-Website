@@ -98,7 +98,7 @@ def sample_event_data():
     event_data = EventCreate(
         Event=EC01(
             title="New Test Event",
-            image_high=create_test_image(),
+            image_high=create_test_image_base64(),
             body="New body content for Test Event",
             location="New Test Location",
             date_start=datetime.now(),

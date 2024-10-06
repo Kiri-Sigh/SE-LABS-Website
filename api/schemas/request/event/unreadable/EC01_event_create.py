@@ -10,5 +10,5 @@ class EC01(BaseModel):
     location: str
     date_start: datetime
     date_end: datetime
-    image_high: bytes
+    image_high: str
     related_laboratory: Optional[util.LRE03] = None
