@@ -4,19 +4,18 @@ from dotenv import load_dotenv
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
 from uuid import uuid4
 from datetime import datetime, timedelta
 from contextvars import ContextVar
 from pydantic import ValidationError
 from PIL import Image
 import io
-import json
+from fastapi import HTTPException
 
 from ...main import app
 from ...dependency.database import get_db
 from ...models.model import Event, Laboratory, Research, Publication
-from ...schemas.core.event import EventsCreate, EventsDB
+from ...schemas.core.event import EventCreate, EventDB
 from ...database.database import Base
 from ...crud.event import get_event, get_event_list, create_event, delete_event
 
@@ -195,7 +194,7 @@ def test_get_event_list_pagination(db_session):
 
 # Tests for create_event function
 def test_create_event_success(db_session, sample_laboratory, sample_research, sample_publication):
-    event_data = EventsCreate(
+    event_data = EventCreate(
         event_name="New Test Event",
         image_high=create_test_image(),
         body="New body content for Test Event",
@@ -213,7 +212,7 @@ def test_create_event_success(db_session, sample_laboratory, sample_research, sa
 
 def test_create_event_missing_required_field(db_session):
     with pytest.raises(ValidationError) as exc_info:
-        event_data = EventsCreate(
+        event_data = EventCreate(
             event_name="Incomplete Event",
             # Missing required fields
         )
@@ -238,5 +237,8 @@ def test_delete_existing_event(db_session, sample_event):
 
 def test_delete_non_existent_event(db_session):
     non_existent_id = str(uuid4())
-    result = delete_event(db_session, non_existent_id)
-    assert result == {"message": "Event deleted successfully."}
+    with pytest.raises(HTTPException) as exc_info:
+        delete_event(db_session, non_existent_id)
+    
+    assert exc_info.value.status_code == 404
+    assert exc_info.value.detail == "Event not found"

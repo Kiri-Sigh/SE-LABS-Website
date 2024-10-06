@@ -5,17 +5,17 @@ from uuid import UUID
 
 from ..util.image import ImageInterface
 
-class NewsInterface(BaseModel, ImageInterface):
+class NewInterface(BaseModel, ImageInterface):
     news_name: str
     body: str
     lab_id: Optional[UUID] = None
     research_id: Optional[UUID] = None
     publication_id: Optional[UUID] = None
 
-class NewsCreate(NewsInterface):
+class NewCreate(NewInterface):
     pass
 
-class NewsDB(NewsInterface):
+class NewDB(NewInterface):
     news_id : UUID
     date: datetime
 
