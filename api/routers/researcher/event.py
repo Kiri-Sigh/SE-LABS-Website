@@ -32,7 +32,7 @@ async def create_event(
         EventDB: The created event.
     """
     event_create = EventCreate(
-        event_name=body.Event.event_name,
+        event_name=body.Event.title,
         body=body.Event.body,
         location=body.Event.location,
         date_start=body.Event.date_start,
