@@ -1,12 +1,12 @@
 from fastapi import Depends, HTTPException, status, Header
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from .database import get_db
 from ..models.model import Person
 from ..token.token import jwt, SECRET_KEY, ALGORITHM, JWTError
 
 async def get_current_user(
     authorization: str = Header(...),
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_db)
 ):
     if not authorization:
         raise HTTPException(
@@ -41,7 +41,8 @@ async def get_current_user(
             detail="Could not validate credentials (token)"
         )
     
-    user = db.query(Person).filter(Person.gmail == email).first()
+    user = await db.execute(db.query(Person).filter(Person.gmail == email))
+    user = user.scalar_one_or_none()
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
