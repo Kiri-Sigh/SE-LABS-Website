@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, Header
 
 router = APIRouter(
     prefix="/admin/event",

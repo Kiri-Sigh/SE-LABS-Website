@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Header, Depends
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from ...schemas.request.event.readable.EventCreate import EventCreate as EventCreate_request
 from ...schemas.core.event import EventDB, EventCreate
@@ -17,7 +17,7 @@ router = APIRouter(
 async def create_event(
     body: EventCreate_request,
     current_user: Person = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_db)
 ):
     """
     Create a new event in the database.

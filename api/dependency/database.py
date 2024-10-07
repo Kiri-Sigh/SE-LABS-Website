@@ -1,9 +1,8 @@
 import os
 from dotenv import load_dotenv
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
 # Load environment variables
 load_dotenv()
@@ -16,10 +15,10 @@ if URL_DATABASE is None:
 
 try:
     # Create the SQLAlchemy engine
-    engine = create_engine(URL_DATABASE, pool_pre_ping=True)
+    engine = create_async_engine(URL_DATABASE, pool_pre_ping=True, echo=True)
 
     # Create a session local class
-    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    AsyncSessionLocal  = sessionmaker(autocommit=False, autoflush=False, bind=engine, class_=AsyncSession)
 
     # Create a declarative base class
     class Base(DeclarativeBase):
@@ -28,13 +27,6 @@ try:
 except SQLAlchemyError as e:
     raise RuntimeError(f"Failed to initialize database: {str(e)}")
 
-def get_db():
-    """
-    Generator function to get a database session.
-    Ensures the session is closed after use.
-    """
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+async def get_db():
+    async with AsyncSessionLocal() as session:
+        yield session

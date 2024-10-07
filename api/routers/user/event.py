@@ -1,7 +1,7 @@
 import base64
 from fastapi import APIRouter, Depends, Query, HTTPException
 from typing import List, Optional
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 
 from ...dependency.database import get_db
@@ -24,7 +24,7 @@ async def get_event_thumbnail(
     research_id: Optional[UUID] = Query(None, description="Filter by research ID"),
     amount: int = Query(10, ge=1, le=100, description="Number of events to return"),
     page: int = Query(1, ge=1, description="Page number"),
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_db)
 ) -> List[RET01]:
     """
     Retrieve event thumbnails with optional filtering and pagination.
@@ -52,7 +52,7 @@ async def get_event_thumbnail(
 @router.get("/image-high", response_model=ImageResponse)
 async def get_event_image_high(
     event_id: UUID,
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_db)
 ) -> ImageResponse:
     """
     Retrieve high-resolution image for a specific event.
@@ -81,7 +81,7 @@ async def get_event_image_high(
 @router.get("/image-low", response_model=ImageResponse)
 async def get_event_image_low(
     event_id: UUID,
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_db)
 ) -> ImageResponse:
     """
     Retrieve low-resolution image for a specific event.
