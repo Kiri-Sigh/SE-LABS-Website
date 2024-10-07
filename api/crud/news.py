@@ -1,21 +1,25 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from ..models.model import News
 from ..schemas.core.news import NewsCreate, NewsDB
 
-def get_news(db: Session, news_id: int) -> NewsDB:
-    return db.query(News).filter(News.news_id == news_id).first()
+async def get_news(db: AsyncSession, news_id: int) -> NewsDB:
+    # return db.query(News).filter(News.news_id == news_id).first()
+    return db.execute(db.query(News).filter(News.news_id == news_id)).scalars().first()
 
-def get_news_list(db: Session, skip: int = 0, limit: int = 100) -> list[NewsDB]:
-    return db.query(News).offset(skip).limit(limit).all()
+async def get_news_list(db: AsyncSession, skip: int = 0, limit: int = 100) -> list[NewsDB]:
+    # return db.query(News).offset(skip).limit(limit).all()
+    return db.execute(db.query(News).offset(skip).limit(limit)).scalars().all()
 
-def create_news(db: Session, news: NewsCreate) -> NewsDB:
+async def create_news(db: AsyncSession, news: NewsCreate) -> NewsDB:
     db_news = News(**news.model_dump())
-    db.add(db_news)
-    db.commit()
-    db.refresh(db_news)
+    await db.add(db_news)
+    await db.commit()
+    await db.refresh(db_news)
     return db_news
 
-def delete_news(db: Session, news_id: int):
-    db.query(News).filter(News.news_id == news_id).delete()
-    db.commit()
+async def delete_news(db: AsyncSession, news_id: int):
+    # db.query(News).filter(News.news_id == news_id).delete()
+    await db.execute(db.query(News).filter(News.news_id == news_id)).delete()
+    await db.commit()
     return {"message": "News deleted successfully."}

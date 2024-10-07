@@ -1,11 +1,11 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import uuid4, UUID
 from pydantic import HttpUrl
 
 from ..models.model import Publication, News, Event, Research
 from ..schemas.core.publication import PublicationCreate, PublicationDB
 
-def create_publication(db: Session, publication_create: PublicationCreate) -> PublicationDB:
+async def create_publication(db: AsyncSession, publication_create: PublicationCreate) -> PublicationDB:
     # Create a new publication instance
     new_publication = Publication(
         publication_id=uuid4(),
@@ -13,49 +13,53 @@ def create_publication(db: Session, publication_create: PublicationCreate) -> Pu
     )
 
     # Add the new publication to the database
-    db.add(new_publication)
-    db.commit()
+    await db.add(new_publication)
+    await db.commit()
 
     # Refresh the new publication to ensure it reflects the current state in the database
-    db.refresh(new_publication)
+    await db.refresh(new_publication)
 
     return new_publication
 
-def get_publication(db: Session, publication_id: UUID) -> PublicationDB:
+async def get_publication(db: AsyncSession, publication_id: UUID) -> PublicationDB:
     # Fetch the publication from the database
-    publication = db.query(Publication).filter(Publication.publication_id == publication_id).first()
+    # publication = db.query(Publication).filter(Publication.publication_id == publication_id).first()
+    publication = await db.execute(db.query(Publication).filter(Publication.publication_id == publication_id)).scalars().first()
     if not publication:
         raise ValueError("Publication not found")
 
     return publication
 
-def get_publications(db: Session, skip: int = 0, limit: int = 100) -> list[PublicationDB]:
+async def get_publications(db: AsyncSession, skip: int = 0, limit: int = 100) -> list[PublicationDB]:
     # Fetch all publications from the database
-    publications = db.query(Publication).offset(skip).limit(limit).all()
+    # publications = db.query(Publication).offset(skip).limit(limit).all()
+    publications = await db.execute(db.query(Publication).offset(skip).limit(limit)).schelars().all()
 
     return publications
 
-def update_publication(db: Session, publication_id: UUID, publication_update: PublicationCreate) -> PublicationDB:
+async def update_publication(db: AsyncSession, publication_id: UUID, publication_update: PublicationCreate) -> PublicationDB:
     # Fetch the publication to be updated
-    publication = db.query(Publication).filter(Publication.publication_id == publication_id).first()
+    # publication = db.query(Publication).filter(Publication.publication_id == publication_id).first()
+    publication = await db.execute(db.query(Publication).filter(Publication.publication_id == publication_id)).scalars().first()
     if not publication:
         raise ValueError("Publication not found")
 
     # Update the publication with the new data
-    for key, value in publication_update.dict().items():
+    for key, value in publication_update.model_dump().items():
         setattr(publication, key, value)
 
     # Commit the changes
-    db.commit()
+    await db.commit()
 
     # Refresh the publication to ensure it reflects the current state in the database
-    db.refresh(publication)
+    await db.refresh(publication)
 
     return publication
 
-def migrate_research_to_publication(db: Session, research_id: UUID) -> PublicationDB:
+async def migrate_research_to_publication(db: AsyncSession, research_id: UUID) -> PublicationDB:
     # Fetch the research to be deleted
-    research = db.query(Research).filter(Research.research_id == research_id).first()
+    # research = db.query(Research).filter(Research.research_id == research_id).first()
+    research = await db.execute(db.query(Research).filter(Research.research_id == research_id)).scalars().first()
     if not research:
         raise ValueError("Research not found")
 
@@ -74,37 +78,44 @@ def migrate_research_to_publication(db: Session, research_id: UUID) -> Publicati
         image_high=research.image_high,
         image_low=research.image_low
     )
-    db.add(new_publication)
+    await db.add(new_publication)
 
     # Update associated news
-    db.query(News).filter(News.research_id == research_id).update(
+    # db.query(News).filter(News.research_id == research_id).update(
+    #     {"research_id": None, "publication_id": new_publication.publication_id}
+    # )
+    await db.execute(db.query(News).filter(News.research_id == research_id).update(
         {"research_id": None, "publication_id": new_publication.publication_id}
-    )
+    ))
 
     # Update associated events
-    db.query(Event).filter(Event.research_id == research_id).update(
+    # db.query(Event).filter(Event.research_id == research_id).update(
+    #     {"research_id": None, "publication_id": new_publication.publication_id}
+    # )
+    await db.execute(db.query(Event).filter(Event.research_id == research_id).update(
         {"research_id": None, "publication_id": new_publication.publication_id}
-    )
+    ))
 
     # Delete the research
-    db.delete(research)
+    await db.delete(research)
 
     # Commit the changes
-    db.commit()
+    await db.commit()
 
     # Refresh the new publication to ensure it reflects the current state in the database
-    db.refresh(new_publication)
+    await db.refresh(new_publication)
 
     return new_publication
 
-def delete_publication(db: Session, publication_id: UUID) -> PublicationDB:
+async def delete_publication(db: AsyncSession, publication_id: UUID) -> PublicationDB:
     # Fetch the publication to be deleted
-    publication = db.query(Publication).filter(Publication.publication_id == publication_id).first()
+    # publication = db.query(Publication).filter(Publication.publication_id == publication_id).first()
+    publication = await db.execute(db.query(Publication).filter(Publication.publication_id == publication_id)).scalars().first
     if not publication:
         raise ValueError("Publication not found")
 
     # Delete the publication
-    db.delete(publication)
-    db.commit()
+    await db.delete(publication)
+    await db.commit()
 
     return publication

@@ -1,5 +1,5 @@
-from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException
 from typing import List, Optional
 from uuid import UUID
@@ -7,7 +7,7 @@ from uuid import UUID
 from ..models.model import Event
 from ..schemas.core.event import EventCreate, EventDB
 
-def get_event(db: Session, event_id: UUID) -> Optional[EventDB]:
+async def get_event(db: AsyncSession, event_id: UUID) -> Optional[EventDB]:
     """
     Retrieve a single event by its ID.
 
@@ -22,11 +22,12 @@ def get_event(db: Session, event_id: UUID) -> Optional[EventDB]:
         HTTPException: If a database error occurs.
     """
     try:
-        return db.query(Event).filter(Event.event_id == event_id).first()
+        result = await db.execute(db.query(Event).filter(Event.event_id == event_id))
+        return result.scalars().first()
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
-def get_event_list(db: Session, skip: int = 0, limit: int = 100) -> List[EventDB]:
+async def get_event_list(db: AsyncSession, skip: int = 0, limit: int = 100) -> List[EventDB]:
     """
     Retrieve a list of events with pagination.
 
@@ -42,11 +43,12 @@ def get_event_list(db: Session, skip: int = 0, limit: int = 100) -> List[EventDB
         HTTPException: If a database error occurs.
     """
     try:
-        return db.query(Event).offset(skip).limit(limit).all()
+        result = await db.execute(db.query(Event).offset(skip).limit(limit))
+        return result.scalars().all()
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
-def create_event(db: Session, event: EventCreate) -> EventDB:
+async def create_event(db: AsyncSession, event: EventCreate) -> EventDB:
     """
     Create a new event in the database.
 
@@ -63,14 +65,14 @@ def create_event(db: Session, event: EventCreate) -> EventDB:
     try:
         db_event = Event(**event.model_dump())
         db.add(db_event)
-        db.commit()
-        db.refresh(db_event)
+        await db.commit()
+        await db.refresh(db_event)
         return db_event
     except SQLAlchemyError as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
-def delete_event(db: Session, event_id: UUID) -> dict:
+async def delete_event(db: AsyncSession, event_id: UUID) -> dict:
     """
     Delete an event from the database by its ID.
 
@@ -85,11 +87,11 @@ def delete_event(db: Session, event_id: UUID) -> dict:
         HTTPException: If the event is not found or if a database error occurs.
     """
     try:
-        event = db.query(Event).filter(Event.event_id == event_id).first()
+        event = await get_event(db, event_id)
         if not event:
             raise HTTPException(status_code=404, detail="Event not found")
-        db.delete(event)
-        db.commit()
+        await db.delete(event)
+        await db.commit()
         return {"message": "Event deleted successfully."}
     except SQLAlchemyError as e:
         db.rollback()
