@@ -1,67 +1,66 @@
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
+from fastapi import HTTPException
 
 from ..models.model import Researcher
 from ..schemas.core.researcher import ResearcherCreate, ResearcherDB
 
 async def create_researcher(db: AsyncSession, researcher_create: ResearcherCreate) -> ResearcherDB:
-    # Create a new researcher instance
-    new_researcher = Researcher(
-        **researcher_create.model_dump()
-    )
-
-    # Add the new researcher to the database
-    await db.add(new_researcher)
-    await db.commit()
-
-    # Refresh the new researcher to ensure it reflects the current state in the database
-    await db.refresh(new_researcher)
-
-    return new_researcher
+    try:
+        new_researcher = Researcher(**researcher_create.model_dump())
+        db.add(new_researcher)
+        await db.commit()
+        await db.refresh(new_researcher)
+        return new_researcher
+    except SQLAlchemyError as e:
+        await db.rollback()
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 async def get_researcher(db: AsyncSession, researcher_id: int) -> ResearcherDB:
-    # Fetch the researcher from the database
-    # researcher = db.query(Researcher).filter(Researcher.researcher_id == researcher_id).first()
-    researcher = await db.execute(db.query(Researcher).filter(Researcher.researcher_id == researcher_id)).scalars().first()
-    if not researcher:
-        raise ValueError("Researcher not found")
-
-    return researcher
+    try:
+        result = await db.execute(select(Researcher).filter(Researcher.researcher_id == researcher_id))
+        researcher = result.scalars().first()
+        if not researcher:
+            raise HTTPException(status_code=404, detail="Researcher not found")
+        return researcher
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 async def get_researchers(db: AsyncSession, skip: int = 0, limit: int = 100) -> list[ResearcherDB]:
-    # Fetch all researchers from the database
-    # researchers = db.query(Researcher).offset(skip).limit(limit).all()
-    researchers = await db.execute(db.query(Researcher).offset(skip).limit(limit)).schelars().all()
-
-    return researchers
+    try:
+        result = await db.execute(select(Researcher).offset(skip).limit(limit))
+        return result.scalars().all()
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 async def update_researcher(db: AsyncSession, researcher_id: int, researcher_update: ResearcherCreate) -> ResearcherDB:
-    # Fetch the researcher to be updated
-    # researcher = db.query(Researcher).filter(Researcher.researcher_id == researcher_id).first()
-    researcher = await db.execute(db.query(Researcher).filter(Researcher.researcher_id == researcher_id)).scalars().first()
-    if not researcher:
-        raise ValueError("Researcher not found")
+    try:
+        result = await db.execute(select(Researcher).filter(Researcher.researcher_id == researcher_id))
+        researcher = result.scalars().first()
+        if not researcher:
+            raise HTTPException(status_code=404, detail="Researcher not found")
 
-    # Update the researcher with the new data
-    for key, value in researcher_update.dict().items():
-        setattr(researcher, key, value)
+        for key, value in researcher_update.model_dump().items():
+            setattr(researcher, key, value)
 
-    # Commit the changes
-    await db.commit()
+        await db.commit()
+        await db.refresh(researcher)
+        return researcher
+    except SQLAlchemyError as e:
+        await db.rollback()
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
-    # Refresh the researcher to ensure it reflects the current state in the database
-    await db.refresh(researcher)
+async def delete_researcher(db: AsyncSession, researcher_id: int) -> dict:
+    try:
+        result = await db.execute(select(Researcher).filter(Researcher.researcher_id == researcher_id))
+        researcher = result.scalars().first()
+        if not researcher:
+            raise HTTPException(status_code=404, detail="Researcher not found")
 
-    return researcher
-
-async def delete_researcher(db: AsyncSession, researcher_id: int) -> ResearcherDB:
-    # Fetch the researcher to be deleted
-    # researcher = db.query(Researcher).filter(Researcher.researcher_id == researcher_id).first()
-    researcher = await db.execute(db.query(Researcher).filter(Researcher.researcher_id == researcher_id)).scalars().first()
-    if not researcher:
-        raise ValueError("Researcher not found")
-
-    # Delete the researcher from the database
-    await db.delete(researcher)
-    await db.commit()
-
-    return researcher
+        await db.delete(researcher)
+        await db.commit()
+        return {"message": "Researcher deleted successfully"}
+    except SQLAlchemyError as e:
+        await db.rollback()
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
