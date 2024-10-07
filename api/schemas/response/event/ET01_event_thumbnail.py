@@ -5,6 +5,8 @@ from uuid import UUID
 from enum import Enum
 
 from ...util.LRE01_related_laboratory import LRE01
+from ...util.RRE01_related_research import RRE01
+from ...response.publication.unreadable.PRE01_publication_related import PRE01
 
 class EventStatus(str, Enum):
     COMING = "Coming"
@@ -49,8 +51,29 @@ class ET01(BaseModel):
         
     @staticmethod
     def _get_related_laboratory(obj) -> Optional[LRE01]:
-        if obj.laboratory:
-            return LRE01.model_validate(obj.laboratory)  # Use model_validate for nested models
+        if obj.lab:
+            related_research = None
+            related_publication = None
+            if obj.publication:
+                related_publication = PRE01(
+                    pid=obj.publication.publication_id,
+                    title=obj.publication.publication_name
+                )
+                return LRE01(
+                    lid=obj.lab.lab_id,
+                    title=obj.lab.lab_name,
+                    related_publication=related_publication
+                )
+            elif obj.research:
+                related_research = RRE01(
+                    rid=obj.research.research_id,
+                    title=obj.research.research_name
+                )
+                return LRE01(
+                    lid=obj.lab.lab_id,
+                    title=obj.lab.lab_name,
+                    related_research=related_research
+                )
         return None
 
     @model_validator(mode='after')

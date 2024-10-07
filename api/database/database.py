@@ -1,27 +1,27 @@
 import os
 from dotenv import load_dotenv
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import sessionmaker, DeclarativeBase
 
+# Load environment variables
 load_dotenv()
 
-# Load the database URL from the environment variable
-URL_DATABASE = os.getenv("URL_DATABASE")
+# Database configuration
+DATABASE_URL = os.getenv("URL_DATABASE")
+if not DATABASE_URL:
+    raise ValueError("No database URL found. Please set the DATABASE_URL environment variable.")
 
-# Check if the URL_DATABASE is loaded correctly
-if URL_DATABASE is None:
-    raise ValueError(
-        "No database URL found. Please set the URL_DATABASE environment variable.")
+# Create async engine
+engine = create_async_engine(DATABASE_URL, echo=True)
 
-# Create the SQLAlchemy engine
-engine = create_engine(URL_DATABASE)
+# Create async session factory
+AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
-# Create a session local class
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-# Create a declarative base class
-
-
+# Base class for SQLAlchemy models
 class Base(DeclarativeBase):
     pass
+
+# Function to initialize the database
+async def init_db():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)

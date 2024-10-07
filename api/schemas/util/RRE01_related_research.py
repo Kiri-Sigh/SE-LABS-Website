@@ -1,5 +1,6 @@
 from pydantic import BaseModel
+from uuid import UUID
 
 class RRE01(BaseModel):
-    rid: str
+    rid: UUID
     title: str

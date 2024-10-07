@@ -26,7 +26,7 @@ person_research = Table(
 class Laboratory(database.Base):
     __tablename__ = 'labs'
 
-    lab_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    lab_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     lab_name: Mapped[str] = mapped_column(String(100), nullable=False)
     image_high: Mapped[bytes] = mapped_column(LargeBinary)
     image_low: Mapped[bytes] = mapped_column(LargeBinary)
@@ -41,7 +41,7 @@ class Laboratory(database.Base):
 class Research(database.Base):
     __tablename__ = 'researches'
 
-    research_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    research_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     research_name: Mapped[str] = mapped_column(String(100), nullable=False)
     image_high: Mapped[bytes] = mapped_column(LargeBinary)
     image_low: Mapped[bytes] = mapped_column(LargeBinary)
@@ -58,7 +58,7 @@ class Research(database.Base):
 class Publication(database.Base):
     __tablename__ = 'publications'
 
-    publication_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    publication_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     publication_name: Mapped[str] = mapped_column(String(100), nullable=False)
     image_high: Mapped[bytes] = mapped_column(LargeBinary)
     image_low: Mapped[bytes] = mapped_column(LargeBinary)
@@ -76,7 +76,7 @@ class Publication(database.Base):
 class News(database.Base):
     __tablename__ = 'news'
 
-    news_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    news_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     news_name: Mapped[str] = mapped_column(String(100), nullable=False)
     image_high: Mapped[bytes] = mapped_column(LargeBinary)
     image_low: Mapped[bytes] = mapped_column(LargeBinary)
@@ -97,7 +97,7 @@ class News(database.Base):
 class Event(database.Base):
     __tablename__ = 'events'
 
-    event_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    event_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     event_name: Mapped[str] = mapped_column(String(100), nullable=False)
     image_high: Mapped[bytes] = mapped_column(LargeBinary)
     image_low: Mapped[bytes] = mapped_column(LargeBinary)
@@ -129,7 +129,7 @@ class UserCredentials(database.Base):
 class Person(database.Base):
     __tablename__ = 'people'
 
-    user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     full_name: Mapped[str] = mapped_column(String(100), nullable=False)
     image_high: Mapped[bytes] = mapped_column(LargeBinary)
     image_low: Mapped[bytes] = mapped_column(LargeBinary)

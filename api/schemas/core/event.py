@@ -5,7 +5,7 @@ from uuid import UUID
 
 from ..util.image import ImageInterface
 
-class EventsInterface(ImageInterface):
+class EventInterface(ImageInterface):
     event_name: str
     body: str
     location: str
@@ -15,10 +15,10 @@ class EventsInterface(ImageInterface):
     research_id: Optional[UUID] = None
     publication_id: Optional[UUID] = None
     
-class EventsCreate(EventsInterface):
+class EventCreate(EventInterface):
     pass
 
-class EventsDB(EventsInterface):
+class EventDB(EventInterface):
     event_id: UUID
 
     model_config = ConfigDict(from_attributes=True)

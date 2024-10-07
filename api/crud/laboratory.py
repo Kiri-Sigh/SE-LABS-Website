@@ -1,63 +1,66 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
+from fastapi import HTTPException
 
 from ..models.model import Laboratory
 from ..schemas.core.laboratory import LaboratoryCreate, LaboratoryDB
 
-def create_laboratory(db: Session, laboratory_create: LaboratoryCreate) -> LaboratoryDB:
-    # Create a new laboratory instance
-    new_laboratory = Laboratory(
-        **laboratory_create.model_dump()
-    )
+async def create_laboratory(db: AsyncSession, laboratory_create: LaboratoryCreate) -> LaboratoryDB:
+    try:
+        new_laboratory = Laboratory(**laboratory_create.model_dump())
+        db.add(new_laboratory)
+        await db.commit()
+        await db.refresh(new_laboratory)
+        return new_laboratory
+    except SQLAlchemyError as e:
+        await db.rollback()
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
-    # Add the new laboratory to the database
-    db.add(new_laboratory)
-    db.commit()
+async def get_laboratory(db: AsyncSession, laboratory_id: int) -> LaboratoryDB:
+    try:
+        result = await db.execute(select(Laboratory).filter(Laboratory.laboratory_id == laboratory_id))
+        laboratory = result.scalars().first()
+        if not laboratory:
+            raise HTTPException(status_code=404, detail="Laboratory not found")
+        return laboratory
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
-    # Refresh the new laboratory to ensure it reflects the current state in the database
-    db.refresh(new_laboratory)
+async def get_laboratories(db: AsyncSession, skip: int = 0, limit: int = 100) -> list[LaboratoryDB]:
+    try:
+        result = await db.execute(select(Laboratory).offset(skip).limit(limit))
+        return result.scalars().all()
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
-    return new_laboratory
+async def update_laboratory(db: AsyncSession, laboratory_id: int, laboratory_update: LaboratoryCreate) -> LaboratoryDB:
+    try:
+        result = await db.execute(select(Laboratory).filter(Laboratory.laboratory_id == laboratory_id))
+        laboratory = result.scalars().first()
+        if not laboratory:
+            raise HTTPException(status_code=404, detail="Laboratory not found")
 
-def get_laboratory(db: Session, laboratory_id: int) -> LaboratoryDB:
-    # Fetch the laboratory from the database
-    laboratory = db.query(Laboratory).filter(Laboratory.laboratory_id == laboratory_id).first()
-    if not laboratory:
-        raise ValueError("Laboratory not found")
+        for key, value in laboratory_update.model_dump().items():
+            setattr(laboratory, key, value)
 
-    return laboratory
+        await db.commit()
+        await db.refresh(laboratory)
+        return laboratory
+    except SQLAlchemyError as e:
+        await db.rollback()
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
-def get_laboratories(db: Session, skip: int = 0, limit: int = 100) -> list[LaboratoryDB]:
-    # Fetch all laboratories from the database
-    laboratories = db.query(Laboratory).offset(skip).limit(limit).all()
+async def delete_laboratory(db: AsyncSession, laboratory_id: int) -> dict:
+    try:
+        result = await db.execute(select(Laboratory).filter(Laboratory.laboratory_id == laboratory_id))
+        laboratory = result.scalars().first()
+        if not laboratory:
+            raise HTTPException(status_code=404, detail="Laboratory not found")
 
-    return laboratories
-
-def update_laboratory(db: Session, laboratory_id: int, laboratory_update: LaboratoryCreate) -> LaboratoryDB:
-    # Fetch the laboratory to be updated
-    laboratory = db.query(Laboratory).filter(Laboratory.laboratory_id == laboratory_id).first()
-    if not laboratory:
-        raise ValueError("Laboratory not found")
-
-    # Update the laboratory with the new data
-    for key, value in laboratory_update.dict().items():
-        setattr(laboratory, key, value)
-
-    # Commit the changes
-    db.commit()
-
-    # Refresh the laboratory to ensure it reflects the current state in the database
-    db.refresh(laboratory)
-
-    return laboratory
-
-def delete_laboratory(db: Session, laboratory_id: int) -> LaboratoryDB:
-    # Fetch the laboratory to be deleted
-    laboratory = db.query(Laboratory).filter(Laboratory.laboratory_id == laboratory_id).first()
-    if not laboratory:
-        raise ValueError("Laboratory not found")
-
-    # Delete the laboratory from the database
-    db.delete(laboratory)
-    db.commit()
-
-    return laboratory
+        await db.delete(laboratory)
+        await db.commit()
+        return {"message": "Laboratory deleted successfully"}
+    except SQLAlchemyError as e:
+        await db.rollback()
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")

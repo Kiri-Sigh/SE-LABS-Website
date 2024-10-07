@@ -27,11 +27,18 @@ from .routers.user.research import router as user_research_router
 from .routers.user.researcher import router as user_researcher_router
 
 from fastapi import FastAPI
-from .database.database import Base, engine
+from .database.database import engine, init_db
+from contextlib import asynccontextmanager
 
-Base.metadata.create_all(bind=engine)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: initialize the database
+    await init_db()
+    yield
+    # Shutdown: close the database connection
+    await engine.dispose()
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 
 app.include_router(admin_event_router)
 app.include_router(admin_laboratory_router)
