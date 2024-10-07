@@ -2,8 +2,8 @@ import base64
 import os
 import pytest
 from dotenv import load_dotenv
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
+from httpx import AsyncClient
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from uuid import uuid4, UUID
 from datetime import datetime, timedelta
@@ -24,20 +24,16 @@ TEST_DATABASE_URL = os.getenv("URL_DATABASE_TEST")
 SAMPLE_EVENT_COUNT = 15
 
 # Test database setup
-engine = create_engine(TEST_DATABASE_URL)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base.metadata.create_all(bind=engine)
+engine = create_async_engine(TEST_DATABASE_URL)
+TestingSessionLocal = sessionmaker(class_=AsyncSession, expire_on_commit=False)
 session_context = ContextVar("session_context", default=None)
 
 # Helper functions
-def override_get_db():
+async def override_get_db():
     session = session_context.get()
     if session is None:
-        session = TestingSessionLocal()
-        try:
+        async with TestingSessionLocal() as session:
             yield session
-        finally:
-            session.close()
     else:
         yield session
 
@@ -49,30 +45,28 @@ def create_test_image():
 
 # Override database dependency
 app.dependency_overrides[get_db] = override_get_db
-client = TestClient(app)
 
 # Fixtures
 @pytest.fixture(scope="function")
-def db_session():
-    connection = engine.connect()
-    transaction = connection.begin()
-    session = TestingSessionLocal(bind=connection)
-    session_context.set(session)
+async def db_session():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    
+    async with TestingSessionLocal(bind=engine) as session:
+        session_context.set(session)
 
-    # Clear specific tables to ensure a clean state
-    for model in [Event, Laboratory, Research, Publication]:
-        session.query(model).delete()
-    session.commit()
+        # Clear specific tables to ensure a clean state
+        for model in [Event, Laboratory, Research, Publication]:
+            await session.execute(model.__table__.delete())
+        await session.commit()
 
-    yield session
+        yield session
 
     session_context.set(None)
-    session.close()
-    transaction.rollback()
-    connection.close()
+    await engine.dispose()
 
 @pytest.fixture(scope="function")
-def sample_laboratory(db_session):
+async def sample_laboratory(db_session):
     laboratory = Laboratory(
         lab_id=uuid4(),
         lab_name="Test Laboratory",
@@ -81,11 +75,11 @@ def sample_laboratory(db_session):
         body="Test Laboratory Body"
     )
     db_session.add(laboratory)
-    db_session.commit()
+    await db_session.commit()
     return laboratory
 
 @pytest.fixture(scope="function")
-def sample_research(db_session, sample_laboratory):
+async def sample_research(db_session, sample_laboratory):
     research = Research(
         research_id=uuid4(),
         research_name="Test Research",
@@ -95,11 +89,11 @@ def sample_research(db_session, sample_laboratory):
         lab_id=sample_laboratory.lab_id
     )
     db_session.add(research)
-    db_session.commit()
+    await db_session.commit()
     return research
 
 @pytest.fixture(scope="function")
-def sample_publication(db_session, sample_laboratory):
+async def sample_publication(db_session, sample_laboratory):
     publication = Publication(
         publication_id=uuid4(),
         publication_name="Test Publication",
@@ -110,11 +104,11 @@ def sample_publication(db_session, sample_laboratory):
         lab_id=sample_laboratory.lab_id
     )
     db_session.add(publication)
-    db_session.commit()
+    await db_session.commit()
     return publication
 
 @pytest.fixture(scope="function")
-def sample_events(db_session, sample_laboratory, sample_research, sample_publication):
+async def sample_events(db_session, sample_laboratory, sample_research, sample_publication):
     events = []
     for i in range(SAMPLE_EVENT_COUNT):
         event = Event(
@@ -134,48 +128,58 @@ def sample_events(db_session, sample_laboratory, sample_research, sample_publica
         events.append(event)
         db_session.add(event)
     
-    db_session.commit()
+    await db_session.commit()
     return events
 
 # Tests
-def test_get_event_thumbnail(sample_events, db_session):
-    response = client.get("/user/event/thumbnail?amount=5&page=1")
-    assert response.status_code == 200
-    assert len(response.json()) == 5
+@pytest.mark.asyncio
+async def test_get_event_thumbnail(sample_events, db_session):
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.get("/user/event/thumbnail?amount=5&page=1")
+        assert response.status_code == 200
+        assert len(response.json()) == 5
 
-    response = client.get("/user/event/thumbnail?amount=10&page=2")
-    assert response.status_code == 200
-    assert len(response.json()) == SAMPLE_EVENT_COUNT - 10  # Because we have 15 events in total
+        response = await ac.get("/user/event/thumbnail?amount=10&page=2")
+        assert response.status_code == 200
+        assert len(response.json()) == SAMPLE_EVENT_COUNT - 10  # Because we have 15 events in total
 
-def test_get_event_thumbnail_with_filters(sample_events, db_session):
-    lab_id = sample_events[0].lab_id
-    response = client.get(f"/user/event/thumbnail?laboratory_id={lab_id}")
-    assert response.status_code == 200
-    assert len(response.json()) > 0
+@pytest.mark.asyncio
+async def test_get_event_thumbnail_with_filters(sample_events, db_session):
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        lab_id = sample_events[0].lab_id
+        response = await ac.get(f"/user/event/thumbnail?laboratory_id={lab_id}")
+        assert response.status_code == 200
+        assert len(response.json()) > 0
 
-    research_id = sample_events[1].research_id
-    response = client.get(f"/user/event/thumbnail?research_id={research_id}")
-    assert response.status_code == 200
-    assert len(response.json()) > 0
+        research_id = sample_events[1].research_id
+        response = await ac.get(f"/user/event/thumbnail?research_id={research_id}")
+        assert response.status_code == 200
+        assert len(response.json()) > 0
 
-def test_get_event_image_high(sample_events, db_session):
-    event_id = sample_events[0].event_id
-    response = client.get(f"/user/event/image-high?event_id={event_id}")
-    assert_valid_image_response(response, event_id)
+@pytest.mark.asyncio
+async def test_get_event_image_high(sample_events, db_session):
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        event_id = sample_events[0].event_id
+        response = await ac.get(f"/user/event/image-high?event_id={event_id}")
+        await assert_valid_image_response(response, event_id)
 
-def test_get_event_image_low(sample_events, db_session):
-    event_id = sample_events[0].event_id
-    response = client.get(f"/user/event/image-low?event_id={event_id}")
-    assert_valid_image_response(response, event_id)
+@pytest.mark.asyncio
+async def test_get_event_image_low(sample_events, db_session):
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        event_id = sample_events[0].event_id
+        response = await ac.get(f"/user/event/image-low?event_id={event_id}")
+        await assert_valid_image_response(response, event_id)
 
-def test_get_event_image_high_not_found(db_session):
-    assert_image_not_found("/user/event/image-high")
+@pytest.mark.asyncio
+async def test_get_event_image_high_not_found(db_session):
+    await assert_image_not_found("/user/event/image-high")
 
-def test_get_event_image_low_not_found(db_session):
-    assert_image_not_found("/user/event/image-low")
+@pytest.mark.asyncio
+async def test_get_event_image_low_not_found(db_session):
+    await assert_image_not_found("/user/event/image-low")
 
 # Helper assertion functions
-def assert_valid_image_response(response, event_id):
+async def assert_valid_image_response(response, event_id):
     assert response.status_code == 200
     assert response.headers["Content-Type"] == "application/json"
     
@@ -192,8 +196,9 @@ def assert_valid_image_response(response, event_id):
     except:
         pytest.fail("Image data is not valid base64")
 
-def assert_image_not_found(endpoint):
-    non_existent_id = UUID('00000000-0000-0000-0000-000000000000')
-    response = client.get(f"{endpoint}?event_id={non_existent_id}")
-    assert response.status_code == 404
-    assert response.json()["detail"] == "Event not found"
+async def assert_image_not_found(endpoint):
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        non_existent_id = UUID('00000000-0000-0000-0000-000000000000')
+        response = await ac.get(f"{endpoint}?event_id={non_existent_id}")
+        assert response.status_code == 404
+        assert response.json()["detail"] == "Event not found"

@@ -1,8 +1,7 @@
 import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
+from httpx import AsyncClient
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import StaticPool
 from datetime import datetime, timedelta
 from contextvars import ContextVar
 import os
@@ -26,17 +25,13 @@ load_dotenv()
 TEST_DATABASE_URL = os.getenv("URL_DATABASE_TEST")
 
 # Test database setup
-engine = create_engine(TEST_DATABASE_URL)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base.metadata.create_all(bind=engine)
+engine = create_async_engine(TEST_DATABASE_URL)
+TestingSessionLocal = sessionmaker(class_=AsyncSession, expire_on_commit=False)
 session_context = ContextVar("session_context", default=None)
 
-def override_get_db():
-    db = TestingSessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+async def override_get_db():
+    async with TestingSessionLocal() as session:
+        yield session
 
 def create_test_image():
     img = Image.new("RGB", (100, 100), color=(255, 0, 0))
@@ -52,17 +47,21 @@ def create_test_image_base64():
 
 # Override database dependency
 app.dependency_overrides[get_db] = override_get_db
-client = TestClient(app)
 
 # Fixtures
 @pytest.fixture(scope="function")
-def db_session():
-    db = next(override_get_db())
-    yield db
-    db.close()
+async def db_session():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    
+    async with TestingSessionLocal() as session:
+        yield session
+    
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
 
 @pytest.fixture
-def test_user(db_session):
+async def test_user(db_session):
     user = Person(
         user_id=uuid4(), 
         full_name="Test User",
@@ -75,8 +74,8 @@ def test_user(db_session):
     credentials = UserCredentials(password_hash="hashed_password", user_id=user.user_id)
     db_session.add(user)
     db_session.add(credentials)
-    db_session.commit()
-    db_session.refresh(user)
+    await db_session.commit()
+    await db_session.refresh(user)
     return user
 
 @pytest.fixture
@@ -86,8 +85,10 @@ def user_token(test_user):
 
 @pytest.fixture
 def authenticated_client(user_token):
-    def _authenticated_client(token=user_token):
-        return TestClient(app, headers={"Authorization": f"Bearer {token}"})
+    async def _authenticated_client(token=user_token):
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            ac.headers["Authorization"] = f"Bearer {token}"
+            yield ac
     return _authenticated_client
 
 from ....schemas.request.event.readable.EventCreate import EventCreate
@@ -108,44 +109,59 @@ def sample_event_data():
     )
     return event_data
 
-def test_create_event_success(authenticated_client, sample_event_data, db_session):
+@pytest.mark.asyncio
+async def test_create_event_success(authenticated_client, sample_event_data, db_session):
     # Verify the user exists in the database
-    user = db_session.query(Person).filter(Person.gmail == "test@example.com").first()
+    user = await db_session.execute(db_session.query(Person).filter(Person.gmail == "test@example.com"))
+    user = user.scalar_one_or_none()
+    assert user is not None
 
-    response = authenticated_client().post("/researcher/event/", json=json_encode.prepare_json(sample_event_data))
+    async for client in authenticated_client():
+        response = await client.post("/researcher/event/", json=json_encode.prepare_json(sample_event_data))
     assert response.status_code == 200
     data = response.json()
-    assert data["event_name"] == sample_event_data["Event"]["event_name"]
+    assert data["event_name"] == sample_event_data.Event.event_name
     assert "event_id" in data
 
-def test_create_event_unauthenticated(sample_event_data):
-    response = client.post("/researcher/event/", json=json_encode.prepare_json(sample_event_data))
+@pytest.mark.asyncio
+async def test_create_event_unauthenticated(sample_event_data):
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.post("/researcher/event/", json=json_encode.prepare_json(sample_event_data))
     assert response.status_code == 401
 
-def test_create_event_invalid_token(authenticated_client, sample_event_data):
-    response = authenticated_client("invalid_token").post("/researcher/event/", json=json_encode.prepare_json(sample_event_data))
+@pytest.mark.asyncio
+async def test_create_event_invalid_token(authenticated_client, sample_event_data):
+    async for client in authenticated_client("invalid_token"):
+        response = await client.post("/researcher/event/", json=json_encode.prepare_json(sample_event_data))
     assert response.status_code == 401
 
-def test_create_event_expired_token(authenticated_client, sample_event_data):
+@pytest.mark.asyncio
+async def test_create_event_expired_token(authenticated_client, sample_event_data):
     expired_token = create_access_token(data={"sub": "test@example.com"}, expires_delta=timedelta(minutes=-1))
-    response = authenticated_client(expired_token).post("/researcher/event/", json=json_encode.prepare_json(sample_event_data))
+    async for client in authenticated_client(expired_token):
+        response = await client.post("/researcher/event/", json=json_encode.prepare_json(sample_event_data))
     assert response.status_code == 401
 
-def test_create_event_invalid_data(authenticated_client):
+@pytest.mark.asyncio
+async def test_create_event_invalid_data(authenticated_client):
     invalid_data = {
         "event_name": "Test Event",
         # Missing required fields
     }
-    response = authenticated_client().post("/researcher/event/", json=json_encode.prepare_json(invalid_data))
+    async for client in authenticated_client():
+        response = await client.post("/researcher/event/", json=json_encode.prepare_json(invalid_data))
     assert response.status_code == 422  # Unprocessable Entity
 
-def test_create_event_invalid_dates(authenticated_client, sample_event_data):
+@pytest.mark.asyncio
+async def test_create_event_invalid_dates(authenticated_client, sample_event_data):
     sample_event_data.Event.date_start = (datetime.now() + timedelta(days=2)).isoformat()
     sample_event_data.Event.date_end = (datetime.now() + timedelta(days=1)).isoformat()
-    response = authenticated_client().post("/researcher/event/", json=json_encode.prepare_json(sample_event_data))
+    async for client in authenticated_client():
+        response = await client.post("/researcher/event/", json=json_encode.prepare_json(sample_event_data))
     assert response.status_code == 422
 
-def test_create_event_missing_image(authenticated_client, sample_event_data):
+@pytest.mark.asyncio
+async def test_create_event_missing_image(authenticated_client, sample_event_data):
     # Create a new dictionary from the original data, excluding image_high
     event_data_dict = sample_event_data.Event.dict(exclude={"Event": {"image_high"}})
     
@@ -153,7 +169,8 @@ def test_create_event_missing_image(authenticated_client, sample_event_data):
     event_data = EventCreate(Event=EC01(**event_data_dict))
     
     # Send the request with the modified data
-    response = authenticated_client().post("/researcher/event/", json=json_encode.prepare_json(event_data_dict))
+    async for client in authenticated_client():
+        response = await client.post("/researcher/event/", json=json_encode.prepare_json(event_data_dict))
     assert response.status_code == 422
 
 # Add more tests as needed
