@@ -1,6 +1,10 @@
-from fastapi import APIRouter, Header
+from fastapi import APIRouter, Header, Depends, HTTPException
 
-from ...schemas.request.laboratory.readable import LaboratoryCreate as readable
+from ...schemas.request.laboratory.readable.LaboratoryCreate import LaboratoryCreate
+from ...schemas.request.laboratory.readable.LaboratoryUpdate import LaboratoryUpdate
+from ...dependency.get_current_user import get_current_user
+from ...dependency.database import get_db
+from ...models.model import Laboratory, Person
 
 router = APIRouter(
     prefix="/admin/laboratory",
@@ -9,14 +13,28 @@ router = APIRouter(
 
 @router.post("/")
 async def create_laboratory(
-    body: readable.LaboratoryCreate,
-    token: str = Header()
+    body: LaboratoryCreate,
+    current_user: Person = Depends(get_current_user),
+    db = Depends(get_db)
         ):
-    return {"message": "Laboratory created"}
+    laboratory = Laboratory(
+        title=body.title,
+        body=body.body,
+        image_high=body.image_high,
+        image_low=body.image_low
+    )
+    db.add(laboratory)
+    db.commit()
+    db.refresh(laboratory)
+    return laboratory
 
 @router.delete("/")
 async def delete_laboratory(
     laboratory_id: int,
-    token: str = Header()
+    current_user: Person = Depends(get_current_user),
+    db = Depends(get_db)
         ):
-    return {"message": "Laboratory deleted"}
+    laboratory = db.query(Laboratory).filter(Laboratory.id == laboratory_id).first()
+    db.delete(laboratory)
+    db.commit()
+    return laboratory
