@@ -9,19 +9,19 @@ import uuid
 # from ..database.database import Base
 from ..database import database as database
 
-person_lab = Table(
-    'person_lab', database.Base.metadata,
-    Column('user_id', UUID(as_uuid=True), ForeignKey('people.user_id'), primary_key=True),
-    Column('lab_id', UUID(as_uuid=True), ForeignKey('labs.lab_id'), primary_key=True),
-    Column('role', String(64))
-)
+class person_lab(database.Base):
+    __tablename__ = 'person_lab'
 
-person_research = Table(
-    'person_research', database.Base.metadata,
-    Column('user_id', UUID(as_uuid=True), ForeignKey('people.user_id'), primary_key=True),
-    Column('research_id', UUID(as_uuid=True), ForeignKey('researches.research_id'), primary_key=True),
-    Column('role', String(64))
-)
+    user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey('people.user_id'), primary_key=True)
+    lab_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey('labs.lab_id'), primary_key=True)
+    role: Mapped[str] = mapped_column(String(64))
+
+class person_research(database.Base):
+    __tablename__ = 'person_research'
+
+    user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey('people.user_id'), primary_key=True)
+    research_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey('researches.research_id'), primary_key=True)
+    role: Mapped[str] = mapped_column(String(64))
 
 class Laboratory(database.Base):
     __tablename__ = 'labs'

@@ -3,6 +3,7 @@ from typing import Optional
 from sqlalchemy.orm import Session
 
 from ...dependency.database import get_db
+from ...models.model import Research
 from ...schemas.response.research.RT01_research_thumbnail import RT01
 from ...schemas.response.research.RIMG01_research_image import RIMG01
 
@@ -18,25 +19,33 @@ async def get_research_thumbnail(
         page: Optional[int] = 1,
         db: Session = Depends(get_db)
         ):
-    return {"message": "Get research thumbnail"}
+    research = db.query(Research)
+    if laboratory_id:
+        research = research.filter(Research.lab_id == laboratory_id)
+    offset = (page - 1) * amount
+    research = research.offset(offset).limit(amount).all()
+    return [RT01(research) for research in research]
 
 @router.get("/thumbnail/{research_id}", response_model=RT01)
 async def get_research_detail(
         research_id: str,
         db: Session = Depends(get_db)
         ):
-    return {"message": "Get research detail"}
+    research = db.query(Research).filter(Research.id == research_id).first()
+    return RT01(research)
 
 @router.get("/image-high", response_model=RIMG01)
 async def get_research_image_high(
         research_id: str,
         db: Session = Depends(get_db)
         ):
-    return {"message": "Get research image high"}
+    research = db.query(Research).filter(Research.id == research_id).first()
+    return RIMG01(research)
 
 @router.get("/image-low", response_model=RIMG01)
 async def get_research_image_low(
         research_id: str,
         db: Session = Depends(get_db)
         ):
-    return {"message": "Get research image low"}
+    research = db.query(Research).filter(Research.id == research_id).first()
+    return RIMG01(research)
