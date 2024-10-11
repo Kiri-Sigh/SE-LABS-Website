@@ -10,8 +10,8 @@ import { getData } from "./api-method";
 //   //and using useQueries
 export const useParallelData = (urlArr) => {
   const results = useQueries(
-    urlArr.map((obj) => ({
-      queryKey: ["get", obj.id],
+    urlArr.map((obj, i) => ({
+      queryKey: ["get", obj.id, i],
       queryFn: () => getData(obj.url),
       onSuccess: (data) => {
         return data;
