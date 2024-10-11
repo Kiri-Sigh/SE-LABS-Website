@@ -9,8 +9,9 @@ from datetime import datetime, timedelta
 from typing import Union
 
 from .model import *
-from .schemas.auth_user import  AuthUser, TokenData, Token
+from .schemas.auth_user import  AuthUser, TokenData, Token, AU01
 from .dependencies import get_db
+from .schemas.ult.position import Position
 
 load_dotenv()
 
@@ -39,68 +40,52 @@ def create_user(db: Session, user_data: dict, password: str):
     new_user = Researcher(**user_data)
     db.add(new_user)
     db.flush()
-
     hashed_password = get_password_hash(password)
     new_credentials = UserCredentials(
         user_id=new_user.user_id,
         password_hash=hashed_password
     )
     db.add(new_credentials)
-    
     new_user.user_credentials = new_credentials
-    
     db.commit()
     db.refresh(new_user)
     db.refresh(new_credentials)
-
     return new_user
 
 def create_initial_admin(db):
     admin_email = os.getenv("INITIAL_ADMIN_EMAIL")
     admin_password = os.getenv("INITIAL_ADMIN_PASSWORD")
-    
     if not admin_email or not admin_password:
         raise ValueError("INITIAL_ADMIN_EMAIL and INITIAL_ADMIN_PASSWORD must be set in the .env file")
-
-    # Check if any users exist
     existing_user = db.query(Researcher).first()
     if existing_user:
-        return None  # Users already exist, don't create initial admin
-
-    # Create the admin user
+        return None
     hashed_password = get_password_hash(admin_password)
     new_admin = Researcher(
         full_name="Admin User",
         image_high=b"not important",
         image_low=b"not important",
         gmail=admin_email,
-        highest_role="admin",
+        highest_role=Position.Admin,
         admin=True,
         active=True
-        # Add any other required fields for your Researcher model
     )
-    
     db.add(new_admin)
     db.commit()
     db.refresh(new_admin)
-
     new_credentials = UserCredentials(
         user_id=new_admin.user_id,
         password_hash=hashed_password
     )
-
     db.add(new_credentials)
     db.commit()
     db.refresh(new_credentials)
-
     new_admin.user_credentials = new_credentials
     db.commit()
     db.refresh(new_admin)
-
     return new_admin
 
 def authenticate_user(db: Session, gmail: str, password: str) -> Union[Researcher, bool]:
-    # if don't have any users, create the initial admin user and check if the user is the initial admin
     if not db.query(Researcher).first():
         initial_admin = create_initial_admin(db)
         if not initial_admin:
@@ -112,16 +97,12 @@ def authenticate_user(db: Session, gmail: str, password: str) -> Union[Researche
     user = get_user(db, gmail)
     if not user:
         return False
-    
     if not user.user_credentials:
         return False
-    
     if not verify_password(password, user.user_credentials.password_hash):
         return False
-    
     if not user.active:
         return False
-    
     return user
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
@@ -166,20 +147,21 @@ async def get_current_user(db: Session = Depends(get_db), token: str = Depends(o
         token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    
     user = get_user(db, gmail=token_data.username)
     if user is None:
         raise credentials_exception
-    
+    # use researcher relation to obtain related_lab, related_research
     return AuthUser(
-        user_id=str(user.user_id),
-        username=user.gmail,
-        email=user.gmail,
-        full_name=user.full_name,
-        disabled=not user.active,
-        is_admin=user.admin
+        Researcher=AU01(
+            uid=user.user_id,
+            name=user.full_name,
+            gmail=user.gmail,
+            position=user.highest_role,
+            token=token,
+            Laboratories=[lab for lab in user.labs],
+            Researches=[research for research in user.researches]
+        )
     )
-
 async def get_current_active_user(current_user: AuthUser = Depends(get_current_user)) -> AuthUser:
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
