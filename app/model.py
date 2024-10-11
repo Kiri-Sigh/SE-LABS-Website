@@ -2,7 +2,7 @@ from sqlalchemy import Column, String, ForeignKey, DateTime, Text, LargeBinary, 
 from sqlalchemy.orm import relationship, backref, Mapped, mapped_column
 from sqlalchemy.sql import func
 from typing import List, Optional
-import datetime
+from datetime import datetime, timedelta
 from uuid import UUID, uuid4
 
 from .database import Base
@@ -79,7 +79,7 @@ class News(Base):
     image_high: Mapped[bytes] = mapped_column(LargeBinary)
     image_low: Mapped[bytes] = mapped_column(LargeBinary)
     body: Mapped[str] = mapped_column(Text)
-    date: Mapped[datetime.datetime] = mapped_column(DateTime, default=func.now())
+    date: Mapped[datetime] = mapped_column(DateTime, default=func.now())
     posted: Mapped[bool] = mapped_column(Boolean, default=False)
 
     # Foreign Keys
@@ -101,8 +101,8 @@ class Event(Base):
     image_low: Mapped[bytes] = mapped_column(LargeBinary)
     body: Mapped[str] = mapped_column(Text)
     location: Mapped[str] = mapped_column(String(100))
-    date_start: Mapped[datetime.datetime] = mapped_column(DateTime, default=func.now() + datetime.timedelta(days=1))
-    date_end: Mapped[datetime.datetime] = mapped_column(DateTime, default=lambda: func.now() + datetime.timedelta(days=1, hours=3))
+    date_start: Mapped[datetime] = mapped_column(DateTime, default=func.now() + timedelta(days=1))
+    date_end: Mapped[datetime] = mapped_column(DateTime, default=lambda: func.now() + timedelta(days=1, hours=3))
     posted: Mapped[bool] = mapped_column(Boolean, default=False)
 
     # Foreign Keys
@@ -122,7 +122,7 @@ class UserCredentials(Base):
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
 
     # Relationship
-    person: Mapped['Researcher'] = relationship(backref=backref("user_credentials", uselist=False))
+    person: Mapped['Researcher'] = relationship("Researcher", back_populates="user_credentials")
 
 class Researcher(Base):
     __tablename__ = 'people'
@@ -136,6 +136,9 @@ class Researcher(Base):
     admin: Mapped[bool] = mapped_column(Boolean)
     active: Mapped[bool] = mapped_column(Boolean, default=True)
     token: Mapped[Optional[str]] = mapped_column(String(100))
+
+    # Relationship
+    user_credentials: Mapped['UserCredentials'] = relationship("UserCredentials", back_populates="person", uselist=False)
 
     # Many-to-Many relationships
     labs: Mapped[List['Laboratory']] = relationship(secondary=person_lab.__table__, backref=backref('people', lazy='dynamic'))
