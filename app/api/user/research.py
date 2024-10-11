@@ -4,7 +4,7 @@ from uuid import UUID
 
 from ...dependencies import get_db
 from ...model import *
-from ...schemas.research_thumbnail import ResearchThumbnail
+from ...schemas.research_thumbnail import ResearchThumbnail, RT01
 
 router = APIRouter(
     prefix="/user/research",
@@ -18,18 +18,19 @@ def get_research_thumbnail(
     page: int = Query(1, ge=1),
     db = Depends(get_db)
 ):
-    research = db.query(Research).filter(Research.posted == True)
+    research = db.query(Research)
     if laboratory_id:
         research = research.filter(Research.lab_id == laboratory_id)
     offset = (page - 1) * amount
-    return research.offset(offset).limit(amount).all()
+    researches =  research.offset(offset).limit(amount).all()
+    return [RT01.to_research_thumbnail(research) for research in researches]
 
 @router.get("/thumbnail/{research_id}", response_model=ResearchThumbnail)
 def get_research_thumbnail_by_id(research_id: UUID, db = Depends(get_db)):
-    research = db.query(Research).filter(Research.id == research_id).first()
+    research = db.query(Research).filter(Research.research_id == research_id).first()
     if not research:
         raise HTTPException(status_code=404, detail="Research not found")
-    return research
+    return RT01.to_research_thumbnail(research)
 
 @router.get("/image-high")
 def get_research_image_high(research_id: UUID, db = Depends(get_db)):

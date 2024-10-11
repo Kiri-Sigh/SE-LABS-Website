@@ -4,7 +4,7 @@ from uuid import UUID
 
 from ...dependencies import get_db
 from ...model import *
-from ...schemas.news_thumbnail import NewsThumbnail
+from ...schemas.news_thumbnail import NewsThumbnail, NT01
 
 router = APIRouter(
     prefix="/user/news",
@@ -25,7 +25,8 @@ def get_news_thumbnail(
     if research_id:
         news = news.filter(News.research_id == research_id)
     offset = (page - 1) * amount
-    return news.offset(offset).limit(amount).all()
+    news = news.offset(offset).limit(amount).all()
+    return [NT01.to_news_thumbnail(news) for news in news]
 
 @router.get("/related_news", response_model=List[NewsThumbnail])
 def get_related_news(news_id: UUID, db = Depends(get_db)):

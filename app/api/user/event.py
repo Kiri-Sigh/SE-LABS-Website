@@ -4,7 +4,7 @@ from uuid import UUID
 
 from ...dependencies import get_db
 from ...model import *
-from ...schemas.event_thumbnail import EventThumbnail
+from ...schemas.event_thumbnail import EventThumbnail, ET01
 
 router = APIRouter(
     prefix="/user/event",
@@ -25,7 +25,8 @@ def get_event_thumbnail(
     if research_id:
         event = event.filter(Event.research_id == research_id)
     offset = (page - 1) * amount
-    return event.offset(offset).limit(amount).all()
+    events = event.offset(offset).limit(amount).all()
+    return [ET01.to_event_thumbnail(event) for event in events]
     
 
 @router.get("/image-high")
