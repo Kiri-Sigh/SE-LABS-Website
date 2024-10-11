@@ -5,6 +5,8 @@ from sqlalchemy.sql import func
 from typing import List, Optional
 from datetime import datetime, timedelta
 from uuid import UUID, uuid4
+from PIL import Image
+import io
 
 from .database import Base
 from .schemas.ult.position import Position
@@ -116,6 +118,19 @@ class Event(Base):
     lab: Mapped[Optional['Laboratory']] = relationship(back_populates="events")
     research: Mapped[Optional['Research']] = relationship(back_populates="events")
     publication: Mapped[Optional['Publication']] = relationship(back_populates="events")
+
+    @staticmethod
+    def process_image(image: bytes, max_size: tuple = (800, 600)) -> bytes:
+        img = Image.open(io.BytesIO(image))
+        img = img.convert('RGB')  # Ensure the image is in RGB mode
+        img.thumbnail(max_size)
+        buffer = io.BytesIO()
+        img.save(buffer, format="JPEG", quality=85)
+        return buffer.getvalue()
+
+    def set_images(self, image: bytes):
+        self.image_high = self.process_image(image, (800, 600))
+        self.image_low = self.process_image(image, (400, 300))
 
 class UserCredentials(Base):
     __tablename__ = 'user_credentials'

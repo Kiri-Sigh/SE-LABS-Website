@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from typing import Optional
 from uuid import UUID
+from fastapi.responses import Response
 
 from ...dependencies import get_db
 from ...model import *
@@ -34,14 +35,14 @@ def get_researcher_thumbnail_by_id(researcher_id: UUID, db = Depends(get_db)):
 
 @router.get("/image-high")
 def get_researcher_image_high(researcher_id: UUID, db = Depends(get_db)):
-    researcher = db.query(Researcher).filter(Researcher.id == researcher_id).first()
+    researcher = db.query(Researcher).filter(Researcher.user_id == researcher_id).first()
     if not researcher:
         raise HTTPException(status_code=404, detail="Researcher not found")
-    return researcher.image_high
+    return Response(content=researcher.image_high, media_type="image/jpeg")
 
 @router.get("/image-low")
 def get_researcher_image_low(researcher_id: UUID, db = Depends(get_db)):
-    researcher = db.query(Researcher).filter(Researcher.id == researcher_id).first()
+    researcher = db.query(Researcher).filter(Researcher.user_id == researcher_id).first()
     if not researcher:
         raise HTTPException(status_code=404, detail="Researcher not found")
-    return researcher.image_low
+    return Response(content=researcher.image_low, media_type="image/jpeg")

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File
 from typing import Optional
 from uuid import UUID
+from fastapi.responses import Response
 
 from ...dependencies import get_db
 from ...model import *
@@ -34,11 +35,11 @@ def get_event_image_high(event_id: UUID, db = Depends(get_db)):
     event = db.query(Event).filter(Event.event_id == event_id).first()
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
-    return event.image_high
+    return Response(content=event.image_high, media_type="image/jpeg")
 
 @router.get("/image-low")
 def get_event_image_low(event_id: UUID, db = Depends(get_db)):
     event = db.query(Event).filter(Event.event_id == event_id).first()
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
-    return event.image_low
+    return Response(content=event.image_low, media_type="image/jpeg")

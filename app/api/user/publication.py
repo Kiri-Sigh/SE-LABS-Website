@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from typing import Optional
 from uuid import UUID
+from fastapi.responses import Response
 
 from ...dependencies import get_db
 from ...model import *
@@ -27,14 +28,14 @@ def get_publication_thumbnail(
 
 @router.get("/image-high")
 def get_publication_image_high(publication_id: UUID, db = Depends(get_db)):
-    publication = db.query(Publication).filter(Publication.id == publication_id).first()
+    publication = db.query(Publication).filter(Publication.publication_id == publication_id).first()
     if not publication:
         raise HTTPException(status_code=404, detail="Publication not found")
-    return publication.image_high
+    return Response(content=publication.image_high, media_type="image/jpeg")
 
 @router.get("/image-low")
 def get_publication_image_low(publication_id: UUID, db = Depends(get_db)):
-    publication = db.query(Publication).filter(Publication.id == publication_id).first()
+    publication = db.query(Publication).filter(Publication.publication_id == publication_id).first()
     if not publication:
         raise HTTPException(status_code=404, detail="Publication not found")
-    return publication.image_low
+    return Response(content=publication.image_low, media_type="image/jpeg")

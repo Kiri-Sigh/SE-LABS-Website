@@ -8,6 +8,8 @@ import random
 import hashlib
 from faker import Faker
 from werkzeug.security import generate_password_hash
+from PIL import Image, ImageDraw, ImageFont
+import io
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -22,6 +24,25 @@ Base.metadata.create_all(bind=engine)
 
 fake = Faker()
 
+def generate_placeholder_image(text, size=(800, 600), bg_color=(200, 200, 200), text_color=(0, 0, 0)):
+    image = Image.new('RGB', size, color=bg_color)
+    draw = ImageDraw.Draw(image)
+    font = ImageFont.load_default()
+    
+    # Get the bounding box of the text
+    left, top, right, bottom = draw.textbbox((0, 0), text, font=font)
+    text_width = right - left
+    text_height = bottom - top
+    
+    # Calculate the position to center the text
+    position = ((size[0] - text_width) / 2, (size[1] - text_height) / 2)
+    
+    draw.text(position, text, fill=text_color, font=font)
+    
+    buffer = io.BytesIO()
+    image.save(buffer, format='JPEG')
+    return buffer.getvalue()
+
 def generate_research_topic():
     topics = [
         "Artificial Intelligence", "Machine Learning", "Quantum Computing",
@@ -34,23 +55,17 @@ def generate_research_topic():
 def generate_publication_title():
     return f"{' '.join(word.capitalize() for word in fake.words(nb=3))}: {fake.catch_phrase()}"
 
-def generate_unique_image_data(identifier):
-    # Create a unique hash based on the identifier
-    unique_hash = hashlib.md5(str(identifier).encode()).hexdigest()
-    # Convert the hash to bytes
-    return unique_hash.encode('utf-8')
-
 def seed_database():
     with Session(engine) as session:
         # Create 100 researchers
         researchers = []
-        for _ in range(100):
+        for i in range(100):
             researcher_id = uuid4()
             researcher = Researcher(
                 user_id=researcher_id,
                 full_name=fake.name(),
-                image_high=generate_unique_image_data(f"{researcher_id}_high"),
-                image_low=generate_unique_image_data(f"{researcher_id}_low"),
+                image_high=generate_placeholder_image(f"Researcher {i+1}", (800, 600)),
+                image_low=generate_placeholder_image(f"Researcher {i+1}", (400, 300)),
                 gmail=fake.email(),
                 highest_role=random.choice(list(Position)),
                 admin=random.choices([True, False], weights=[0.1, 0.9])[0],
@@ -70,20 +85,19 @@ def seed_database():
 
         # Create 5-10 laboratories
         labs = []
-        for _ in range(random.randint(5, 10)):
+        for i in range(random.randint(5, 10)):
             lab_id = uuid4()
             lab = Laboratory(
                 lab_id=lab_id,
                 lab_name=f"{fake.company()} {random.choice(['Lab', 'Research Center', 'Institute'])}",
-                image_high=generate_unique_image_data(f"{lab_id}_high"),
-                image_low=generate_unique_image_data(f"{lab_id}_low"),
+                image_high=generate_placeholder_image(f"Lab {i+1}", (800, 600)),
+                image_low=generate_placeholder_image(f"Lab {i+1}", (400, 300)),
                 body=fake.paragraph(nb_sentences=5)
             )
             session.add(lab)
             labs.append(lab)
         
         session.commit()
-
 
         # Associate researchers with labs
         for researcher in researchers:
@@ -95,13 +109,13 @@ def seed_database():
 
         # Create 15-25 research projects
         researches = []
-        for _ in range(random.randint(15, 25)):
+        for i in range(random.randint(15, 25)):
             research_id = uuid4()
             research = Research(
                 research_id=research_id,
                 research_name=generate_research_topic(),
-                image_high=generate_unique_image_data(f"{research_id}_high"),
-                image_low=generate_unique_image_data(f"{research_id}_low"),
+                image_high=generate_placeholder_image(f"Research {i+1}", (800, 600)),
+                image_low=generate_placeholder_image(f"Research {i+1}", (400, 300)),
                 body=fake.paragraph(nb_sentences=7),
                 lab_id=random.choice(labs).lab_id
             )
@@ -116,13 +130,13 @@ def seed_database():
         session.commit()
 
         # Create 30-50 publications
-        for _ in range(random.randint(30, 50)):
+        for i in range(random.randint(30, 50)):
             publication_id = uuid4()
             publication = Publication(
                 publication_id=publication_id,
                 publication_name=generate_publication_title(),
-                image_high=generate_unique_image_data(f"{publication_id}_high"),
-                image_low=generate_unique_image_data(f"{publication_id}_low"),
+                image_high=generate_placeholder_image(f"Publication {i+1}", (800, 600)),
+                image_low=generate_placeholder_image(f"Publication {i+1}", (400, 300)),
                 body=fake.paragraph(nb_sentences=10),
                 url=fake.url(),
                 lab_id=random.choice(labs).lab_id
@@ -132,13 +146,13 @@ def seed_database():
         session.commit()
 
         # Create 40-60 news items
-        for _ in range(random.randint(40, 60)):
+        for i in range(random.randint(40, 60)):
             news_id = uuid4()
             news = News(
                 news_id=news_id,
                 news_name=fake.catch_phrase(),
-                image_high=generate_unique_image_data(f"{news_id}_high"),
-                image_low=generate_unique_image_data(f"{news_id}_low"),
+                image_high=generate_placeholder_image(f"News {i+1}", (800, 600)),
+                image_low=generate_placeholder_image(f"News {i+1}", (400, 300)),
                 body=fake.paragraph(nb_sentences=5),
                 date=fake.date_time_between(start_date="-2y", end_date="now"),
                 posted=random.choices([True, False], weights=[0.9, 0.1])[0],
@@ -150,14 +164,14 @@ def seed_database():
         session.commit()
 
         # Create 20-30 events
-        for _ in range(random.randint(20, 30)):
+        for i in range(random.randint(20, 30)):
             event_start = fake.future_datetime(end_date="+1y")
             event_id = uuid4()
             event = Event(
                 event_id=event_id,
                 event_name=f"{fake.word().capitalize()} {random.choice(['Conference', 'Symposium', 'Workshop', 'Seminar'])}",
-                image_high=generate_unique_image_data(f"{event_id}_high"),
-                image_low=generate_unique_image_data(f"{event_id}_low"),
+                image_high=generate_placeholder_image(f"Event {i+1}", (800, 600)),
+                image_low=generate_placeholder_image(f"Event {i+1}", (400, 300)),
                 body=fake.paragraph(nb_sentences=6),
                 location=f"{fake.city()}, {fake.country()}",
                 date_start=event_start,
@@ -172,4 +186,4 @@ def seed_database():
 
 if __name__ == "__main__":
     seed_database()
-    print("Database seeded successfully with realistic data!")
+    print("Database seeded successfully with realistic data and placeholder images!")
