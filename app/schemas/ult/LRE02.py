@@ -2,7 +2,7 @@ from pydantic import BaseModel, ConfigDict
 from uuid import UUID
 
 class LRE02(BaseModel):
-    lid: UUID
+    LID: UUID
     title: str
 
     model_config = ConfigDict(from_attributes=True)
@@ -10,6 +10,6 @@ class LRE02(BaseModel):
     @classmethod
     def from_orm(cls, obj):
         return cls(
-            lid=obj.lab_id,
+            LID=obj.lab_id,
             title=obj.lab_name
         )

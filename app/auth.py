@@ -52,48 +52,7 @@ def create_user(db: Session, user_data: dict, password: str):
     db.refresh(new_credentials)
     return new_user
 
-def create_initial_admin(db):
-    admin_email = os.getenv("INITIAL_ADMIN_EMAIL")
-    admin_password = os.getenv("INITIAL_ADMIN_PASSWORD")
-    if not admin_email or not admin_password:
-        raise ValueError("INITIAL_ADMIN_EMAIL and INITIAL_ADMIN_PASSWORD must be set in the .env file")
-    existing_user = db.query(Researcher).first()
-    if existing_user:
-        return None
-    hashed_password = get_password_hash(admin_password)
-    new_admin = Researcher(
-        full_name="Admin User",
-        image_high=b"not important",
-        image_low=b"not important",
-        gmail=admin_email,
-        highest_role=Position.Admin,
-        admin=True,
-        active=True
-    )
-    db.add(new_admin)
-    db.commit()
-    db.refresh(new_admin)
-    new_credentials = UserCredentials(
-        user_id=new_admin.user_id,
-        password_hash=hashed_password
-    )
-    db.add(new_credentials)
-    db.commit()
-    db.refresh(new_credentials)
-    new_admin.user_credentials = new_credentials
-    db.commit()
-    db.refresh(new_admin)
-    return new_admin
-
 def authenticate_user(db: Session, gmail: str, password: str) -> Union[Researcher, bool]:
-    if not db.query(Researcher).first():
-        initial_admin = create_initial_admin(db)
-        if not initial_admin:
-            return False
-        if initial_admin.gmail == gmail and verify_password(password, initial_admin.user_credentials.password_hash):
-            return initial_admin
-        else:
-            return False
     user = get_user(db, gmail)
     if not user:
         return False

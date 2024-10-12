@@ -7,7 +7,7 @@ from uuid import UUID, uuid4
 import random
 import hashlib
 from faker import Faker
-from werkzeug.security import generate_password_hash
+from passlib.context import CryptContext  # Changed from werkzeug to passlib
 from PIL import Image, ImageDraw, ImageFont
 import io
 
@@ -19,10 +19,18 @@ from app.schemas.ult.position import Position
 
 load_dotenv()
 
-DATABASR_URT = os.getenv("URL_DATABASE")
+DATABASE_URL = os.getenv("URL_DATABASE")
+INITIAL_ADMIN_EMAIL = os.getenv("INITIAL_ADMIN_EMAIL")
+INITIAL_ADMIN_PASSWORD = os.getenv("INITIAL_ADMIN_PASSWORD")
 Base.metadata.create_all(bind=engine)
 
 fake = Faker()
+
+# Set up the password context
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def get_password_hash(password):
+    return pwd_context.hash(password)
 
 def generate_placeholder_image(text, size=(800, 600), bg_color=(200, 200, 200), text_color=(0, 0, 0)):
     image = Image.new('RGB', size, color=bg_color)
@@ -55,37 +63,79 @@ def generate_research_topic():
 def generate_publication_title():
     return f"{' '.join(word.capitalize() for word in fake.words(nb=3))}: {fake.catch_phrase()}"
 
+def recalculate_highest_role(researcher, session):
+    lab_roles = session.query(person_lab).filter(person_lab.user_id == researcher.user_id).all()
+    research_roles = session.query(person_research).filter(person_research.user_id == researcher.user_id).all()
+    
+    all_roles = [role.role for role in lab_roles + research_roles]
+    
+    if Position.Admin in all_roles:
+        highest_role = Position.Admin
+    elif Position.LeadResearcher in all_roles:
+        highest_role = Position.LeadResearcher
+    elif Position.Researcher in all_roles:
+        highest_role = Position.Researcher
+    else:
+        highest_role = Position.Free
+    
+    researcher.highest_role = highest_role
+    session.add(researcher)
+
 def seed_database():
     with Session(engine) as session:
-        # Create 100 researchers
-        researchers = []
-        for i in range(100):
+        # Create initial admin
+        admin_id = uuid4()
+        admin = Researcher(
+            user_id=admin_id,
+            full_name="Admin User",
+            image_high=generate_placeholder_image("Admin User", (800, 600)),
+            image_low=generate_placeholder_image("Admin User", (400, 300)),
+            gmail=INITIAL_ADMIN_EMAIL,
+            highest_role=Position.Admin,
+            admin=True,
+            active=True
+        )
+        session.add(admin)
+
+        # Create user credentials for the admin using the correct hashing method
+        admin_credentials = UserCredentials(
+            user_id=admin.user_id,
+            password_hash=get_password_hash(INITIAL_ADMIN_PASSWORD)
+        )
+        session.add(admin_credentials)
+        
+        session.commit()
+
+        # Create 49 more researchers (50 total including admin)
+        researchers = [admin]
+        for i in range(49):
             researcher_id = uuid4()
+            is_admin = i < 2  # Next 2 researchers are admins (3 total)
             researcher = Researcher(
                 user_id=researcher_id,
                 full_name=fake.name(),
-                image_high=generate_placeholder_image(f"Researcher {i+1}", (800, 600)),
-                image_low=generate_placeholder_image(f"Researcher {i+1}", (400, 300)),
+                image_high=generate_placeholder_image(f"Researcher {i+2}", (800, 600)),
+                image_low=generate_placeholder_image(f"Researcher {i+2}", (400, 300)),
                 gmail=fake.email(),
-                highest_role=random.choice(list(Position)),
-                admin=random.choices([True, False], weights=[0.1, 0.9])[0],
-                active=random.choices([True, False], weights=[0.95, 0.05])[0]
+                highest_role=Position.Admin if is_admin else Position.Free,
+                admin=is_admin,
+                active=True
             )
             session.add(researcher)
             researchers.append(researcher)
 
-            # Create user credentials for the researcher
+            # Create user credentials for the researcher using the correct hashing method
             user_credentials = UserCredentials(
                 user_id=researcher.user_id,
-                password_hash=generate_password_hash(fake.password())
+                password_hash=get_password_hash(fake.password())
             )
             session.add(user_credentials)
         
         session.commit()
 
-        # Create 5-10 laboratories
+        # Create 3-5 laboratories
         labs = []
-        for i in range(random.randint(5, 10)):
+        for i in range(random.randint(3, 5)):
             lab_id = uuid4()
             lab = Laboratory(
                 lab_id=lab_id,
@@ -99,17 +149,24 @@ def seed_database():
         
         session.commit()
 
-        # Associate researchers with labs
-        for researcher in researchers:
-            lab = random.choice(labs)
-            lab_association = person_lab(user_id=researcher.user_id, lab_id=lab.lab_id, role=researcher.highest_role)
+        # Associate Lead Researchers with labs
+        for lab in labs:
+            lead_researcher = random.choice([r for r in researchers if not r.admin])
+            lab_association = person_lab(user_id=lead_researcher.user_id, lab_id=lab.lab_id, role=Position.LeadResearcher)
             session.add(lab_association)
+        
+        # Associate admins with all labs
+        admin_researchers = [r for r in researchers if r.admin]
+        for admin in admin_researchers:
+            for lab in labs:
+                lab_association = person_lab(user_id=admin.user_id, lab_id=lab.lab_id, role=Position.Admin)
+                session.add(lab_association)
         
         session.commit()
 
-        # Create 15-25 research projects
+        # Create 15-20 research projects
         researches = []
-        for i in range(random.randint(15, 25)):
+        for i in range(random.randint(15, 20)):
             research_id = uuid4()
             research = Research(
                 research_id=research_id,
@@ -122,63 +179,162 @@ def seed_database():
             session.add(research)
             researches.append(research)
 
-            # Associate 3-8 random researchers with each research project
-            for researcher in random.sample(researchers, random.randint(3, 8)):
-                research_association = person_research(user_id=researcher.user_id, research_id=research.research_id, role=researcher.highest_role)
+            # Associate 2-5 random researchers with each research project
+            for researcher in random.sample([r for r in researchers if not r.admin], random.randint(2, 5)):
+                research_association = person_research(user_id=researcher.user_id, research_id=research.research_id, role=Position.Researcher)
+                session.add(research_association)
+
+            # Associate admins with all researches
+            for admin in admin_researchers:
+                research_association = person_research(user_id=admin.user_id, research_id=research.research_id, role=Position.Admin)
                 session.add(research_association)
         
         session.commit()
 
-        # Create 30-50 publications
-        for i in range(random.randint(30, 50)):
+        # Create news items and events for ongoing research
+        for research in researches:
+            # Create 1-2 news items for each research
+            for _ in range(random.randint(1, 2)):
+                news_id = uuid4()
+                news = News(
+                    news_id=news_id,
+                    news_name=fake.catch_phrase(),
+                    image_high=generate_placeholder_image(f"News for Research {research.research_id}", (800, 600)),
+                    image_low=generate_placeholder_image(f"News for Research {research.research_id}", (400, 300)),
+                    body=fake.paragraph(nb_sentences=5),
+                    date=fake.date_time_between(start_date="-5y", end_date="now"),
+                    posted=True,
+                    lab_id=research.lab_id,
+                    research_id=research.research_id
+                )
+                session.add(news)
+
+            # Create 0-1 events for each research
+            if random.random() > 0.5:
+                event_start = fake.date_time_between(start_date="-5y", end_date="+1y")
+                event_id = uuid4()
+                event = Event(
+                    event_id=event_id,
+                    event_name=f"{fake.word().capitalize()} {random.choice(['Conference', 'Symposium', 'Workshop', 'Seminar'])}",
+                    image_high=generate_placeholder_image(f"Event for Research {research.research_id}", (800, 600)),
+                    image_low=generate_placeholder_image(f"Event for Research {research.research_id}", (400, 300)),
+                    body=fake.paragraph(nb_sentences=6),
+                    location=f"{fake.city()}, {fake.country()}",
+                    date_start=event_start,
+                    date_end=event_start + timedelta(days=random.randint(1, 3)),
+                    posted=True,
+                    lab_id=research.lab_id,
+                    research_id=research.research_id
+                )
+                session.add(event)
+
+        session.commit()
+
+        # Create 5-10 publications (finished research)
+        for i in range(random.randint(5, 10)):
+            if not researches:
+                break
+            finished_research = random.choice(researches)
             publication_id = uuid4()
             publication = Publication(
                 publication_id=publication_id,
                 publication_name=generate_publication_title(),
-                image_high=generate_placeholder_image(f"Publication {i+1}", (800, 600)),
-                image_low=generate_placeholder_image(f"Publication {i+1}", (400, 300)),
-                body=fake.paragraph(nb_sentences=10),
+                image_high=finished_research.image_high,
+                image_low=finished_research.image_low,
+                body=finished_research.body,
                 url=fake.url(),
-                lab_id=random.choice(labs).lab_id
+                lab_id=finished_research.lab_id
             )
             session.add(publication)
+
+            # Migrate news and events from research to publication
+            news_items = session.query(News).filter(News.research_id == finished_research.research_id).all()
+            events = session.query(Event).filter(Event.research_id == finished_research.research_id).all()
+
+            for news in news_items:
+                news.research_id = None
+                news.publication_id = publication_id
+                session.add(news)
+
+            for event in events:
+                event.research_id = None
+                event.publication_id = publication_id
+                session.add(event)
+
+            # Remove researcher associations with the finished research
+            session.query(person_research).filter(person_research.research_id == finished_research.research_id).delete()
+
+            # Remove the finished research
+            session.delete(finished_research)
+            researches.remove(finished_research)
         
         session.commit()
 
-        # Create 40-60 news items
-        for i in range(random.randint(40, 60)):
+        # Recalculate highest roles for all researchers
+        for researcher in researchers:
+            recalculate_highest_role(researcher, session)
+        
+        session.commit()
+
+        # Create additional news items and events for labs
+        for i in range(random.randint(5, 10)):
             news_id = uuid4()
             news = News(
                 news_id=news_id,
                 news_name=fake.catch_phrase(),
-                image_high=generate_placeholder_image(f"News {i+1}", (800, 600)),
-                image_low=generate_placeholder_image(f"News {i+1}", (400, 300)),
+                image_high=generate_placeholder_image(f"Additional News {i+1}", (800, 600)),
+                image_low=generate_placeholder_image(f"Additional News {i+1}", (400, 300)),
                 body=fake.paragraph(nb_sentences=5),
-                date=fake.date_time_between(start_date="-2y", end_date="now"),
-                posted=random.choices([True, False], weights=[0.9, 0.1])[0],
-                lab_id=random.choice(labs).lab_id,
-                research_id=random.choice(researches).research_id if random.random() > 0.3 else None
+                date=fake.date_time_between(start_date="-5y", end_date="now"),
+                posted=True,
+                lab_id=random.choice(labs).lab_id
             )
             session.add(news)
-        
-        session.commit()
 
-        # Create 20-30 events
-        for i in range(random.randint(20, 30)):
-            event_start = fake.future_datetime(end_date="+1y")
+        for i in range(random.randint(3, 5)):
+            event_start = fake.date_time_between(start_date="-5y", end_date="+1y")
             event_id = uuid4()
             event = Event(
                 event_id=event_id,
                 event_name=f"{fake.word().capitalize()} {random.choice(['Conference', 'Symposium', 'Workshop', 'Seminar'])}",
-                image_high=generate_placeholder_image(f"Event {i+1}", (800, 600)),
-                image_low=generate_placeholder_image(f"Event {i+1}", (400, 300)),
+                image_high=generate_placeholder_image(f"Additional Event {i+1}", (800, 600)),
+                image_low=generate_placeholder_image(f"Additional Event {i+1}", (400, 300)),
                 body=fake.paragraph(nb_sentences=6),
                 location=f"{fake.city()}, {fake.country()}",
                 date_start=event_start,
-                date_end=event_start + timedelta(days=random.randint(1, 5)),
-                posted=random.choices([True, False], weights=[0.8, 0.2])[0],
-                lab_id=random.choice(labs).lab_id,
-                research_id=random.choice(researches).research_id if random.random() > 0.5 else None
+                date_end=event_start + timedelta(days=random.randint(1, 3)),
+                posted=True,
+                lab_id=random.choice(labs).lab_id
+            )
+            session.add(event)
+        
+        # Create general news and events (not associated with any lab, research, or publication)
+        for i in range(random.randint(5, 10)):
+            news_id = uuid4()
+            news = News(
+                news_id=news_id,
+                news_name=fake.catch_phrase(),
+                image_high=generate_placeholder_image(f"General News {i+1}", (800, 600)),
+                image_low=generate_placeholder_image(f"General News {i+1}", (400, 300)),
+                body=fake.paragraph(nb_sentences=5),
+                date=fake.date_time_between(start_date="-5y", end_date="now"),
+                posted=True
+            )
+            session.add(news)
+
+        for i in range(random.randint(3, 5)):
+            event_start = fake.date_time_between(start_date="-5y", end_date="+1y")
+            event_id = uuid4()
+            event = Event(
+                event_id=event_id,
+                event_name=f"{fake.word().capitalize()} {random.choice(['Conference', 'Symposium', 'Workshop', 'Seminar'])}",
+                image_high=generate_placeholder_image(f"General Event {i+1}", (800, 600)),
+                image_low=generate_placeholder_image(f"General Event {i+1}", (400, 300)),
+                body=fake.paragraph(nb_sentences=6),
+                location=f"{fake.city()}, {fake.country()}",
+                date_start=event_start,
+                date_end=event_start + timedelta(days=random.randint(1, 3)),
+                posted=True
             )
             session.add(event)
         
@@ -186,4 +342,4 @@ def seed_database():
 
 if __name__ == "__main__":
     seed_database()
-    print("Database seeded successfully with realistic data and placeholder images!")
+    print("Database seeded successfully with realistic data, placeholder images, and general news/events!")

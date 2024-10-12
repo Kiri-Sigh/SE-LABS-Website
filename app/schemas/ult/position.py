@@ -2,5 +2,6 @@ from enum import Enum
 
 class Position(Enum):
     Admin = "Admin"
-    Lead_Researcher = "Lead Researcher"
+    LeadResearcher = "Lead Researcher"
     Researcher = "Researcher"
+    Free = "Free"
