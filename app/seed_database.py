@@ -257,7 +257,7 @@ def seed_database():
                     image_low=generate_placeholder_image(f"News for Research {research.research_id}", (400, 300)),
                     body=fake.paragraph(nb_sentences=5),
                     date=fake.date_time_between(start_date="-5y", end_date="now"),
-                    posted=True,
+                    posted=random.random() > 0.2,
                     lab_id=research.lab_id,
                     research_id=research.research_id
                 )
@@ -276,7 +276,7 @@ def seed_database():
                     location=f"{fake.city()}, {fake.country()}",
                     date_start=event_start,
                     date_end=event_start + timedelta(days=random.randint(1, 3)),
-                    posted=True,
+                    posted=random.random() > 0.2,
                     lab_id=research.lab_id,
                     research_id=research.research_id
                 )
@@ -307,13 +307,19 @@ def seed_database():
 
             for news in news_items:
                 news.research_id = None
-                news.publication_id = publication_id
-                session.add(news)
+                if news.posted:
+                    news.publication_id = publication_id
+                    session.add(news)
+                else:
+                    session.delete(news)
 
             for event in events:
                 event.research_id = None
-                event.publication_id = publication_id
-                session.add(event)
+                if event.posted:
+                    event.publication_id = publication_id
+                    session.add(event)
+                else:
+                    session.delete(event)
 
             # Remove researcher associations with the finished research
             session.query(person_research).filter(person_research.research_id == finished_research.research_id).delete()
@@ -340,8 +346,8 @@ def seed_database():
                 image_low=generate_placeholder_image(f"Additional News {i+1}", (400, 300)),
                 body=fake.paragraph(nb_sentences=5),
                 date=fake.date_time_between(start_date="-5y", end_date="now"),
-                posted=True,
-                lab_id=random.choice(labs).lab_id
+                posted=False if i == 0 else random.random() > 0.2,
+                lab_id=labs[0].lab_id if i == 1 else random.choice(labs).lab_id
             )
             session.add(news)
 
@@ -357,8 +363,8 @@ def seed_database():
                 location=f"{fake.city()}, {fake.country()}",
                 date_start=event_start,
                 date_end=event_start + timedelta(days=random.randint(1, 3)),
-                posted=True,
-                lab_id=random.choice(labs).lab_id
+                posted=False if i == 0 else random.random() > 0.2,
+                lab_id=labs[0].lab_id if i == 0 else random.choice(labs).lab_id
             )
             session.add(event)
         
