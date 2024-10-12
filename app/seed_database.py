@@ -7,7 +7,7 @@ from uuid import UUID, uuid4
 import random
 import hashlib
 from faker import Faker
-from passlib.context import CryptContext  # Changed from werkzeug to passlib
+from passlib.context import CryptContext
 from PIL import Image, ImageDraw, ImageFont
 import io
 
@@ -22,6 +22,10 @@ load_dotenv()
 DATABASE_URL = os.getenv("URL_DATABASE")
 INITIAL_ADMIN_EMAIL = os.getenv("INITIAL_ADMIN_EMAIL")
 INITIAL_ADMIN_PASSWORD = os.getenv("INITIAL_ADMIN_PASSWORD")
+INITIAL_LEAD_RESEARCHER_EMAIL = os.getenv("INITIAL_LEAD_RESEARCHER_EMAIL")
+INITIAL_LEAD_RESEARCHER_PASSWORD = os.getenv("INITIAL_LEAD_RESEARCHER_PASSWORD")
+INITIAL_RESEARCHER_EMAIL = os.getenv("INITIAL_RESEARCHER_EMAIL")
+INITIAL_RESEARCHER_PASSWORD = os.getenv("INITIAL_RESEARCHER_PASSWORD")
 Base.metadata.create_all(bind=engine)
 
 fake = Faker()
@@ -103,12 +107,52 @@ def seed_database():
             password_hash=get_password_hash(INITIAL_ADMIN_PASSWORD)
         )
         session.add(admin_credentials)
+
+        lead_researcher_id = uuid4()
+        lead_researcher = Researcher(
+            user_id=lead_researcher_id,
+            full_name="Lead Researcher",
+            image_high=generate_placeholder_image("Lead Researcher", (800, 600)),
+            image_low=generate_placeholder_image("Lead Researcher", (400, 300)),
+            gmail=INITIAL_LEAD_RESEARCHER_EMAIL,
+            highest_role=Position.LeadResearcher,
+            admin=False,
+            active=True
+        )
+        session.add(lead_researcher)
+
+        # Create user credentials for the lead researcher using the correct hashing method
+        lead_researcher_credentials = UserCredentials(
+            user_id=lead_researcher.user_id,
+            password_hash=get_password_hash(INITIAL_LEAD_RESEARCHER_PASSWORD)
+        )
+        session.add(lead_researcher_credentials)
+
+        researcher_id = uuid4()
+        researcher_init = Researcher(
+            user_id=researcher_id,
+            full_name="Researcher",
+            image_high=generate_placeholder_image("Researcher", (800, 600)),
+            image_low=generate_placeholder_image("Researcher", (400, 300)),
+            gmail=INITIAL_RESEARCHER_EMAIL,
+            highest_role=Position.Researcher,
+            admin=False,
+            active=True
+        )
+        session.add(researcher_init)
+
+        # Create user credentials for the researcher using the correct hashing method
+        researcher_credentials = UserCredentials(
+            user_id=researcher_init.user_id,
+            password_hash=get_password_hash(INITIAL_RESEARCHER_PASSWORD)
+        )
+        session.add(researcher_credentials)
         
         session.commit()
 
-        # Create 49 more researchers (50 total including admin)
+        # Create 47 more researchers (50 total including admin)
         researchers = [admin]
-        for i in range(49):
+        for i in range(47):
             researcher_id = uuid4()
             is_admin = i < 2  # Next 2 researchers are admins (3 total)
             researcher = Researcher(
@@ -149,9 +193,13 @@ def seed_database():
         
         session.commit()
 
+        # Associate lead researcher with a lab
+        lab_association = person_lab(user_id=lead_researcher.user_id, lab_id=labs[0].lab_id, role=Position.LeadResearcher)
+        session.add(lab_association)
+
         # Associate Lead Researchers with labs
         for lab in labs:
-            lead_researcher = random.choice([r for r in researchers if not r.admin])
+            lead_researcher = random.choice([r for r in researchers if not r.admin and r is not researcher_init])
             lab_association = person_lab(user_id=lead_researcher.user_id, lab_id=lab.lab_id, role=Position.LeadResearcher)
             session.add(lab_association)
         
@@ -179,8 +227,14 @@ def seed_database():
             session.add(research)
             researches.append(research)
 
+            # Associate researcher_init with the first research project only
+            if i == 0:
+                research_association = person_research(user_id=researcher_init.user_id, research_id=research.research_id, role=Position.Researcher)
+                session.add(research_association)
+
             # Associate 2-5 random researchers with each research project
-            for researcher in random.sample([r for r in researchers if not r.admin], random.randint(2, 5)):
+            available_researchers = [r for r in researchers if not r.admin and r is not researcher_init]
+            for researcher in random.sample(available_researchers, min(random.randint(2, 5), len(available_researchers))):
                 research_association = person_research(user_id=researcher.user_id, research_id=research.research_id, role=Position.Researcher)
                 session.add(research_association)
 
@@ -188,7 +242,7 @@ def seed_database():
             for admin in admin_researchers:
                 research_association = person_research(user_id=admin.user_id, research_id=research.research_id, role=Position.Admin)
                 session.add(research_association)
-        
+
         session.commit()
 
         # Create news items and events for ongoing research

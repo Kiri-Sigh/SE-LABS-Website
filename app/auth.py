@@ -36,7 +36,7 @@ def get_user(db: Session, gmail: str) -> Researcher:
         raise HTTPException(status_code=404, detail="User not found")
     return researcher
 
-def create_user(db: Session, user_data: dict, password: str):
+def create_user(db: Session, user_data: dict, password: str) -> Researcher:
     new_user = Researcher(**user_data)
     db.add(new_user)
     db.flush()
@@ -87,8 +87,12 @@ async def login_for_access_token(
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    
     access_token = create_access_token(
-        data={"sub": user.gmail}, expires_delta=access_token_expires
+        data={
+            "sub": user.gmail,
+        }, 
+        expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
@@ -110,18 +114,19 @@ async def get_current_user(db: Session = Depends(get_db), token: str = Depends(o
     if user is None:
         raise credentials_exception
     # use researcher relation to obtain related_lab, related_research
-    return AuthUser(
-        Researcher=AU01(
-            uid=user.user_id,
-            name=user.full_name,
-            gmail=user.gmail,
-            position=user.highest_role,
-            token=token,
-            Laboratories=[lab for lab in user.labs],
-            Researches=[research for research in user.researches]
-        )
-    )
+    return AuthUser(Researcher=AU01.from_orm(user, token))
+
 async def get_current_active_user(current_user: AuthUser = Depends(get_current_user)) -> AuthUser:
-    if current_user.disabled:
+    if current_user.Researcher.active is False:
         raise HTTPException(status_code=400, detail="Inactive user")
+    return current_user
+
+async def get_current_active_researcher(research_id: UUID, current_user: AuthUser = Depends(get_current_active_user)) -> AuthUser:
+    if research_id not in [research.RID for research in current_user.Researcher.Researches]:
+        raise HTTPException(status_code=400, detail=f"User don't have enough permisstion for research: {research_id}")
+    return current_user
+
+async def get_current_active_lead_researcher(laboratory_id: UUID, current_user: AuthUser = Depends(get_current_active_user)) -> AuthUser:
+    if laboratory_id not in [lab.LID for lab in current_user.Researcher.Laboratories]:
+        raise HTTPException(status_code=400, detail=f"User don't have enough permisstion for laboratory: {laboratory_id}")
     return current_user
