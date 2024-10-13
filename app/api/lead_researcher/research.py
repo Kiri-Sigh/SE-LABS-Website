@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File, 
 from typing import Optional
 from uuid import UUID
 import json
-from pydantic import ValidationError
+from pydantic import ValidationError, HttpUrl
 
 from ...dependencies import get_db, process_image
 from ...model import *
@@ -10,6 +10,7 @@ from ...auth import get_current_active_lead_researcher
 from ...schemas.auth_user import AuthUser
 from ...schemas.research_io import ResearchCreate, ResearchUpdate
 from ...schemas.research_thumbnail import ResearchThumbnail, RT01
+from ...schemas.publication_thumbnail import PublicationThumbnail, PT01
 
 router = APIRouter(
     prefix="/lead_researcher/research",
@@ -109,6 +110,55 @@ async def update_research(
     db.commit()
     db.refresh(updated_research)
     return RT01.to_research_thumbnail(updated_research)
+
+@router.put("/", response_model=PublicationThumbnail)
+def finish_and_migration_to_publication(
+    research_id: UUID = Query(...),
+    url: HttpUrl = Query(...),
+    db = Depends(get_db),
+    current_user: AuthUser = Depends(get_current_active_lead_researcher)
+):
+    research = db.query(Research).filter(Research.research_id == research_id).first()
+    if research is None:
+        raise HTTPException(status_code=404, detail="Research not found")
+    
+    new_publication = Publication(
+        publication_id=uuid4(),
+        publication_name=research.research_name,
+        image_high=research.image_high,
+        image_low=research.image_low,
+        body=research.body,
+        url=str(url),
+        lab_id=research.lab_id
+    )
+
+    db.add(new_publication)
+
+    news_items = db.query(News).filter(News.research_id == research_id).all()
+    event_items = db.query(Event).filter(Event.research_id == research_id).all()
+
+    for news in news_items:
+        news.research_id = None
+        if news.posted:
+            news.publication_id = new_publication.publication_id
+            db.add(news)
+        else:
+            db.delete(news)
+
+    for event in event_items:
+        event.research_id = None
+        if event.posted:
+            event.publication_id = new_publication.publication_id
+            db.add(event)
+        else:
+            db.delete(event)
+
+    db.query(person_research).filter(person_research.research_id == research_id).delete()
+    db.delete(research)
+
+    db.commit()
+    db.refresh(new_publication)
+    return PT01.to_publication_thumbnail(new_publication)
 
 @router.delete("/", response_model=ResearchThumbnail)
 def delete_research(

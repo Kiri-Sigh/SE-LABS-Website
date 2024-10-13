@@ -130,3 +130,8 @@ async def get_current_active_lead_researcher(laboratory_id: UUID, current_user: 
     if laboratory_id not in [lab.LID for lab in current_user.Researcher.Laboratories]:
         raise HTTPException(status_code=400, detail=f"User don't have enough permisstion for laboratory: {laboratory_id}")
     return current_user
+
+async def get_current_active_admin(current_user: AuthUser = Depends(get_current_active_user)) -> AuthUser:
+    if current_user.Researcher.position != Position.Admin:
+        raise HTTPException(status_code=400, detail=f"User don't have enough permisstion you are just {current_user.Researcher.position}")
+    return current_user

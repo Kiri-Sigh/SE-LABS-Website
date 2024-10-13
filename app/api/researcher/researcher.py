@@ -13,7 +13,7 @@ router = APIRouter(
     tags=["researcher"],
 )
 
-@router.post("/auto_login")
+@router.post("/auto_login", response_model=AuthUser)
 def researcher_auto_login(
     db = Depends(get_db),
     current_user: AuthUser = Depends(get_current_active_user)
