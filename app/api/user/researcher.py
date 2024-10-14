@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from typing import Optional
 from uuid import UUID
+from fastapi.responses import Response
 
 from ...dependencies import get_db
 from ...model import *
-from ...schemas.researcher_thumbnail import ResearcherThumbnail
+from ...schemas.researcher_thumbnail import ResearcherThumbnail, UT01
 
 router = APIRouter(
     prefix="/user/researcher",
@@ -18,29 +19,30 @@ def get_researcher_thumbnail(
     page: int = Query(1, ge=1),
     db = Depends(get_db)
 ):
-    researcher = db.query(Researcher).filter(Researcher.posted == True)
+    researcher = db.query(Researcher)
     if laboratory_id:
         researcher = researcher.filter(Researcher.lab_id == laboratory_id)
     offset = (page - 1) * amount
-    return researcher.offset(offset).limit(amount).all()
+    researchers = researcher.offset(offset).limit(amount).all()
+    return [UT01.to_researcher_thumbnail(researcher) for researcher in researchers]
 
 @router.get("/thumbnail/{researcher_id}", response_model=ResearcherThumbnail)
 def get_researcher_thumbnail_by_id(researcher_id: UUID, db = Depends(get_db)):
-    researcher = db.query(Researcher).filter(Researcher.id == researcher_id).first()
+    researcher = db.query(Researcher).filter(Researcher.user_id == researcher_id).first()
     if not researcher:
         raise HTTPException(status_code=404, detail="Researcher not found")
-    return researcher
+    return UT01.to_researcher_thumbnail(researcher)
 
 @router.get("/image-high")
 def get_researcher_image_high(researcher_id: UUID, db = Depends(get_db)):
-    researcher = db.query(Researcher).filter(Researcher.id == researcher_id).first()
+    researcher = db.query(Researcher).filter(Researcher.user_id == researcher_id).first()
     if not researcher:
         raise HTTPException(status_code=404, detail="Researcher not found")
-    return researcher.image_high
+    return Response(content=researcher.image_high, media_type="image/jpeg")
 
 @router.get("/image-low")
 def get_researcher_image_low(researcher_id: UUID, db = Depends(get_db)):
-    researcher = db.query(Researcher).filter(Researcher.id == researcher_id).first()
+    researcher = db.query(Researcher).filter(Researcher.user_id == researcher_id).first()
     if not researcher:
         raise HTTPException(status_code=404, detail="Researcher not found")
-    return researcher.image_low
+    return Response(content=researcher.image_low, media_type="image/jpeg")

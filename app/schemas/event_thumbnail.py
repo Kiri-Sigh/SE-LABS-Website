@@ -1,7 +1,7 @@
 from datetime import datetime
 from enum import Enum
 from typing import Optional
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, model_validator, ConfigDict
 from uuid import UUID
 
 from .ult.LRE01 import LRE01
@@ -18,7 +18,10 @@ class ET01(BaseModel):
     location: str
     start: datetime
     end: datetime
+    status: EventStatus
     related_laboratory: Optional[LRE01] = None
+
+    model_config = ConfigDict(from_attributes=True)
 
     # Convert SQLAlchemy model fields to ET01 model fields
     @classmethod
@@ -30,6 +33,7 @@ class ET01(BaseModel):
             location=obj.location,
             start=obj.date_start,
             end=obj.date_end,
+            status=cls._determine_status(obj.date_start, obj.date_end),
             related_laboratory=cls._get_related_laboratory(obj)
         )
 
@@ -45,8 +49,8 @@ class ET01(BaseModel):
         
     @staticmethod
     def _get_related_laboratory(obj) -> Optional[LRE01]:
-        if obj.laboratory:
-            return LRE01.from_orm(obj.laboratory)
+        if obj.lab:
+            return LRE01.from_orm(obj.lab)
         return None
 
     @model_validator(mode='after')
@@ -55,5 +59,12 @@ class ET01(BaseModel):
             raise ValueError("End time must be after start time")
         return self
     
+    @classmethod
+    def to_event_thumbnail(cls, event) -> 'EventThumbnail':
+        et01 = cls.from_orm(event)
+        return EventThumbnail(Event=et01)
+
 class EventThumbnail(BaseModel):
     Event: ET01
+    
+    model_config = ConfigDict(from_attributes=True)

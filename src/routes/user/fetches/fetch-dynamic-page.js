@@ -15,13 +15,17 @@ import { useEffect } from "react";
 //   return response.json();
 // };
 
+//[{},{}] =>
 export const DataFetcherQueue = (template) => {
   // Queue with groups of URLs to fetch
   const fetchQueue = [
     //template here
-    ["https://jsonplaceholder.typicode.com/posts/1"],
-    ["https://jsonplaceholder.typicode.com/posts/2"],
-    ["https://jsonplaceholder.typicode.com/posts/3"],
+    [
+      { id: "abc", url: "https://jsonplaceholder.typicode.com/posts/1" },
+      { id: "abc", url: "https://jsonplaceholder.typicode.com/posts/1" },
+    ],
+    [{ id: "abc", url: "https://jsonplaceholder.typicode.com/posts/1" }],
+    [{ id: "abc", url: "https://jsonplaceholder.typicode.com/posts/1" }],
   ];
   const [fetchedData, setFetchedData] = useState({}); // Store fetched data
   const [isLoading, setIsLoading] = useState(true); // Track loading status
@@ -42,8 +46,9 @@ export const DataFetcherQueue = (template) => {
   React.useEffect(() => {
     if (allQueriesDone && currentGroupIndex < fetchQueue.length - 1) {
       setFetchedData((prevData) => {
-        const newData = results.reduce((acc, result) => {
-          acc[result.id] = result; // Assuming 'id' is a unique identifier in each result
+        const newData = results.reduce((acc, result, i) => {
+          const uniqueKey = `${result.queryKey[1]}-${i}`;
+          acc[uniqueKey] = result; // Assuming 'id' is a unique identifier in each result
           return acc;
         }, {});
 
