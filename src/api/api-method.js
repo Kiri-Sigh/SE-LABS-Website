@@ -1,4 +1,5 @@
 import axios from "axios";
+
 export async function getData(datapath) {
   const response = await axios.get(datapath);
   return response.data;
@@ -11,6 +12,7 @@ export async function getDataAndHeader(datapath, header) {
   });
   return response.data;
 }
+
 export async function postData(datapath, header, data) {
   const response = await axios.post(datapath, data, {
     headers: {

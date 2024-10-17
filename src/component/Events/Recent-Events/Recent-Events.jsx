@@ -1,6 +1,6 @@
 import React from "react";
 import EventCard from "../../Cards/Event-Card";
-import {getData} from "../../../api/api-method"
+import { getData } from "../../../api/api-method";
 const RecentEvents = ({ listData, topic = "events" }) => {
   return (
     <section className="flex overflow-hidden flex-col px-16 py-28 w-full bg-sky-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
@@ -27,8 +27,7 @@ const RecentEvents = ({ listData, topic = "events" }) => {
 
 export default RecentEvents;
 
-
- function fetch(topic){
-  if (topic=news)
-  const data = getData();
- }
+//  function fetch(topic){
+//   if (topic=news)
+//   const data = getData();
+//  }

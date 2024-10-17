@@ -15,3 +15,8 @@ Grid Component
 -researches
 -people
 -
+
+admin pages
+
+-create
+-

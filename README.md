@@ -1,9 +1,12 @@
-How to run backend
-  api\ .venv\Scripts\activate.bat
-  cd api
-  fastapi dev main.py
+what i need
+-something to tell front end that cannot fetch anymore pages since its done
+or return number of elements of that category: lab news = Number
 
-<<<<<<< HEAD
+How to run backend
+api\ .venv\Scripts\activate.bat
+cd api
+fastapi dev main.py
+
 - -do redux state
   -do tanstack
   -add animations/style
@@ -142,7 +145,3 @@ MODAL COMMIT:
 Create || Type of Commit [Author(role)]
 full description
 rejected
-=======
-How to open backend doce
-  after you run backend you will see yellow block in terminal click "API docs: http://127.0.0.1:8000/docs"
->>>>>>> 540c0d9bde8ef428cfd7b9f08adb4c7a40a90f2b
