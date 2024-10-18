@@ -23,6 +23,9 @@ const editSlice = createSlice({
       state.infData = {};
       state.queryData = {};
     },
+    addDataState: (state, action) => {
+      state.queryData = { ...state.queryData, ...action.payload };
+    },
     openModal: (state) => {
       state.isOpen = true;
     },

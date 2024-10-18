@@ -26,15 +26,23 @@ export const useParallelData = (urlArr) => {
 // hooks/useInfiniteFetch.js
 
 export const useInfiniteFetch = (urlArr) => {
-  // Using useQueries to handle multiple infinite queries in parallel
   const results = useQueries(
     urlArr.map((obj, i) => ({
       queryKey: ["infinite", obj.id, i], // Unique query key for each infinite query
       queryFn: ({ pageParam = 1 }) =>
         getData(`${obj.url}?page=${pageParam}&size=${obj.pageSize || 10}`), // Fetch with pagination
-      getNextPageParam: (lastPage) => {
-        // Determine next page based on data fetched
-        return lastPage?.nextPage || undefined; // Example condition to determine if there are more pages
+      getNextPageParam: (lastPage, allPages) => {
+        // Extract the relevant data and compare the length to the pageSize
+        const pageSize = obj.pageSize || 10;
+        const dataLength = lastPage?.data?.length || 0; // Assuming data is in `lastPage.data`
+
+        // If data length is less than pageSize, no more pages, return undefined
+        if (dataLength < pageSize) {
+          return undefined;
+        }
+
+        // Otherwise, return the next page
+        return allPages.length + 1; // Assuming simple page increment logic
       },
       onSuccess: (data) => {
         return data;
