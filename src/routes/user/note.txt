@@ -1,22 +1,158 @@
-RecentNews Component
--recent RecentNews
--member/people in research/lab pages
--researches in lab page
--related News
--publicaiton in lab pages
 
-RecentEvents Component
--RecentEvents
+Every Existing pages
+[USER]
+Landing page
+Research page
+Lab page
+News page
+People page
+About us page
+Publication page
+Event pages
+[Dynamic User]
+Lab
+Research
+Event
+News
+[ADMIN]
+Login Page
+Landing page
+Preview page*
+[specific admin]
+lab
+research
+Event
+News
+Commit page
+people
+[special admin]
+-create modal
+-edit modal
 
-Grid Component
--publications
--lab
--News
--researches
--people
--
 
-admin pages
 
--create
--
+//////////////////////////////////////
+ADMIN
+
+Every POST/PATCH/PUT will require to have token in state nad applied to the header of request call
+
+//////////////////////////////////////
+
+researcher 
+- only research (can have many research)
+- researcher is bound to only research but no lab
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+admin feature
+-create button tr
+-create modal
+state append {create:{NEW},edit:{}}
+input required and permitted creation 
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+[CREATE]
+
+the creating modal
+use user data to create dropdown options for selecting 
+
+admin
+
+->news->research/lab/null->create new of that research/lab/null
+->event->research/lab/null->create enent of that research/lab/null
+-research->lab->create new research of the selected lab
+-people ->create plain user
+->lab->create new lab
+
+
+-create [lab,people,news,events,research,]
+
+normal 
+
+CREATE
+->news->research->create new of that research
+->event->research
+
+-create [news,events] {need commit}
+require 
+
+
+lead
+
+CREATE
+->news->research/lab/null->create new of that research/lab/null
+->event->research/lab/null->create enent of that research/lab/null
+-research->lab->create new research of the selected lab
+-people ->create plain user
+
+
+-create [news,events,research,people]
+require get 
+////////////////////////////////////////////////////////////////
+
+[EDIT]
+
+admin
+edit [news,events,research,people,lab]
+
+normal
+edit [none]
+
+lead
+
+edit [news,events,research,people,lab]
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+Auto-Login (after login and after check false validation when visit admin pages)
+post-
+{
+  "Researcher": {
+    "UID": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "name": "string",
+    "gmail": "user@example.com",
+    "position": "Admin",
+    "token": "string",
+    "active": true,
+    "Laboratories": [
+      {
+        "LID": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "title": "string"
+      }
+    ],
+    "Researches": [
+      {
+        "RID": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "title": "string"
+      }
+    ]
+  }
+}
+////////////////////////////////////////////////////////////////////////////////////////////////
+Login page
+post-
+"/token" 
+body: {username:string,password:string}
+response: {
+  "access_token": "string",
+  "token_type": "string"
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+Landing page
+
+fetch 
+commit(lead,admin)
+lab(lead,admin)
+research(noraml,lead,admin)
+news(noraml,lead,admin)
+Event(noraml,lead,admin)
+news(noraml,lead,admin)

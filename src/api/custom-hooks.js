@@ -1,18 +1,18 @@
 import {
   useQueries,
   useInfiniteQuery,
-  useMutation,
-  useQuery,
+  // useMutation,
+  // useQuery,
 } from "@tanstack/react-query";
 import { getData } from "./api-method";
-import { useState } from "react";
+// import { useState } from "react";
 //   //map [{url,id},{}] to {id:{data},id:{data}}
 //   //using getData each of the obejects in array
 //   //and using useQueries
 export const useParallelData = (urlArr) => {
   const results = useQueries(
     urlArr.map((obj, i) => ({
-      queryKey: ["get", obj.id, i],
+      queryKey: [`${"get-" + obj.id + "-" + i}`],
       queryFn: () => getData(obj.url),
       onSuccess: (data) => {
         return data;
@@ -23,32 +23,76 @@ export const useParallelData = (urlArr) => {
 
   return results;
 };
-// hooks/useInfiniteFetch.js
 
-export const useInfiniteFetch = (urlArr) => {
-  const results = useQueries(
-    urlArr.map((obj, i) => ({
-      queryKey: ["infinite", obj.id, i], // Unique query key for each infinite query
-      queryFn: ({ pageParam = 1 }) =>
-        getData(`${obj.url}?page=${pageParam}&size=${obj.pageSize || 10}`), // Fetch with pagination
+// [
+//   {
+//     queryKey: ["get", "1", 0],
+//     isLoading: false,
+//     isSuccess: true,
+//     data: {
+//       id: 1,
+//       title: "Post 1",
+//       body: "This is the body of post 1."
+//     },
+//     error: null,
+//   },
+//   {
+//     queryKey: ["get", "2", 1],
+//     isLoading: false,
+//     isSuccess: true,
+//     data: {
+//       id: 2,
+//       title: "Post 2",
+//       body: "This is the body of post 2."
+//     },
+//     error: null,
+//   }
+// ];
+
+// Hook for handling a single infinite fetch query
+export const useInfiniteFetch = ({ obj }) => {
+  const result = useInfiniteQuery(
+    [`${"infinite-" + obj.id}`], //
+    ({ pageParam = 1 }) =>
+      getData(`${obj.url}?page=${pageParam}&size=${obj.pageSize}`),
+    {
       getNextPageParam: (lastPage, allPages) => {
-        // Extract the relevant data and compare the length to the pageSize
-        const pageSize = obj.pageSize || 10;
-        const dataLength = lastPage?.data?.length || 0; // Assuming data is in `lastPage.data`
+        const dataLength = lastPage?.data?.length || 0;
 
-        // If data length is less than pageSize, no more pages, return undefined
-        if (dataLength < pageSize) {
+        // If data length is less than pageSize, no more pages
+        if (dataLength < obj.pageSize) {
           return undefined;
         }
 
-        // Otherwise, return the next page
-        return allPages.length + 1; // Assuming simple page increment logic
+        // Otherwise, return the next page number
+        return allPages.length + 1;
       },
       onSuccess: (data) => {
-        return data;
+        console.log("Fetched data:", data);
       },
-    }))
+    }
   );
 
-  return results; // Return array of results
+  return result; // Return the result from the infinite query
 };
+// {
+//   data: {
+//     pages: [
+//       [
+//         { id: 1, title: "Post 1", body: "This is post 1 body." },
+//         { id: 2, title: "Post 2", body: "This is post 2 body." },
+//         // 3 more posts here (page size 5)
+//       ],
+//       [
+//         { id: 6, title: "Post 6", body: "This is post 6 body." },
+//         { id: 7, title: "Post 7", body: "This is post 7 body." },
+//         // 3 more posts here (page size 5)
+//       ]
+//     ]
+//   },
+//   isFetchingNextPage: false,
+//   hasNextPage: true,
+//   fetchNextPage: () => {/* Function to fetch the next page */},
+//   isSuccess: true,
+//   error: null,
+// }

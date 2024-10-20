@@ -5,6 +5,7 @@ import ResearcherPage from "./routes/admin/Researcher-Page";
 import AdminPage from "./routes/admin/Admin-Page";
 import DynamicLabPage from "./routes/user/Dynamic-Lab-Page";
 import MainPages from "./routes/user/Landing-Page";
+import AdminLayout from "./routes/admin/Admin-Layout";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -23,10 +24,16 @@ const router = createBrowserRouter([
       { path: "labs/:labID", element: <DynamicLabPage /> },
     ],
   },
-  { path: "admin", element: <AdminPage /> },
-  { path: "researcher", element: <ResearcherPage /> },
-  { path: "lead-researcher", element: <LeadResearcherPage /> },
-  { path: "login" },
+  {
+    path: "admin",
+    element: <AdminLayout />,
+    children: [
+      { index: true, element: <AdminPage /> },
+      // { path: "researcher", element: <ResearcherPage /> },
+      // { path: "lead-researcher", element: <LeadResearcherPage /> },
+    ],
+  },
+  // { path: "login", element:<LoginPage/>},
 ]);
 
 function App() {

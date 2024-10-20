@@ -21,7 +21,7 @@ const Modals = (object) => {
     // console.log("Form Data:", data);
   };
   const prototypeFrame = editFrame.editLab;
-  console.log("Prototype Frame:", prototypeFrame);
+  // console.log("Prototype Frame:", prototypeFrame);
 
   return (
     <div>

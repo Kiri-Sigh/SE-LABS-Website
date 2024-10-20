@@ -2,6 +2,8 @@ import axios from "axios";
 
 export async function getData(datapath) {
   const response = await axios.get(datapath);
+  console.log(response.data);
+
   return response.data;
 }
 export async function getDataAndHeader(datapath, header) {
@@ -10,6 +12,19 @@ export async function getDataAndHeader(datapath, header) {
       authorization: `${header}`,
     },
   });
+  console.log(response.data);
+  return response.data;
+}
+
+export async function getDataDynamic(datapath, header = null) {
+  const config = header
+    ? {
+        headers: {
+          authorization: `${header}`,
+        },
+      }
+    : {};
+  const response = await axios.get(datapath, config);
   return response.data;
 }
 

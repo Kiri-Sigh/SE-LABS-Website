@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const mainSlice = createSlice({
   name: "main",
   initialState: {
-    items: [],
+    items: [], //after login user data
     currentPath: null,
     admin: true,
     researcher: false,

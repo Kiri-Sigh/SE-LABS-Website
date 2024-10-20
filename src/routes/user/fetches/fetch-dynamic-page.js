@@ -28,19 +28,19 @@ import { useEffect } from "react";
 //return = {{fetchedData={"id":data},isLoading=false/true}}
 
 export const DataFetcherQueue = (template) => {
-  // Queue with groups of URLs to fetch, modified to handle infinite queries
+  //example fetchqueue = template
   const fetchQueue = [
     [
       {
         ID: "abc",
         url: "https://jsonplaceholder.typicode.com/posts/1",
-        type: "inf", // Infinite query
-        pageSize: 5, // Page size for infinite query
+        type: "inf",
+        pageSize: 5,
       },
       {
         ID: "xyz",
         url: "https://jsonplaceholder.typicode.com/posts/2",
-        type: "n", // Normal query
+        type: "n",
       },
     ],
     [
@@ -51,33 +51,26 @@ export const DataFetcherQueue = (template) => {
       },
     ],
   ];
-
-  const [fetchedData, setFetchedData] = useState({}); // Store fetched data
-  const [isLoading, setIsLoading] = useState(true); // Track loading status
-  const [currentGroupIndex, setCurrentGroupIndex] = useState(0); // Track the current group index
-
-  // Get the current group of URLs to fetch
+  //fetchedData= {{data:data},{data2:data2}}
+  const [fetchedData, setFetchedData] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [currentGroupIndex, setCurrentGroupIndex] = useState(0);
+  const [imageIDFetch, setImageIDFetch] = useState([]);
   const currentGroup = fetchQueue[currentGroupIndex];
 
-  // Separate normal and infinite queries from the group
   const normalQueries = currentGroup.filter((q) => q.type === "n");
   const infiniteQueries = currentGroup.filter((q) => q.type === "inf");
 
-  // Fetch normal queries in parallel
   const normalResults = useParallelData(normalQueries);
 
-  // Fetch infinite queries
   const infiniteResults = useInfiniteFetch(infiniteQueries);
 
-  // Combine normal and infinite results
   const results = [...normalResults, ...infiniteResults];
 
-  // Check if all queries (both normal and infinite) are done
   const allQueriesDone = results.every(
     (result) => result.isSuccess || result.isError
   );
 
-  // Effect to update data once all queries in a group are done
   useEffect(() => {
     if (allQueriesDone && currentGroupIndex < fetchQueue.length - 1) {
       setFetchedData((prevData) => {
@@ -85,12 +78,10 @@ export const DataFetcherQueue = (template) => {
           const uniqueKey = `${result.ID || result.queryKey[1]}-${i}`;
 
           if (result.data.pages) {
-            // If it's an infinite query, append the pages
             acc[uniqueKey] = acc[uniqueKey]
               ? [...acc[uniqueKey], ...result.data.pages.flat()]
               : result.data.pages.flat();
           } else {
-            // For normal queries, just set the data
             acc[uniqueKey] = result.data;
           }
           return acc;
@@ -103,7 +94,7 @@ export const DataFetcherQueue = (template) => {
       // If last group is done, update loading state
       setIsLoading(false);
     }
-  }, [allQueriesDone, currentGroupIndex, results]);
+  }, [allQueriesDone, currentGroupIndex, results, fetchQueue.length]);
 
   return { fetchedData, isLoading };
 };

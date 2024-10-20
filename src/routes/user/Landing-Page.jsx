@@ -11,7 +11,14 @@ import GridCards from "../../component/Grid/Card-Grid";
 import DividingRows from "../../component/admin-Component/tables/proto1/table";
 import Modals from "../../component/admin-Component/Modal/Modal";
 import TableComponent from "../../component/admin-Component/tables/proto2/table-try";
+import { getData } from "../../api/api-method";
 function MainPages() {
+  console.log(
+    getData(
+      "http://localhost:8000/user/event/thumbnail?laboratory_id=123&amount=4&page=2"
+    )
+  );
+
   const location = useLocation();
   switch (location.pathname) {
     case "/":
