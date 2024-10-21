@@ -12,12 +12,35 @@ import DividingRows from "../../component/admin-Component/tables/proto1/table";
 import Modals from "../../component/admin-Component/Modal/Modal";
 import TableComponent from "../../component/admin-Component/tables/proto2/table-try";
 import { getData } from "../../api/api-method";
+import axios from "axios";
 function MainPages() {
-  console.log(
-    getData(
-      "http://localhost:8000/user/event/thumbnail?laboratory_id=123&amount=4&page=2"
+  axios
+    .get(
+      "http://localhost:8000/user/event/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980"
     )
-  );
+    .then((response) => {
+      console.log(response.data);
+    })
+    .catch((error) => {
+      if (error.response) {
+        // Request made and server responded
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      } else if (error.request) {
+        // Request was made but no response was received
+        console.log(error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log("Error", error.message);
+      }
+    });
+
+  // console.log(
+  //   getData(
+  //     "http://localhost:8000/user/event/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980"
+  //   )
+  // );
 
   const location = useLocation();
   switch (location.pathname) {
