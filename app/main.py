@@ -1,9 +1,29 @@
+import os
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from .api.router import router as api_router
 from .auth import router as auth_router
 from .database import Base, engine
+from fastapi.middleware.cors import CORSMiddleware
+
+load_dotenv()
 
 app = FastAPI()
+
+
+FRONT_END_ORIGIN = os.getenv("FRONT_END_ORIGIN")
+
+origins = [
+    FRONT_END_ORIGIN
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(api_router)
 app.include_router(auth_router)
