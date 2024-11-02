@@ -21,7 +21,7 @@ function RecentNews({ rowData, toFetchedData = {} }) {
   );
   console.log(
     useInfiniteFetch({
-      id: "abc",
+      id: "abc2",
       url: "http://127.0.0.1:8000/user/event/thumbnail",
       // type: "n",
       pageSize: 3,
@@ -29,7 +29,7 @@ function RecentNews({ rowData, toFetchedData = {} }) {
   );
   console.log(
     useInfiniteFetch({
-      id: "abc",
+      id: "abc3",
       url: "http://127.0.0.1:8000/user/news/thumbnail",
       // type: "n",
       pageSize: 3,
