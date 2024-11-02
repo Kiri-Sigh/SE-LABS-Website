@@ -7,22 +7,14 @@ function RecentNews({ rowData, toFetchedData = {} }) {
   // const { data } = useInfiniteFetch({
   //   id: toFetchedData.id,
   //   url: toFetchedData.url,
-  //   // type: toFetchedData.type,
+  //   type: toFetchedData.type,
   //   pageSize: toFetchedData.pageSize,
   // });
   // console.log(data);
-  // console.log(
-  //   useInfiniteFetch({
-  //     id: "abc",
-  //     url: "http://127.0.0.1:8000/user/event/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980",
-  //     // type: "n",
-  //     pageSize: 3,
-  //   })
-  // );
   console.log(
     useInfiniteFetch({
       id: "abc",
-      url: "http://127.0.0.1:8000/user/laboratory/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980",
+      url: "http://127.0.0.1:8000/user/event/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980",
       // type: "n",
       pageSize: 3,
     })
@@ -30,7 +22,15 @@ function RecentNews({ rowData, toFetchedData = {} }) {
   console.log(
     useInfiniteFetch({
       id: "abc",
-      url: "http://127.0.0.1:8000/user/news/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980",
+      url: "http://127.0.0.1:8000/user/event/thumbnail",
+      // type: "n",
+      pageSize: 3,
+    })
+  );
+  console.log(
+    useInfiniteFetch({
+      id: "abc",
+      url: "http://127.0.0.1:8000/user/news/thumbnail",
       // type: "n",
       pageSize: 3,
     })

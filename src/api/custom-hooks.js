@@ -58,6 +58,7 @@ export const useInfiniteFetch = (obj) => {
     queryKey: [`infinite-${obj.id}`], // Proper array inside the object
     queryFn: ({ pageParam = 1 }) =>
       getData(`${obj.url}&page=${pageParam}&amount=${obj.pageSize}`), // Fetch function
+
     getNextPageParam: (lastPage, allPages) => {
       const dataLength = lastPage?.data?.length || 0;
 
