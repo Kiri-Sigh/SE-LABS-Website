@@ -2,7 +2,7 @@ import axios from "axios";
 
 export async function getData(datapath) {
   const response = await axios.get(datapath);
-  console.log(response.data);
+  // console.log(response.data);
 
   return response.data;
 }

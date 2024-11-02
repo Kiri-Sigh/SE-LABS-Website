@@ -1,9 +1,41 @@
 import React from "react";
 import NewsCard from "../../Cards/News-Card";
-
+import { useInfiniteFetch } from "../../../api/custom-hooks";
 import previous from "../../../resource/previous-button.svg";
 import next from "../../../resource/next-button.svg";
-function RecentNews({ rowData, topic = "news" }) {
+function RecentNews({ rowData, toFetchedData = {} }) {
+  // const { data } = useInfiniteFetch({
+  //   id: toFetchedData.id,
+  //   url: toFetchedData.url,
+  //   // type: toFetchedData.type,
+  //   pageSize: toFetchedData.pageSize,
+  // });
+  // console.log(data);
+  // console.log(
+  //   useInfiniteFetch({
+  //     id: "abc",
+  //     url: "http://127.0.0.1:8000/user/event/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980",
+  //     // type: "n",
+  //     pageSize: 3,
+  //   })
+  // );
+  console.log(
+    useInfiniteFetch({
+      id: "abc",
+      url: "http://127.0.0.1:8000/user/laboratory/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980",
+      // type: "n",
+      pageSize: 3,
+    })
+  );
+  console.log(
+    useInfiniteFetch({
+      id: "abc",
+      url: "http://127.0.0.1:8000/user/news/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980",
+      // type: "n",
+      pageSize: 3,
+    })
+  );
+
   return (
     <section className="flex overflow-hidden flex-col px-16 py-28 w-full bg-sky-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
       <div className="flex flex-wrap gap-10 justify-between items-end w-full max-md:max-w-full">

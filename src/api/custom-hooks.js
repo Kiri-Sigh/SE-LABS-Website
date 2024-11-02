@@ -50,31 +50,33 @@ export const useParallelData = (urlArr) => {
 // ];
 
 // Hook for handling a single infinite fetch query
-export const useInfiniteFetch = ({ obj }) => {
-  const result = useInfiniteQuery(
-    [`${"infinite-" + obj.id}`], //
-    ({ pageParam = 1 }) =>
-      getData(`${obj.url}?page=${pageParam}&size=${obj.pageSize}`),
-    {
-      getNextPageParam: (lastPage, allPages) => {
-        const dataLength = lastPage?.data?.length || 0;
+export const useInfiniteFetch = (obj) => {
+  const result = useInfiniteQuery({
+    refetchOnWindowFocus: false, //if false, it wont refetch when change tabs/app and come back later
+    enabled: true, //if false, the query wont run
 
-        // If data length is less than pageSize, no more pages
-        if (dataLength < obj.pageSize) {
-          return undefined;
-        }
+    queryKey: [`infinite-${obj.id}`], // Proper array inside the object
+    queryFn: ({ pageParam = 1 }) =>
+      getData(`${obj.url}&page=${pageParam}&amount=${obj.pageSize}`), // Fetch function
+    getNextPageParam: (lastPage, allPages) => {
+      const dataLength = lastPage?.data?.length || 0;
 
-        // Otherwise, return the next page number
-        return allPages.length + 1;
-      },
-      onSuccess: (data) => {
-        console.log("Fetched data:", data);
-      },
-    }
-  );
+      // If data length is less than pageSize, no more pages
+      if (dataLength < obj.pageSize) {
+        return undefined;
+      }
+
+      // Otherwise, return the next page number
+      return allPages.length + 1;
+    },
+    onSuccess: (data) => {
+      console.log("Fetched data:", data);
+    },
+  });
 
   return result; // Return the result from the infinite query
 };
+
 // {
 //   data: {
 //     pages: [

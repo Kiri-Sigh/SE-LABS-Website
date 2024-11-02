@@ -61,9 +61,12 @@ export const DataFetcherQueue = (template) => {
   const normalQueries = currentGroup.filter((q) => q.type === "n");
   const infiniteQueries = currentGroup.filter((q) => q.type === "inf");
 
-  const normalResults = useParallelData(normalQueries);
-
-  const infiniteResults = useInfiniteFetch(infiniteQueries);
+  const normalResults = useParallelData(
+    normalQueries.length > 0 ? normalQueries : []
+  );
+  const infiniteResults = useInfiniteFetch(
+    infiniteQueries.length > 0 ? infiniteQueries : []
+  );
 
   const results = [...normalResults, ...infiniteResults];
 
