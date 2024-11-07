@@ -11,10 +11,9 @@ load_dotenv()
 app = FastAPI()
 
 
-FRONT_END_ORIGIN = os.getenv("FRONT_END_ORIGIN")
-
 origins = [
-    FRONT_END_ORIGIN
+    "http://localhost:3000",  # Replace with your frontend origin
+    "http://127.0.0.1:8000",  # Replace with your backend origin
 ]
 
 app.add_middleware(

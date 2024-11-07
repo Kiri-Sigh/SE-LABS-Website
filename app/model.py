@@ -152,7 +152,7 @@ class Researcher(Base):
     highest_role: Mapped[Position] = mapped_column(sqlalchemy_enum(Position, name="position_enum"), nullable=False)
     admin: Mapped[bool] = mapped_column(Boolean)
     active: Mapped[bool] = mapped_column(Boolean, default=True)
-    token: Mapped[Optional[str]] = mapped_column(String(100))
+    token: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
     # Relationship
     user_credentials: Mapped['UserCredentials'] = relationship("UserCredentials", back_populates="person", uselist=False)

@@ -94,6 +94,10 @@ async def login_for_access_token(
         }, 
         expires_delta=access_token_expires
     )
+    # add token to user
+    user.token = access_token
+    db.commit()
+
     return {"access_token": access_token, "token_type": "bearer"}
 
 async def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)) -> AuthUser:
