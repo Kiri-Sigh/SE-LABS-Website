@@ -12,9 +12,11 @@ app = FastAPI()
 
 
 FRONT_END_ORIGIN = os.getenv("FRONT_END_ORIGIN")
+BACK_END_ORIGIN = os.getenv("BACK_END_ORIGIN")
 
 origins = [
-    FRONT_END_ORIGIN
+    FRONT_END_ORIGIN,
+    BACK_END_ORIGIN
 ]
 
 app.add_middleware(
