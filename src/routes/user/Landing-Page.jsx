@@ -15,6 +15,8 @@ import TableComponent from "../../component/admin-Component/tables/proto2/table-
 // import axios from "axios";
 // import { DataFetcherQueue } from "./fetches/fetch-dynamic-page";
 import { exampleToFetchData } from "../../PlaceHolder-Data/toFetch";
+import MyFormComponent from "../../component/etc/exampleForm";
+import LoginComp from "component/etc/example-login";
 function MainPages() {
   // axios
   //   .get(
@@ -67,10 +69,11 @@ function MainPages() {
       return (
         <>
           <Modals />
+          <LoginComp />
+          <MyFormComponent />
           <TableComponent />
           <HeroBox />
           <DividingRows />
-
           <RecentNews
             toFetchedData={exampleToFetchData.recentNews}
             topic="news"

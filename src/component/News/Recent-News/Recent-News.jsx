@@ -1,40 +1,57 @@
-import React from "react";
+import React, { useState } from "react";
 import NewsCard from "../../Cards/News-Card";
 import { useInfiniteFetch } from "../../../api/custom-hooks";
 import previous from "../../../resource/previous-button.svg";
 import next from "../../../resource/next-button.svg";
+import { getImgData } from "../../../api/api-method";
 function RecentNews({ rowData, toFetchedData = {} }) {
-  // const { data } = useInfiniteFetch({
-  //   id: toFetchedData.id,
-  //   url: toFetchedData.url,
-  //   type: toFetchedData.type,
-  //   pageSize: toFetchedData.pageSize,
-  // });
-  // console.log(data);
-  console.log(
-    useInfiniteFetch({
-      id: "abc",
-      url: "http://127.0.0.1:8000/user/event/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980",
-      // type: "n",
-      pageSize: 3,
-    })
-  );
-  console.log(
-    useInfiniteFetch({
-      id: "abc2",
-      url: "http://127.0.0.1:8000/user/event/thumbnail",
-      // type: "n",
-      pageSize: 3,
-    })
-  );
-  console.log(
-    useInfiniteFetch({
-      id: "abc3",
-      url: "http://127.0.0.1:8000/user/news/thumbnail",
-      // type: "n",
-      pageSize: 3,
-    })
-  );
+  //main data = { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, error }
+  const recentNewsQuery = useInfiniteFetch({
+    id: toFetchedData.id,
+    url: toFetchedData.url,
+    pageSize: toFetchedData.pageSize,
+  });
+  console.log(recentNewsQuery);
+  const { data, isLoading } = recentNewsQuery;
+  // const [imgs, setImg] = useState(null);
+  // const img = getData(
+  //   "http://127.0.0.1:8000/user/news/image-high?news_id=f6eb2c3f-efcd-4cd0-842f-05f746bf4b7b"
+  // );
+
+  // React.useEffect(() => {
+  //   const fetchImage = async () => {
+  //     const fetchedImage = await getImgData(
+  //       `http://127.0.0.1:8000/user/news/image-high?news_id=f6eb2c3f-efcd-4cd0-842f-05f746bf4b7b`
+  //     );
+  //     setImg(fetchedImage);
+  //   };
+  //   fetchImage();
+  // }, []);
+
+  // console.log(
+  //   useInfiniteFetch({
+  //     id: "abc",
+  //     url: "http://127.0.0.1:8000/user/event/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980",
+  //     // type: "n",
+  //     pageSize: 3,
+  //   })
+  // );
+  // console.log(
+  //   useInfiniteFetch({
+  //     id: "abc2",
+  //     url: "http://127.0.0.1:8000/user/event/thumbnail?",
+  //     // type: "n",
+  //     pageSize: 3,
+  //   })
+  // );
+  // console.log(
+  //   useInfiniteFetch({
+  //     id: "abc3",
+  //     url: "http://127.0.0.1:8000/user/news/thumbnail?",
+  //     // type: "n",
+  //     pageSize: 3,
+  //   })
+  // );
 
   return (
     <section className="flex overflow-hidden flex-col px-16 py-28 w-full bg-sky-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
@@ -43,6 +60,7 @@ function RecentNews({ rowData, toFetchedData = {} }) {
           <h2 className="text-5xl font-bold leading-tight max-md:max-w-full max-md:text-4xl">
             Latest News
           </h2>
+          {/* <img src={imgs} alt="a" /> */}
           <p className="mt-6 text-lg max-md:max-w-full">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
           </p>
@@ -56,9 +74,18 @@ function RecentNews({ rowData, toFetchedData = {} }) {
       <div className="flex flex-col mt-16 w-full max-md:mt-10 max-md:max-w-full">
         <div className="box-border flex relative flex-col shrink-0">
           <div className="flex gap-8 items-start w-full max-md:max-w-full">
-            {rowData.map((item, index) => (
+            {/* {rowData.map((item, index) => (
               <NewsCard key={index} {...item} />
-            ))}
+            ))} */}
+            {/* {!isLoading ? console.log(data.pages) : null} */}
+            {!isLoading ? (
+              data.pages[0].map((item, index) => {
+                console.log(item.News);
+                return <NewsCard key={`${index}`} {...item.News} />;
+              })
+            ) : (
+              <div>Loading...</div>
+            )}
           </div>
         </div>
         <div className="flex flex-wrap gap-10 justify-between items-center mt-12 w-full max-md:mt-10 max-md:max-w-full">

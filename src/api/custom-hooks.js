@@ -2,13 +2,36 @@ import {
   useQueries,
   useInfiniteQuery,
   // useMutation,
-  // useQuery,
+  useQuery,
 } from "@tanstack/react-query";
-import { getData } from "./api-method";
+import { getData, getImgData } from "./api-method";
 // import { useState } from "react";
 //   //map [{url,id},{}] to {id:{data},id:{data}}
 //   //using getData each of the obejects in array
 //   //and using useQueries
+export const useNormalQueryGet = (url, type, id) => {
+  const results = useQuery({
+    queryKey: [`get-${type}-${id}`],
+    queryFn: () => getData(url),
+    onSuccess: (data) => {
+      return data;
+    },
+  });
+
+  return results;
+};
+export const useQueryGetImg = (url, type, id) => {
+  const results = useQuery({
+    queryKey: [`get-${type}-${id}`],
+    queryFn: () => getImgData(url),
+    onSuccess: (data) => {
+      return data;
+    },
+  });
+
+  return results;
+};
+
 export const useParallelData = (urlArr) => {
   const results = useQueries(
     urlArr.map((obj, i) => ({
@@ -55,9 +78,15 @@ export const useInfiniteFetch = (obj) => {
     refetchOnWindowFocus: false, //if false, it wont refetch when change tabs/app and come back later
     enabled: true, //if false, the query wont run
 
-    queryKey: [`infinite-${obj.id}`], // Proper array inside the object
-    queryFn: ({ pageParam = 1 }) =>
-      getData(`${obj.url}&page=${pageParam}&amount=${obj.pageSize}`), // Fetch function
+    queryKey: [`infinite-${obj.id}-${obj.pageSize}`], // Proper array inside the object
+
+    queryFn: ({ pageParam = 1 }) => {
+      if (obj.url.slice(-1) === "?") {
+        return getData(`${obj.url}page=${pageParam}&amount=${obj.pageSize}`);
+      } else {
+        return getData(`${obj.url}&page=${pageParam}&amount=${obj.pageSize}`);
+      }
+    }, // Fetch function
 
     getNextPageParam: (lastPage, allPages) => {
       const dataLength = lastPage?.data?.length || 0;

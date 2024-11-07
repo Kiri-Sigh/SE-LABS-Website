@@ -24,6 +24,19 @@ async def create_news(
     db = Depends(get_db),
     current_user: AuthUser = Depends(get_current_active_researcher)
 ):
+    """
+    news must come in this form
+{
+        "title": str,
+        "body": str,
+        "related_laboratory": {
+            "LID": UUID,
+            "related_research": {
+                "RID": UUID
+            }
+        }
+    }
+    """
     if image.content_type not in ["image/jpeg", "image/jpg"]:
         raise HTTPException(status_code=400, detail="Only JPEG images are allowed")
     

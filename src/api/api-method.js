@@ -2,7 +2,7 @@ import axios from "axios";
 
 export async function getData(datapath) {
   const response = await axios.get(datapath);
-  // console.log(response.data);
+  console.log(datapath);
 
   return response.data;
 }
@@ -30,9 +30,7 @@ export async function getDataDynamic(datapath, header = null) {
 
 export async function postData(datapath, header, data) {
   const response = await axios.post(datapath, data, {
-    headers: {
-      authorization: `${header}`,
-    },
+    headers: header,
   });
   return response.data;
 }
@@ -52,4 +50,14 @@ export async function patchData(datapath, header, data) {
     },
   });
   return response.data;
+}
+
+export async function getImgData(datapath) {
+  try {
+    const response = await axios.get(datapath, { responseType: "blob" });
+    return URL.createObjectURL(response.data);
+  } catch (error) {
+    console.error("Error fetching image data:", error);
+    throw error;
+  }
 }
