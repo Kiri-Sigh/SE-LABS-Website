@@ -5,7 +5,6 @@ from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 from uuid import UUID, uuid4
 import random
-import hashlib
 from faker import Faker
 from passlib.context import CryptContext
 from PIL import Image, ImageDraw, ImageFont

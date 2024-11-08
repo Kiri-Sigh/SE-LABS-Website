@@ -10,7 +10,7 @@ class NT01(BaseModel):
     title: str
     body: str
     date: datetime
-    related_laboratory: LRE01
+    related_laboratory: Optional[LRE01] = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -27,6 +27,8 @@ class NT01(BaseModel):
     @staticmethod
     def _get_related_laboratory(obj) -> Optional[LRE01]:
         if obj.lab:
+            if obj.research_id:
+                return LRE01.from_orm(obj.lab, obj.research_id)
             return LRE01.from_orm(obj.lab)
         return None
     
