@@ -1,12 +1,12 @@
 import os
 from dotenv import load_dotenv
-from fastapi import  Depends, HTTPException, status, APIRouter
+from fastapi import  Depends, HTTPException, status, APIRouter, Query
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import joinedload, Session
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
-from typing import Union
+from typing import Union, Optional
 
 from .model import *
 from .schemas.auth_user import  AuthUser, TokenData, Token, AU01
@@ -117,7 +117,6 @@ async def get_current_user(db: Session = Depends(get_db), token: str = Depends(o
     user = get_user(db, gmail=token_data.username)
     if user is None:
         raise credentials_exception
-    # use researcher relation to obtain related_lab, related_research
     return AuthUser(Researcher=AU01.from_orm(user, token))
 
 async def get_current_active_user(current_user: AuthUser = Depends(get_current_user)) -> AuthUser:
@@ -125,12 +124,16 @@ async def get_current_active_user(current_user: AuthUser = Depends(get_current_u
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
-async def get_current_active_researcher(research_id: UUID, current_user: AuthUser = Depends(get_current_active_user)) -> AuthUser:
-    if research_id not in [research.RID for research in current_user.Researcher.Researches]:
+async def get_current_active_researcher(research_id: Optional[UUID] = Query(None), current_user: AuthUser = Depends(get_current_active_user)) -> AuthUser:
+    if research_id is None and current_user.Researcher.position == Position.Admin:
+        return current_user
+    elif research_id not in [research.RID for research in current_user.Researcher.Researches]:
         raise HTTPException(status_code=400, detail=f"User don't have enough permisstion for research: {research_id}")
     return current_user
 
-async def get_current_active_lead_researcher(laboratory_id: UUID, current_user: AuthUser = Depends(get_current_active_user)) -> AuthUser:
+async def get_current_active_lead_researcher(laboratory_id: Optional[UUID] = Query(None), current_user: AuthUser = Depends(get_current_active_user)) -> AuthUser:
+    if laboratory_id is None and current_user.Researcher.position != Position.Admin:
+        raise HTTPException(status_code=400, detail="Only Admins access without specifying a laboratory")
     if laboratory_id not in [lab.LID for lab in current_user.Researcher.Laboratories]:
         raise HTTPException(status_code=400, detail=f"User don't have enough permisstion for laboratory: {laboratory_id}")
     return current_user
@@ -139,3 +142,69 @@ async def get_current_active_admin(current_user: AuthUser = Depends(get_current_
     if current_user.Researcher.position != Position.Admin:
         raise HTTPException(status_code=400, detail=f"User don't have enough permisstion you are just {current_user.Researcher.position}")
     return current_user
+
+async def get_current_active_authorized_user(
+    research_id: Optional[UUID] = Query(None),
+    laboratory_id: Optional[UUID] = Query(None),
+    current_user: AuthUser = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+) -> AuthUser:
+    """
+    Verify user authorization for accessing laboratory or research resources.
+    Admin users have full access. Other users need specific permissions.
+    """
+    # Admin bypass - full access
+    if current_user.Researcher.position == Position.Admin:
+        return current_user
+    
+    # Require at least one ID for non-admin users
+    if laboratory_id is None and research_id is None:
+        raise HTTPException(
+            status_code=403,
+            detail="Please specify either laboratory_id or research_id - admin access required for unrestricted access"
+        )
+
+    # Check laboratory access
+    if laboratory_id is not None:
+        if not has_laboratory_access(current_user, laboratory_id):
+            raise HTTPException(
+                status_code=403, 
+                detail=f"Insufficient permission for laboratory: {laboratory_id}"
+            )
+        return current_user
+
+    # Check research access
+    if research_id is not None:
+        if has_direct_research_access(current_user, research_id):
+            return current_user
+        
+        if has_indirect_research_access(current_user, research_id, db):
+            return current_user
+            
+        raise HTTPException(
+            status_code=403,
+            detail=f"Insufficient permission for research: {research_id}"
+        )
+
+def has_laboratory_access(user: AuthUser, lab_id: UUID) -> bool:
+    """Check if user has access to the specified laboratory."""
+    return lab_id in {lab.LID for lab in user.Researcher.Laboratories}
+
+def has_direct_research_access(user: AuthUser, research_id: UUID) -> bool:
+    """Check if user has direct access to the research."""
+    return research_id in {research.RID for research in user.Researcher.Researches}
+
+def has_indirect_research_access(user: AuthUser, research_id: UUID, db: Session) -> bool:
+    """Check if lead researcher has indirect access through laboratory."""
+    if user.Researcher.position != Position.LeadResearcher:
+        return False
+        
+    for lab in user.Researcher.Laboratories:
+        research_ids = {
+            rid[0] for rid in db.query(Research.research_id)
+            .filter(Research.lab_id == lab.LID)
+            .all()
+        }
+        if research_id in research_ids:
+            return True
+    return False
