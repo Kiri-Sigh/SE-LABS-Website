@@ -32,6 +32,18 @@ class AU01(BaseModel):
 
     @classmethod
     def from_orm(cls, obj, token: str):
+        # Extract laboratories the user is associated with
+        laboratories = [LRE02.from_orm(lab) for lab in obj.labs]
+        
+        # Extract researches across all labs
+        researches = []
+        for lab in obj.labs:
+            for research in lab.researches:
+                researches.append(RRE01.from_orm(research))
+
+        for research in obj.researches:
+            researches.append(RRE01.from_orm(research))
+
         return cls(
             UID=obj.user_id,
             name=obj.full_name,
@@ -39,8 +51,8 @@ class AU01(BaseModel):
             position=obj.highest_role,
             token=token,
             active=obj.active,
-            Laboratories=[LRE02.from_orm(lab) for lab in obj.labs],
-            Researches=[RRE01.from_orm(research) for research in obj.researches]
+            Laboratories=laboratories,
+            Researches=researches
         )
 
 class AU02(AU01):

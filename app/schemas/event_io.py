@@ -11,7 +11,7 @@ class EventCreate(BaseModel):
     location: str
     start: datetime
     end: datetime
-    related_laboratory: LRE03
+    related_laboratory: Optional[LRE03] = None
 
     model_config = ConfigDict(from_attributes=True)
 

@@ -8,7 +8,7 @@ from .ult.LRE03 import LRE03
 class NewsCreate(BaseModel):
     title: str
     body: str
-    related_laboratory: LRE03
+    related_laboratory: Optional[LRE03]
 
     model_config = ConfigDict(from_attributes=True)
 

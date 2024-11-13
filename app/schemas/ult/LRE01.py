@@ -2,6 +2,7 @@ from pydantic import BaseModel, ConfigDict
 from uuid import UUID
 from typing import Optional
 
+from ...model import Laboratory, Research
 from .RRE01 import RRE01
 from .PRE01 import PRE01
 
@@ -14,10 +15,15 @@ class LRE01(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     @classmethod
-    def from_orm(cls, obj):
+    def from_orm(cls, lab: Laboratory, research_id: Optional[UUID] = None):
+        research: Research = None
+        for r in lab.researches:
+            if r.research_id == research_id:
+                research = r
+                break
+
         return cls(
-            LID=obj.lab_id,
-            title=obj.lab_name,
-            related_research=RRE01.from_orm(obj.researches[0]) if obj.researches else None,
-            related_publication=PRE01.from_orm(obj.publications[0]) if obj.publications else None
+            LID=lab.lab_id,
+            title=lab.lab_name,
+            related_research=RRE01.from_orm(research) if research_id else None,
         )

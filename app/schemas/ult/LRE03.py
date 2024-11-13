@@ -1,11 +1,12 @@
 from pydantic import BaseModel, ConfigDict
 from uuid import UUID
+from typing import Optional
 
 from .RRE02 import RRE02
 
 class LRE03(BaseModel):
     LID: UUID
-    related_research: RRE02
+    related_research: Optional[RRE02] = None
 
     model_config = ConfigDict(from_attributes=True)
 
