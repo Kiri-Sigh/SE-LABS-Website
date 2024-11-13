@@ -77,9 +77,11 @@ function MainPages() {
           <RecentNews
             toFetchedData={exampleToFetchData.recentNews}
             topic="news"
-            rowData={newsItems}
           />
-          <RecentEvents listData={eventItems} topic="events" />
+          <RecentEvents
+            toFetchedData={exampleToFetchData.recentEvents}
+            topic="events"
+          />
         </>
       );
     case "/about":
@@ -87,36 +89,60 @@ function MainPages() {
         <>
           <TopicAndImage />
           <AboutDescription />
-          <RecentNews rowData={newsItems} topic="news" />
-          <RecentEvents listData={eventItems} topic="events" />
+          <RecentNews
+            toFetchedData={exampleToFetchData.recentNews}
+            topic="news"
+            rowData={newsItems}
+          />
+          <RecentEvents
+            toFetchedData={exampleToFetchData.recentEvents}
+            listData={eventItems}
+            topic="events"
+          />
         </>
       );
     case "/events":
       return (
         <>
           <TopicHeaderText topic="Events" />
-          <GridCards rowData={newsItems} />
+          <GridCards
+            toFetchedData={exampleToFetchData.recentGridEvents}
+            topic="events"
+            url="http://127.0.0.1:8000/user/event/thumbnail?"
+          />
         </>
       );
     case "/news":
       return (
         <>
           <TopicHeaderText topic="News" />
-          <GridCards rowData={newsItems} />
+          <GridCards
+            toFetchedData={exampleToFetchData.recentGridNews}
+            topic="news"
+            url="http://127.0.0.1:8000/user/news/thumbnail?"
+          />
         </>
       );
     case "/publications":
       return (
         <>
           <TopicHeaderText topic="Publications" />
-          <GridCards rowData={newsItems} />
+          <GridCards
+            toFetchedData={exampleToFetchData.recentGridNews}
+            topic="news"
+            url="http://127.0.0.1:8000/user/publication/thumbnail?"
+          />
         </>
       );
     case "/research":
       return (
         <>
           <TopicHeaderText topic="Research" />
-          <GridCards rowData={newsItems} />
+          <GridCards
+            toFetchedData={exampleToFetchData.recentGridNews}
+            topic="news"
+            url="http://127.0.0.1:8000/user/research/thumbnail?"
+          />{" "}
         </>
       );
     case "/labs":

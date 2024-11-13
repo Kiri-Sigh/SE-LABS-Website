@@ -29,10 +29,16 @@ export async function getDataDynamic(datapath, header = null) {
 }
 
 export async function postData(datapath, header, data) {
-  const response = await axios.post(datapath, data, {
-    headers: header,
-  });
+  const response = await axios.post(datapath, data, header);
   return response.data;
+}
+export async function postData2(datapath, data, config) {
+  try {
+    const response = await axios.post(datapath, data, config); // Send request with config
+    return response.data;
+  } catch (error) {
+    throw error; // Handle error appropriately
+  }
 }
 export async function putData(datapath, header, data) {
   const response = await axios.put(datapath, data, {

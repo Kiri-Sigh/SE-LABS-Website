@@ -6,10 +6,12 @@ import AdminPage from "./routes/admin/Admin-Page";
 import DynamicLabPage from "./routes/user/Dynamic-Lab-Page";
 import MainPages from "./routes/user/Landing-Page";
 import AdminLayout from "./routes/admin/Admin-Layout";
+import ErrorPage from "routes/user/Error-Page";
 const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
+    errorElement: <ErrorPage />,
     //errorElement: <ErrorPage />,
     children: [
       { index: true, element: <MainPages /> },
@@ -27,6 +29,7 @@ const router = createBrowserRouter([
   {
     path: "admin",
     element: <AdminLayout />,
+    errorElement: <ErrorPage />,
     children: [
       { index: true, element: <AdminPage /> },
       // { path: "researcher", element: <ResearcherPage /> },

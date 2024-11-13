@@ -20,10 +20,11 @@ export const useNormalQueryGet = (url, type, id) => {
 
   return results;
 };
-export const useQueryGetImg = (url, type, id) => {
+export const useQueryGetImg = (url, type, id, relatedTopic) => {
   const results = useQuery({
     queryKey: [`get-${type}-${id}`],
     queryFn: () => getImgData(url),
+    enabled: relatedTopic !== null, // Only run query if data is not null
     onSuccess: (data) => {
       return data;
     },
@@ -101,6 +102,9 @@ export const useInfiniteFetch = (obj) => {
     },
     onSuccess: (data) => {
       console.log("Fetched data:", data);
+    },
+    onError: (data) => {
+      console.log("Error data:", data);
     },
   });
 

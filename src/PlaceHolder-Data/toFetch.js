@@ -6,8 +6,8 @@ export const exampleToFetchData = {
     pageSize: 5,
   },
   recentEvents: {
-    id: "abc",
-    url: "http://127.0.0.1:8000/user/event/thumbnail",
+    id: "recentEvents",
+    url: "http://127.0.0.1:8000/user/event/thumbnail?",
     pageSize: 3,
   },
   recentLabNews: {
@@ -31,5 +31,25 @@ export const exampleToFetchData = {
         RID: "str",
       },
     },
+  },
+  recentGridNews: {
+    id: "recentGridNews",
+    // type: "n",
+    pageSize: 8,
+  },
+  recentGridEvents: {
+    id: "recentGridEvents",
+    // type: "n",
+    pageSize: 8,
+  },
+  recentGridPublication: {
+    id: "recentGridPublication",
+    // type: "n",
+    pageSize: 6,
+  },
+  recentGridResearch: {
+    id: "recentGridResearch",
+    // type: "n",
+    pageSize: 6,
   },
 };

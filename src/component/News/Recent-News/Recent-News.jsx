@@ -4,7 +4,7 @@ import { useInfiniteFetch } from "../../../api/custom-hooks";
 import previous from "../../../resource/previous-button.svg";
 import next from "../../../resource/next-button.svg";
 import { getImgData } from "../../../api/api-method";
-function RecentNews({ rowData, toFetchedData = {} }) {
+function RecentNews({ toFetchedData = {} }) {
   //main data = { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, error }
   const recentNewsQuery = useInfiniteFetch({
     id: toFetchedData.id,
@@ -12,7 +12,9 @@ function RecentNews({ rowData, toFetchedData = {} }) {
     pageSize: toFetchedData.pageSize,
   });
   console.log(recentNewsQuery);
-  const { data, isLoading } = recentNewsQuery;
+  const { data, isLoading, isError } = recentNewsQuery;
+  const firstItem = data[0];
+  const [topic] = Object.keys(firstItem);
   // const [imgs, setImg] = useState(null);
   // const img = getData(
   //   "http://127.0.0.1:8000/user/news/image-high?news_id=f6eb2c3f-efcd-4cd0-842f-05f746bf4b7b"
@@ -80,8 +82,8 @@ function RecentNews({ rowData, toFetchedData = {} }) {
             {/* {!isLoading ? console.log(data.pages) : null} */}
             {!isLoading ? (
               data.pages[0].map((item, index) => {
-                console.log(item.News);
-                return <NewsCard key={`${index}`} {...item.News} />;
+                console.log(item.topic);
+                return <NewsCard key={`${index}`} {...item[topic]} />;
               })
             ) : (
               <div>Loading...</div>
@@ -90,14 +92,14 @@ function RecentNews({ rowData, toFetchedData = {} }) {
         </div>
         <div className="flex flex-wrap gap-10 justify-between items-center mt-12 w-full max-md:mt-10 max-md:max-w-full">
           <div className="flex gap-2 items-start self-stretch my-auto">
-            {[...Array(6)].map((_, index) => (
+            {/* {[...Array(6)].map((_, index) => (
               <div
                 key={index}
                 className={`flex shrink-0 w-2 h-2 rounded-full ${
                   index === 0 ? "bg-black" : "bg-stone-300"
                 }`}
               />
-            ))}
+            ))} */}
           </div>
           <div className="flex gap-4 items-start self-stretch my-auto">
             <button className="flex gap-2 justify-center items-center px-3 w-12 h-12 bg-white border border-black border-solid rounded-[50px]">
@@ -108,14 +110,26 @@ function RecentNews({ rowData, toFetchedData = {} }) {
                 className="object-contain self-stretch my-auto w-6 aspect-square"
               />
             </button>
-            <button className="flex gap-2 justify-center items-center px-3 w-12 h-12 bg-white border border-black border-solid rounded-[50px]">
-              <img
-                loading="lazy"
-                src={next}
-                alt="Next"
-                className="object-contain self-stretch my-auto w-6 aspect-square"
-              />
-            </button>
+            {!isError ? (
+              <button className="flex gap-2 justify-center items-center px-3 w-12 h-12 bg-white border border-black border-solid rounded-[50px]">
+                <img
+                  loading="lazy"
+                  src={next}
+                  alt="Next"
+                  className="object-contain self-stretch my-auto w-6 aspect-square"
+                />
+              </button>
+            ) : (
+              <button className="flex gap-2 justify-center items-center px-3 w-12 h-12 bg-white border border-black border-solid rounded-[50px]">
+                <img
+                  loading="lazy"
+                  src={next}
+                  alt="Next"
+                  className="object-contain self-stretch my-auto w-6 aspect-square"
+                  disabled
+                />
+              </button>
+            )}
           </div>
         </div>
       </div>

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { postData } from "api/api-method";
+import { postData, postData2 } from "api/api-method"; // Assuming you have this utility function
 
 const MyFormComponent = () => {
-  const [title, setTitle] = useState("a");
-  const [body, setDescription] = useState("ab");
+  const [title2, setTitle] = useState("a");
+  const [body2, setDescription] = useState("ab");
   const [file, setFile] = useState(null);
 
   const handleFileChange = (e) => {
@@ -16,42 +16,74 @@ const MyFormComponent = () => {
 
     // Create FormData object
     const formData = new FormData();
-    formData.append("title", title);
-    formData.append("body", body);
-    if (file) {
-      formData.append("file", file, file.name);
-    }
-    formData.append("related_laboratory", {
-      LID: null,
-      related_research: {
-        RID: "2a7502f6-7101-4fea-a259-2d1aa65f6155",
-      },
-    });
-    console.log(localStorage.getItem("token"));
-    try {
-      const response = await postData(
-        "http://127.0.0.1:8000/researcher/news?research_id=2a7502f6-7101-4fea-a259-2d1aa65f6155",
+    // formData.append("title", title);
+    console.log(body2);
 
-        {
-          "Content-Type": "multipart/form-data",
-          Authorization: localStorage.getItem("token"), // replace with your actual token if needed
+    // formData.append("news", body);
+    console.log(file);
+    const news = {
+      title: title2,
+      body: body2,
+      related_laboratory: {
+        LID: "1e53d026-017a-4635-8a32-073e1794b5cf",
+        related_research: {
+          RID: "3b8be3a4-06cf-4355-b6a5-b27de60782fb",
         },
-        formData
-      );
-      console.log("File uploaded successfully", response.data);
-    } catch (error) {
-      console.error("Error uploading file:", error);
+      },
+    };
+    // Construct the related laboratory and research object
+    formData.append("news", JSON.stringify(news));
+    if (file) {
+      formData.append("image", file);
+    }
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+
+    const relatedLaboratory = {
+      LID: "1e53d026-017a-4635-8a32-073e1794b5cf",
+      related_research: {
+        RID: "3b8be3a4-06cf-4355-b6a5-b27de60782fb",
+      },
+    };
+
+    // Get the token from localStorage
+    const token = localStorage.getItem("token");
+    if (token) {
+      console.log(formData);
+      // formData.append("related_laboratory", JSON.stringify(relatedLaboratory));
+
+      // Construct request configuration with Authorization header
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data", // Correct MIME type for file uploads
+          Authorization: `Bearer ${token}`, // Add the token
+        },
+      };
+      // Send the form data using your postData function
+      try {
+        const response = await postData2(
+          "http://127.0.0.1:8000/researcher/news?research_id=3b8be3a4-06cf-4355-b6a5-b27de60782fb", // URL for the API endpoint
+          formData, // The formData as body of the request
+          config // Configuration with headers
+        );
+        console.log("File uploaded successfully", response.data);
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
+    } else {
+      console.log("No token found");
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <h4>form to news</h4>
+      <h4>Form to Submit News</h4>
       <div>
         <label>Title:</label>
         <input
           type="text"
-          value={title}
+          value={title2}
           onChange={(e) => setTitle(e.target.value)}
           required
         />
@@ -59,7 +91,7 @@ const MyFormComponent = () => {
       <div>
         <label>Description:</label>
         <textarea
-          value={body}
+          value={body2}
           onChange={(e) => setDescription(e.target.value)}
           required
         />

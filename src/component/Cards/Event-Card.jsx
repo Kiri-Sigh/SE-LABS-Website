@@ -4,11 +4,13 @@ import time from "../../resource/time.svg";
 
 const EventCard = ({
   title,
+  body,
+  start,
+  end,
+  EID,
+  related_laboratory,
   status,
-  statusClass,
-  description,
   location,
-  duration,
 }) => {
   return (
     <div className="flex flex-col justify-center p-8 w-full bg-cyan-200 rounded-2xl border border-black border-solid max-md:px-5 max-md:max-w-full mb-8">
@@ -18,14 +20,12 @@ const EventCard = ({
             {title}
           </h3>
           <span
-            className={`self-stretch px-2 py-1 my-auto text-sm font-semibold text-black ${statusClass} rounded-xl border border-black border-solid w-[91px]`}
+            className={`self-stretch px-2 py-1 my-auto text-sm font-semibold text-black rounded-xl border border-black border-solid w-[91px]`}
           >
             {status}
           </span>
         </div>
-        <p className="mt-4 text-base text-black max-md:max-w-full">
-          {description}
-        </p>
+        <p className="mt-4 text-base text-black max-md:max-w-full">{body}</p>
         <div className="flex flex-wrap gap-6 items-start mt-4 w-full text-lg text-black whitespace-nowrap max-md:max-w-full">
           <div className="flex gap-3 items-center">
             <img
@@ -43,7 +43,9 @@ const EventCard = ({
               alt=""
               className="object-contain shrink-0 self-stretch my-auto w-6 aspect-square"
             />
-            <span className="self-stretch my-auto">{duration}</span>
+            <span className="self-stretch my-auto">
+              {start}-{end}
+            </span>
           </div>
         </div>
       </div>

@@ -3,17 +3,24 @@ import "./Card.css";
 import kmitl_logo from "../../resource/kmitl_logo.webp";
 import { getData, getImgData } from "../../api/api-method";
 import { useNormalQueryGet, useQueryGetImg } from "../../api/custom-hooks";
-const NewsCard = ({ title, body, date, NID, related_laboratory }) => {
+const NewsCard = ({ title, body, date, ID, NID, related_laboratory, type }) => {
   console.log(title);
-  const relatedTopic =
-    related_laboratory.related_publication ||
-    related_laboratory.related_research ||
-    related_laboratory ||
-    null;
+  let relatedTopic;
+  if (type === "news") {
+    relatedTopic =
+      related_laboratory.related_publication ||
+      related_laboratory.related_research ||
+      related_laboratory ||
+      null;
+  } else if (type === "publication") {
+    relatedTopic = null;
+  } else if (type === "laboratory") {
+  }
   const { data, isLoading } = useQueryGetImg(
     `http://127.0.0.1:8000/user/news/image-high?news_id=${NID}`,
     "news",
-    NID
+    NID,
+    relatedTopic
   );
 
   // const [image, setImage] = React.useState(kmitl_logo);
