@@ -26,6 +26,13 @@ def get_publication_thumbnail(
     publications = publication.offset(offset).limit(amount).all()
     return [PT01.to_publication_thumbnail(publication) for publication in publications]
 
+@router.get("/thumbnail/{publication_id}", response_model=PublicationThumbnail)
+def get_publication_thumbnail_by_id(publication_id: UUID, db = Depends(get_db)):
+    publication = db.query(Publication).filter(Publication.publication_id == publication_id).first()
+    if not publication:
+        raise HTTPException(status_code=404, detail="Publication not found")
+    return PT01.to_publication_thumbnail(publication)
+
 @router.get("/image-high")
 def get_publication_image_high(publication_id: UUID, db = Depends(get_db)):
     publication = db.query(Publication).filter(Publication.publication_id == publication_id).first()

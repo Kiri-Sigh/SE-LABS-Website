@@ -27,8 +27,8 @@ class NT01(BaseModel):
     @staticmethod
     def _get_related_laboratory(obj) -> Optional[LRE01]:
         if obj.lab:
-            if obj.research_id:
-                return LRE01.from_orm(obj.lab, obj.research_id)
+            if obj.research_id or obj.publication_id:
+                return LRE01.from_orm(obj.lab, obj.research_id, obj.publication_id)
             return LRE01.from_orm(obj.lab)
         return None
     

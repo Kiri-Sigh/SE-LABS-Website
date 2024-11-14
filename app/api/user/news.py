@@ -34,13 +34,13 @@ def get_news_thumbnail_API(
 
 @router.get("/thumbnail/{news_id}", response_model=NewsThumbnail)
 def get_news_thumbnail_by_id_API(news_id: UUID, db: Session = Depends(get_db)):
-    event: Event = read_news(
+    news: News = read_news(
         db=db,
         amount=1,
         page=1,
         news_id=news_id
     )[0]
-    return NT01.to_news_thumbnail(event)
+    return NT01.to_news_thumbnail(news)
 
 @router.get("/related_news", response_model=List[NewsThumbnail])
 def get_related_news_API(news_id: UUID, db = Depends(get_db)):
