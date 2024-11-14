@@ -4,9 +4,11 @@ import kmitl_logo from "../../resource/kmitl_logo.webp";
 import { getData, getImgData } from "../../api/api-method";
 import { useNormalQueryGet, useQueryGetImg } from "../../api/custom-hooks";
 const NewsCard = ({ title, body, date, ID, NID, related_laboratory, type }) => {
-  console.log(title);
+  // console.log(title);
+  // console.log(type);
+
   let relatedTopic;
-  if (type === "news") {
+  if (type === "News") {
     relatedTopic =
       related_laboratory.related_publication ||
       related_laboratory.related_research ||
@@ -15,12 +17,14 @@ const NewsCard = ({ title, body, date, ID, NID, related_laboratory, type }) => {
   } else if (type === "publication") {
     relatedTopic = null;
   } else if (type === "laboratory") {
+  } else {
+    relatedTopic = "something wrong";
   }
-  const { data, isLoading } = useQueryGetImg(
+  // console.log(relatedTopic);
+  const { data, isLoading, isError } = useQueryGetImg(
     `http://127.0.0.1:8000/user/news/image-high?news_id=${NID}`,
     "news",
-    NID,
-    relatedTopic
+    NID
   );
 
   // const [image, setImage] = React.useState(kmitl_logo);
@@ -54,21 +58,25 @@ const NewsCard = ({ title, body, date, ID, NID, related_laboratory, type }) => {
       //   );
       //   setImgSmall(fetchedImg);
       // }
-      if (relatedTopic.PID) {
-        const fetchedImg = await getImgData(
-          `http://127.0.0.1:8000/user/publication/image-low?publication_id=${relatedTopic.PID}`
-        );
-        setImgSmall(fetchedImg);
-      } else if (relatedTopic.RID) {
-        const fetchedImg = await getImgData(
-          `http://127.0.0.1:8000/user/publication/image-low?publication_id=${relatedTopic.RID}`
-        );
-        setImgSmall(fetchedImg);
-      } else if (relatedTopic.LID) {
-        const fetchedImg = await getImgData(
-          `http://127.0.0.1:8000/user/publication/image-low?publication_id=${relatedTopic.LID}`
-        );
-        setImgSmall(fetchedImg);
+      console.log("before fetch img ", relatedTopic);
+      if (relatedTopic) {
+        if (relatedTopic.PID) {
+          const fetchedImg = await getImgData(
+            `http://127.0.0.1:8000/user/publication/image-low?publication_id=${relatedTopic.PID}`
+          );
+          setImgSmall(fetchedImg);
+        } else if (relatedTopic.RID) {
+          console.log("ayo");
+          const fetchedImg = await getImgData(
+            `http://127.0.0.1:8000/user/research/image-low?research_id=${relatedTopic.RID}`
+          );
+          setImgSmall(fetchedImg);
+        } else if (relatedTopic.LID) {
+          const fetchedImg = await getImgData(
+            `http://127.0.0.1:8000/user/laboratory/image-low?laboratory_id=${relatedTopic.LID}`
+          );
+          setImgSmall(fetchedImg);
+        }
       }
     };
     fetchImgSmall();
@@ -95,18 +103,22 @@ const NewsCard = ({ title, body, date, ID, NID, related_laboratory, type }) => {
           </h3>
           <p className="mt-2 text-base leading-6 line-clamp-3">{body}</p>
         </div>
-        <div className="flex gap-4 items-center mt-6 w-full text-sm">
-          <img
-            loading="lazy"
-            src={imgSmall}
-            alt={`${title} avatar`}
-            className="object-contain shrink-0 self-stretch my-auto w-12 rounded-3xl aspect-square"
-          />
-          <div className="flex flex-col flex-1 shrink self-stretch my-auto basis-0 min-w-[240px]">
-            <div className="font-semibold text-black">{relatedTopic.title}</div>
-            <div className="gap-2 self-stretch w-full text-black">{date}</div>
+        {!(isLoading && isError) ? (
+          <div className="flex gap-4 items-center mt-6 w-full text-sm">
+            <img
+              loading="lazy"
+              src={imgSmall}
+              alt={`${title} avatar`}
+              className="object-contain shrink-0 self-stretch my-auto w-12 rounded-3xl aspect-square"
+            />
+            <div className="flex flex-col flex-1 shrink self-stretch my-auto basis-0 min-w-[240px]">
+              <div className="font-semibold text-black">
+                {relatedTopic?.title}
+              </div>
+              <div className="gap-2 self-stretch w-full text-black">{date}</div>
+            </div>
           </div>
-        </div>
+        ) : null}
       </div>
     </article>
   );

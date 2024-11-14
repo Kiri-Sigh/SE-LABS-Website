@@ -13,8 +13,11 @@ function RecentNews({ toFetchedData = {} }) {
   });
   console.log(recentNewsQuery);
   const { data, isLoading, isError } = recentNewsQuery;
-  const firstItem = data[0];
-  const [topic] = Object.keys(firstItem);
+  const firstItem = data?.pages?.[0];
+  const topic = data ? Object.keys(data.pages[0][0])[0] : undefined;
+
+  // const topic = firstItem ? Object.keys(firstItem)[0] : [];
+  console.log("topic=", topic);
   // const [imgs, setImg] = useState(null);
   // const img = getData(
   //   "http://127.0.0.1:8000/user/news/image-high?news_id=f6eb2c3f-efcd-4cd0-842f-05f746bf4b7b"
@@ -82,8 +85,16 @@ function RecentNews({ toFetchedData = {} }) {
             {/* {!isLoading ? console.log(data.pages) : null} */}
             {!isLoading ? (
               data.pages[0].map((item, index) => {
-                console.log(item.topic);
-                return <NewsCard key={`${index}`} {...item[topic]} />;
+                console.log("item[topic]", item[topic]);
+                console.log("topic", topic);
+
+                return (
+                  <NewsCard
+                    key={`${index}`}
+                    {...item[topic]}
+                    type={`${topic}`}
+                  />
+                );
               })
             ) : (
               <div>Loading...</div>
