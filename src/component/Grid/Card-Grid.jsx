@@ -7,13 +7,14 @@ import FilterButton from "../Buttons/Filter-Btn.jsx";
 import { useInfiniteFetch } from "api/custom-hooks.js";
 import EventCard from "component/Cards/Event-Card.jsx";
 
-function GridCards({ toFetchedData = {}, topic = "", url = "" }) {
+function GridCards({ toFetchedData = {}, url = "" }) {
   const recentNewsGridQuery = useInfiniteFetch({
     id: toFetchedData.id,
     url: url,
     pageSize: toFetchedData.pageSize,
   });
   const { data, isLoading, isError } = recentNewsGridQuery;
+  const topic = data ? Object.keys(data.pages[0][0])[0] : undefined;
 
   // Helper function to chunk array into groups of 5
   const chunkArray = (arr, size) => {
@@ -37,8 +38,6 @@ function GridCards({ toFetchedData = {}, topic = "", url = "" }) {
         {/* Reduced margin-top */}
         <div className="box-border flex relative flex-col shrink-0">
           <div className="w-full max-md:max-w-full mt-4">
-            {" "}
-            {/* Wrapper for all rows */}
             {!isLoading ? (
               data.pages.map((itemArr, pageIndex) =>
                 chunkArray(itemArr, 4).map((row, rowIndex) => (
@@ -47,15 +46,16 @@ function GridCards({ toFetchedData = {}, topic = "", url = "" }) {
                     className="flex gap-4 mb-6 flex-wrap"
                   >
                     {row.map((item, itemIndex) => {
-                      return topic === "news" ? (
+                      return topic !== "Event" ? (
                         <NewsCard
                           key={`${pageIndex}-${rowIndex}-${itemIndex}`}
-                          {...item.News}
+                          {...item[topic]}
+                          type={topic}
                         />
-                      ) : topic === "events" ? (
+                      ) : topic === "Event" ? (
                         <EventCard
                           key={`${pageIndex}-${rowIndex}-${itemIndex}`}
-                          {...item.Event}
+                          {...item[topic]}
                         />
                       ) : null;
                     })}

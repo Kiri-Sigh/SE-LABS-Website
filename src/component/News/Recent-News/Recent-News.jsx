@@ -13,7 +13,6 @@ function RecentNews({ toFetchedData = {} }) {
   });
   console.log(recentNewsQuery);
   const { data, isLoading, isError } = recentNewsQuery;
-  const firstItem = data?.pages?.[0];
   const topic = data ? Object.keys(data.pages[0][0])[0] : undefined;
 
   // const topic = firstItem ? Object.keys(firstItem)[0] : [];

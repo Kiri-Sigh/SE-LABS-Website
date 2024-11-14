@@ -5,7 +5,7 @@ import { getData, getImgData } from "../../api/api-method";
 import { useNormalQueryGet, useQueryGetImg } from "../../api/custom-hooks";
 const NewsCard = ({ title, body, date, ID, NID, related_laboratory, type }) => {
   // console.log(title);
-  // console.log(type);
+  console.log("type=", type);
 
   let relatedTopic;
   if (type === "News") {
