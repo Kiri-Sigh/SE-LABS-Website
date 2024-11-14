@@ -129,7 +129,6 @@ function MainPages() {
           <TopicHeaderText topic="Publications" />
           <GridCards
             toFetchedData={exampleToFetchData.recentGridNews}
-            topic="news"
             url="http://127.0.0.1:8000/user/publication/thumbnail?"
           />
         </>
@@ -140,7 +139,6 @@ function MainPages() {
           <TopicHeaderText topic="Research" />
           <GridCards
             toFetchedData={exampleToFetchData.recentGridResearch}
-            topic="news"
             url="http://127.0.0.1:8000/user/research/thumbnail?"
           />
         </>

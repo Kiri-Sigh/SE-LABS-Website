@@ -23,7 +23,10 @@ export const useNormalQueryGet = (url, type, id) => {
 export const useQueryGetImg = (url, type, id) => {
   const results = useQuery({
     queryKey: [`get-${type}-${id}`],
-    queryFn: () => getImgData(url),
+    queryFn: () => {
+      const type2 = type.toLowerCase();
+      return getImgData(`${url}/${type2}/image-high?${type2}_id=${id}`);
+    },
     // enabled: relatedTopic !== null, // Only run query if data is not null
     onSuccess: (data) => {
       return data;

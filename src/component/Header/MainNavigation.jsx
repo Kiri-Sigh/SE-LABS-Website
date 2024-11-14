@@ -5,7 +5,7 @@ function MainNavigation() {
   const navItems = {
     about: "About us",
     publications: "Publications",
-    labs: "Laboratory",
+    laboratory: "Laboratory",
     research: "Research",
     people: "People",
     news: "News",

@@ -46,16 +46,29 @@ function GridCards({ toFetchedData = {}, url = "" }) {
                     className="flex gap-4 mb-6 flex-wrap"
                   >
                     {row.map((item, itemIndex) => {
+                      const topicData = item[topic];
+                      const resolvedID =
+                        topic === "News"
+                          ? topicData.NID
+                          : topic === "Laboratory"
+                          ? topicData.LID
+                          : topic === "Research"
+                          ? topicData.RID
+                          : topic === "Publication"
+                          ? topicData.PID
+                          : null;
                       return topic !== "Event" ? (
                         <NewsCard
                           key={`${pageIndex}-${rowIndex}-${itemIndex}`}
                           {...item[topic]}
                           type={topic}
+                          ID={resolvedID}
                         />
                       ) : topic === "Event" ? (
                         <EventCard
                           key={`${pageIndex}-${rowIndex}-${itemIndex}`}
                           {...item[topic]}
+                          ID={resolvedID}
                         />
                       ) : null;
                     })}

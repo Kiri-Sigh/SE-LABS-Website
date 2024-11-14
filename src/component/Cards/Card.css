@@ -14,13 +14,15 @@
 }
 
 /* Indent the title if it's only 1 line long */
-.indent-clamp {
-  text-indent: 0;
-  /* Detect if it's one line and apply text-indent */
-  -webkit-line-clamp: 2;
+
+.title-clamp {
   display: -webkit-box;
-  overflow: hidden;
-  white-space: normal;
+  -webkit-line-clamp: 2; /* Limits title to 2 lines */
   -webkit-box-orient: vertical;
-  text-align: justify;
+  overflow: hidden;
+  white-space: pre-wrap; /* Preserves white space */
+}
+.short-title:after {
+  content: "\A "; /* Adds a blank line for short titles */
+  white-space: pre;
 }

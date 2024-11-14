@@ -1,12 +1,21 @@
 import React from "react";
 import "./Card.css";
 
-const TeamCard = ({ name, email, image }) => {
+const TeamCard = ({
+  title,
+  body,
+  date,
+  ID,
+  related_laboratory,
+  type,
+  name,
+  gmail,
+}) => {
   return (
     <div className="flex flex-col rounded-3xl border border-black border-solid min-w-[240px] w-[390px]">
       <img
         loading="lazy"
-        src={image}
+        src={"a"}
         alt={name}
         className=" w-full rounded-tl-3xl rounded-tr-3xl aspect-[1.3]"
       />
@@ -22,7 +31,7 @@ const TeamCard = ({ name, email, image }) => {
             className="object-contain shrink-0 self-stretch my-auto w-12 rounded-3xl aspect-square"
           />
           <div className="flex-1 shrink self-stretch my-auto min-w-[240px]">
-            {email}
+            {"email"}
           </div>
         </div>
       </div>

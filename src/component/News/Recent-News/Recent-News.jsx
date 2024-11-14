@@ -86,12 +86,22 @@ function RecentNews({ toFetchedData = {} }) {
               data.pages[0].map((item, index) => {
                 console.log("item[topic]", item[topic]);
                 console.log("topic", topic);
+                const topicData = item[topic];
+                const resolvedID =
+                  topic === "News"
+                    ? topicData.NID
+                    : topic === "Laboratory"
+                    ? topicData.LID
+                    : topic === "Research"
+                    ? topicData.RID
+                    : null;
 
                 return (
                   <NewsCard
                     key={`${index}`}
                     {...item[topic]}
                     type={`${topic}`}
+                    ID={resolvedID}
                   />
                 );
               })

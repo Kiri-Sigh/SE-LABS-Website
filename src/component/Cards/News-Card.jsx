@@ -3,9 +3,10 @@ import "./Card.css";
 import kmitl_logo from "../../resource/kmitl_logo.webp";
 import { getData, getImgData } from "../../api/api-method";
 import { useNormalQueryGet, useQueryGetImg } from "../../api/custom-hooks";
-const NewsCard = ({ title, body, date, ID, NID, related_laboratory, type }) => {
+const NewsCard = ({ title, body, date, ID, related_laboratory, type }) => {
   // console.log(title);
   console.log("type=", type);
+  console.log("id=", ID);
 
   let relatedTopic;
   if (type === "News") {
@@ -25,9 +26,9 @@ const NewsCard = ({ title, body, date, ID, NID, related_laboratory, type }) => {
   }
   // console.log(relatedTopic);
   const { data, isLoading, isError } = useQueryGetImg(
-    `http://127.0.0.1:8000/user/news/image-high?news_id=${NID}`,
-    "news",
-    NID
+    `http://127.0.0.1:8000/user`,
+    type,
+    ID
   );
 
   // const [image, setImage] = React.useState(kmitl_logo);
@@ -62,6 +63,7 @@ const NewsCard = ({ title, body, date, ID, NID, related_laboratory, type }) => {
       //   setImgSmall(fetchedImg);
       // }
       console.log("before fetch img ", relatedTopic);
+
       if (relatedTopic) {
         if (relatedTopic.PID) {
           const fetchedImg = await getImgData(
@@ -84,7 +86,8 @@ const NewsCard = ({ title, body, date, ID, NID, related_laboratory, type }) => {
     };
     fetchImgSmall();
   }, [relatedTopic]);
-
+  const titleClass =
+    title.length <= 20 ? "title-clamp short-title" : "title-clamp";
   return (
     <article className="flex flex-col rounded-3xl border border-black border-solid min-w-[240px] w-[325px]">
       <div className="relative">
@@ -101,12 +104,15 @@ const NewsCard = ({ title, body, date, ID, NID, related_laboratory, type }) => {
       </div>
       <div className="flex flex-col p-6 w-full bg-cyan-200 rounded-bl-3xl rounded-br-3xl border border-black border-solid max-md:px-5">
         <div className="flex flex-col w-full text-black">
-          <h3 className="text-2xl font-bold leading-snug line-clamp-2 indent-clamp">
+          <h3
+            className={`text-2xl font-bold leading-snug line-clamp-2 indent-clamp ${titleClass}`}
+          >
             {title}
+            {title.length <= 20 ? <br /> : null}
           </h3>
           <p className="mt-2 text-base leading-6 line-clamp-3">{body}</p>
         </div>
-        {!(isLoading && isError) || relatedTopic !== null ? (
+        {!(isLoading && isError) && relatedTopic !== null ? (
           <div className="flex gap-4 items-center mt-6 w-full text-sm">
             <img
               loading="lazy"
