@@ -17,6 +17,7 @@ import TableComponent from "../../component/admin-Component/tables/proto2/table-
 import { exampleToFetchData } from "../../PlaceHolder-Data/toFetch";
 import MyFormComponent from "../../component/etc/exampleForm";
 import LoginComp from "component/etc/example-login";
+import CSSTailwind from "./CSS-Tailwind-Page";
 function MainPages() {
   // axios
   //   .get(
@@ -65,35 +66,38 @@ function MainPages() {
   // console.log(DataFetcherQueue(a));
   const location = useLocation();
   switch (location.pathname) {
+    // case "/":
+    //   return (
+    //     <>
+    //       <Modals />
+    //       <LoginComp />
+    //       <MyFormComponent />
+    //       <TableComponent />
+    //       <HeroBox />
+    //       <DividingRows />
+    //       <RecentNews
+    //         toFetchedData={exampleToFetchData.recentNews}
+    //         topic="news"
+    //       />
+    //       <RecentEvents
+    //         toFetchedData={exampleToFetchData.recentEvents}
+    //         topic="events"
+    //       />
+    //     </>
+    //   );
     case "/":
       return (
         <>
-          <Modals />
-          <LoginComp />
-          <MyFormComponent />
-          <TableComponent />
-          <HeroBox />
-          <DividingRows />
-          <RecentNews
-            toFetchedData={exampleToFetchData.recentNews}
-            topic="news"
-          />
-          <RecentEvents
-            toFetchedData={exampleToFetchData.recentEvents}
-            topic="events"
-          />
+          <CSSTailwind />
         </>
       );
+
     case "/about":
       return (
         <>
           <TopicAndImage />
           <AboutDescription />
-          <RecentNews
-            toFetchedData={exampleToFetchData.recentNews}
-            topic="news"
-            rowData={newsItems}
-          />
+          <RecentNews toFetchedData={exampleToFetchData.recentNews} />
           <RecentEvents
             toFetchedData={exampleToFetchData.recentEvents}
             listData={eventItems}
