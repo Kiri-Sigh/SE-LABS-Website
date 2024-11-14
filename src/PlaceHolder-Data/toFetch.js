@@ -33,7 +33,7 @@ export const exampleToFetchData = {
     },
   },
   recentGridNews: {
-    id: "recentGridNews",
+    id: "recentGridResearch",
     // type: "n",
     pageSize: 8,
   },
@@ -41,6 +41,11 @@ export const exampleToFetchData = {
     id: "recentGridEvents",
     // type: "n",
     pageSize: 8,
+  },
+  recentGridLaboratory: {
+    id: "recentGridLaboratory",
+    // type: "n",
+    pageSize: 4,
   },
   recentGridPublication: {
     id: "recentGridPublication",

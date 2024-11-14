@@ -14,9 +14,12 @@ const NewsCard = ({ title, body, date, ID, NID, related_laboratory, type }) => {
       related_laboratory.related_research ||
       related_laboratory ||
       null;
-  } else if (type === "publication") {
+  } else if (type === "Publication") {
     relatedTopic = null;
-  } else if (type === "laboratory") {
+  } else if (type === "Laboratory") {
+    relatedTopic = null;
+  } else if (type === "Research") {
+    relatedTopic = related_laboratory;
   } else {
     relatedTopic = "something wrong";
   }
@@ -103,7 +106,7 @@ const NewsCard = ({ title, body, date, ID, NID, related_laboratory, type }) => {
           </h3>
           <p className="mt-2 text-base leading-6 line-clamp-3">{body}</p>
         </div>
-        {!(isLoading && isError) ? (
+        {!(isLoading && isError) || relatedTopic !== null ? (
           <div className="flex gap-4 items-center mt-6 w-full text-sm">
             <img
               loading="lazy"

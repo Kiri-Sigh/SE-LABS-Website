@@ -139,17 +139,20 @@ function MainPages() {
         <>
           <TopicHeaderText topic="Research" />
           <GridCards
-            toFetchedData={exampleToFetchData.recentGridNews}
+            toFetchedData={exampleToFetchData.recentGridResearch}
             topic="news"
             url="http://127.0.0.1:8000/user/research/thumbnail?"
-          />{" "}
+          />
         </>
       );
-    case "/labs":
+    case "/laboratory":
       return (
         <>
-          <TopicHeaderText topic="Labs" />
-          <GridCards rowData={newsItems} />
+          <TopicHeaderText topic="Laboratory" />
+          <GridCards
+            toFetchedData={exampleToFetchData.recentGridLaboratory}
+            url="http://127.0.0.1:8000/user/laboratory/thumbnail?"
+          />
         </>
       );
     default:
