@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import React from "react";
+import "./header.css";
 
 function MainNavigation() {
   const navItems = {
@@ -21,10 +22,8 @@ function MainNavigation() {
           >
             <NavLink
               to={`/${key}`}
-              className={({ isActive }) =>
-                isActive
-                  ? " focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
-                  : "hover:underline focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
+              className={
+                "focus:outline-none focus:ring-white focus:ring-opacity-50 underline-anim"
               }
             >
               {value}
