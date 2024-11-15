@@ -2,6 +2,7 @@ import MainNavigation from "./MainNavigation";
 import React from "react";
 import Logo from "./Main-Logo";
 import "./header.css";
+
 function Header() {
   return (
     <header className="sticky-header flex flex-col justify-center px-16 w-full bg-blue-900 min-h-[72px] max-md:px-5 max-md:max-w-full">
@@ -12,4 +13,5 @@ function Header() {
     </header>
   );
 }
+
 export default Header;
