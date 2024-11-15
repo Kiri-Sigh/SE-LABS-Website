@@ -10,11 +10,11 @@ function RootLayout() {
   return (
     <>
       <Header />
-      <button onClick={() => dispatch(mainAction.isAdmin())}>-admin-</button>
+      {/* <button onClick={() => dispatch(mainAction.isAdmin())}>-admin-</button>
       <button onClick={() => dispatch(mainAction.isLead())}>-lead-</button>
       <button onClick={() => dispatch(mainAction.isResearcher())}>
         -researcher-
-      </button>
+      </button> */}
 
       <main>
         {/* {navigation.state === 'loading' && <p>Loading...</p>} */}
