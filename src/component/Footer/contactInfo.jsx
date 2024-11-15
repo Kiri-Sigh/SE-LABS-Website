@@ -10,7 +10,7 @@ function ContactInfo() {
         alt="Company logo"
       />
       <div className="flex flex-col mt-8 w-full max-md:max-w-full">
-        <div className="flex flex-col w-full text-black max-md:max-w-full">
+        <div className="flex flex-col w-full text-white max-md:max-w-full">
           <h2 className="font-semibold max-md:max-w-full">Address:</h2>
           <p className="mt-1 max-md:max-w-full">
             1 Chalong Krung 1 Alley, Lat Krabang, Khet Lat Krabang, Krung Thep
@@ -18,10 +18,10 @@ function ContactInfo() {
           </p>
         </div>
         <div className="flex flex-col mt-6 w-full max-md:max-w-full">
-          <h2 className="font-semibold text-black max-md:max-w-full">
+          <h2 className="font-semibold text-white max-md:max-w-full">
             Contact:
           </h2>
-          <div className="flex flex-col mt-1 w-full text-black max-md:max-w-full">
+          <div className="flex flex-col mt-1 w-full text-white max-md:max-w-full">
             <a href="tel:023298000" className="underline max-md:max-w-full">
               02 329 8000
             </a>
