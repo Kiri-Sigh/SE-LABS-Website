@@ -7,6 +7,7 @@ import { useInfiniteFetch } from "api/custom-hooks.js";
 import EventCard from "component/Cards/Event-Card.jsx";
 import TeamCard from "component/Cards/Team-Card.jsx";
 
+
 function GridCards({
   toFetchedData = {},
   url = "",
@@ -47,22 +48,25 @@ function GridCards({
     !data || data.pages.length === 0 || data.pages[0].length === 0;
 
   return (
-    <section className="flex overflow-hidden flex-col px-16 py-28 w-full bg-sky-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
-      <div className="flex flex-wrap gap-10 justify-between items-end w-full max-md:max-w-full">
-        <div className="flex flex-col text-black min-w-[240px] w-[768px] max-md:max-w-full"></div>
+    <section className="flex overflow-hidden flex-col px-16 w-full bg-gray-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
+            <div className="flex flex-wrap gap-10 justify-between items-end w-full max-md:max-w-full">
+                <div className="flex flex-col text-black min-w-[240px] w-[768px] max-md:max-w-full"></div>
+                <div className="flex items-center gap-4">
         <div className="flex items-center gap-4">
           {useFilterButton && (
-            <FilterButton
+                                <FilterButton className="hover:bg-gray-200 "
+
               fetchedLabData={fetchedLabData}
               setSelectedLab={handleLabChange}
             />
           )}
-          <ViewAllButton />
+          <ViewAllButton className="hover:bg-gray-200"/>
         </div>
       </div>
-      <div className="flex flex-col mt-6 w-full max-md:mt-5 max-md:max-w-full">
-        <div className="box-border flex relative flex-col shrink-0">
-          <div className="w-full max-md:max-w-full mt-4">
+    <div className="flex flex-col mt-6 w-full max-md:mt-5 max-md:max-w-full items-center">
+                {/* Reduced margin-top */}
+                <div className="box-border flex relative flex-col shrink-0">
+                    <div className="w-full max-md:max-w-full mt-4">
             {!isLoading ? (
               isDataEmpty ? (
                 <div>No data available</div>
@@ -71,7 +75,7 @@ function GridCards({
                   chunkArray(itemArr, 4).map((row, rowIndex) => (
                     <div
                       key={`${pageIndex}-${rowIndex}`}
-                      className="flex gap-4 mb-6 flex-wrap"
+                                        className="flex gap-6 mb-6 flex-wrap "
                     >
                       {row.map((item, itemIndex) => {
                         const topicData = item[topic];
@@ -96,13 +100,15 @@ function GridCards({
                         ) : topic === "Researcher" ? (
                           <TeamCard
                             key={`${pageIndex}-${rowIndex}-${itemIndex}`}
-                            {...item[topic]}
+                            {...item[topic]}                                                    
+
                           />
                         ) : topic === "Event" ? (
                           <EventCard
                             key={`${pageIndex}-${rowIndex}-${itemIndex}`}
                             {...item[topic]}
-                            ID={resolvedID}
+                            ID={resolvedID}                                                   
+
                           />
                         ) : null;
                       })}
@@ -117,7 +123,7 @@ function GridCards({
         </div>
       </div>
       {!isError && !isDataEmpty && (
-        <button className="px-8 py-5 mt-8 w-full text-lg text-black bg-white rounded-2xl border border-black border-solid max-md:px-5 max-md:max-w-full">
+                <button className="px-8 py-5 mt-8 w-full text-lg bg-blue-500 text-white border rounded-2xl  border-solid max-md:px-5 max-md:max-w-full hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105">
           Load More
         </button>
       )}

@@ -17,6 +17,7 @@ import TableComponent from "../../component/admin-Component/tables/proto2/table-
 import { exampleToFetchData } from "../../PlaceHolder-Data/toFetch";
 import MyFormComponent from "../../component/etc/exampleForm";
 import LoginComp from "component/etc/example-login";
+
 import { useDispatch, useSelector } from "react-redux";
 import { useNormalQueryGet } from "api/custom-hooks";
 import { mainAction } from "../../store/main-slice.js";
@@ -37,51 +38,6 @@ function MainPages() {
   }, [data, dispatch]);
   const labData = useSelector((state) => state.mainSlice.labData);
   console.log(labData);
-  // axios
-  //   .get(
-  //     "http://127.0.0.1:8000/user/event/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980"
-  //   )
-  //   .then((response) => {
-  //     console.log(response.data);
-  //   });
-
-  // console.log(
-  //   getData(
-  //     "http://localhost:8000/user/event/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980"
-  //   )
-  // );
-  // const a = [
-  //   [
-  //     {
-  //       id: "abc",
-  //       url: "http://127.0.0.1:8000/user/event/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980",
-  //       type: "n",
-  //     },
-  //     {
-  //       id: "jsf",
-  //       url: "http://127.0.0.1:8000/user/event/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980",
-  //       type: "n",
-  //     },
-  //     {
-  //       id: "jpj",
-  //       url: "http://127.0.0.1:8000/user/event/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980",
-  //       type: "n",
-  //     },
-  //   ],
-  //   [
-  //     {
-  //       id: "oijf",
-  //       url: "http://127.0.0.1:8000/user/event/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980",
-  //       type: "n",
-  //     },
-  //     {
-  //       id: "asd",
-  //       url: "http://127.0.0.1:8000/user/event/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980",
-  //       type: "n",
-  //     },
-  //   ],
-  // ];
-  // console.log(DataFetcherQueue(a));
   const location = useLocation();
   switch (location.pathname) {
     case "/":
@@ -193,5 +149,6 @@ function MainPages() {
   // { path: "events", element: <MainPages /> },
   // { path: "people", element: <MainPages /> },
   // { path: "labs/:labID", element: <DynamicLabPage /> },
+
 }
 export default MainPages;

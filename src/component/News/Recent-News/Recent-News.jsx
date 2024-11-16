@@ -3,6 +3,10 @@ import NewsCard from "../../Cards/News-Card";
 import { useInfiniteFetch } from "../../../api/custom-hooks";
 import previous from "../../../resource/previous-button.svg";
 import next from "../../../resource/next-button.svg";
+
+
+
+
 import { getData, getImgData } from "../../../api/api-method";
 import TeamCard from "component/Cards/Team-Card";
 import { useSelector } from "react-redux";
@@ -22,6 +26,8 @@ function RecentNews({
     pageSize: toFetchedData.pageSize,
     filter,
   });
+
+
 
   // const recentLabQuery = useInfiniteFetch({
   //   id: "labResearchers",
@@ -54,55 +60,29 @@ function RecentNews({
   //   "http://127.0.0.1:8000/user/news/image-high?news_id=f6eb2c3f-efcd-4cd0-842f-05f746bf4b7b"
   // );
 
-  // React.useEffect(() => {
-  //   const fetchImage = async () => {
-  //     const fetchedImage = await getImgData(
-  //       `http://127.0.0.1:8000/user/news/image-high?news_id=f6eb2c3f-efcd-4cd0-842f-05f746bf4b7b`
-  //     );
-  //     setImg(fetchedImage);
-  //   };
-  //   fetchImage();
-  // }, []);
 
-  // console.log(
-  //   useInfiniteFetch({
-  //     id: "abc",
-  //     url: "http://127.0.0.1:8000/user/event/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980",
-  //     // type: "n",
-  //     pageSize: 3,
-  //   })
-  // );
-  // console.log(
-  //   useInfiniteFetch({
-  //     id: "abc2",
-  //     url: "http://127.0.0.1:8000/user/event/thumbnail?",
-  //     // type: "n",
-  //     pageSize: 3,
-  //   })
-  // );
-  // console.log(
-  //   useInfiniteFetch({
-  //     id: "abc3",
-  //     url: "http://127.0.0.1:8000/user/news/thumbnail?",
-  //     // type: "n",
-  //     pageSize: 3,
-  //   })
-  // );
+  const handlePreviousPage = () => {
+    console.log("Previous button clicked");
+    console.log("data.pages.length", data.pages.length);
+
+    if (pageIndex > 0) {
+      fetchPreviousPage().then(() => setPageIndex(pageIndex - 1));
+    }
+  };
 
   return (
-    <section className="flex overflow-hidden flex-col px-16 py-28 w-full bg-sky-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
+    <section className="flex overflow-hidden flex-col px-16 py-28 w-full bg-gray-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
       <div className="flex flex-wrap gap-10 justify-between items-end w-full max-md:max-w-full">
-        <div className="flex flex-col text-black min-w-[240px] w-[768px] max-md:max-w-full">
+        <div className="flex flex-col text-gray-800 min-w-[240px] w-[768px] max-md:max-w-full">
           <h2 className="text-5xl font-bold leading-tight max-md:max-w-full max-md:text-4xl">
             {componentTitle}
           </h2>
-          {/* <img src={imgs} alt="a" /> */}
           <p className="mt-6 text-lg max-md:max-w-full">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
           </p>
         </div>
-        <button className="flex flex-col text-base text-black w-[104px]">
-          <span className="gap-2 self-stretch px-6 py-3 max-w-full bg-white rounded-xl border border-black border-solid w-[104px] max-md:px-5">
+        <button className="flex flex-col text-base text-gray-800 w-[104px]">
+          <span className="gap-2 self-stretch px-6 py-3 max-w-full bg-white rounded-xl border border-gray-300 hover:bg-gray-200 transition max-md:px-5">
             View all
           </span>
         </button>
@@ -110,11 +90,8 @@ function RecentNews({
       <div className="flex flex-col mt-16 w-full max-md:mt-10 max-md:max-w-full">
         <div className="box-border flex relative flex-col shrink-0">
           <div className="flex gap-8 items-start w-full max-md:max-w-full">
-            {/* {rowData.map((item, index) => (
-              <NewsCard key={index} {...item} />
-            ))} */}
-            {/* {!isLoading ? console.log(data.pages) : null} */}
             {!isLoading ? (
+
               data.pages[0].map((item, index) => {
                 const topicData = item[topic];
                 const resolvedID =
@@ -151,18 +128,16 @@ function RecentNews({
           </div>
         </div>
         <div className="flex flex-wrap gap-10 justify-between items-center mt-12 w-full max-md:mt-10 max-md:max-w-full">
-          <div className="flex gap-2 items-start self-stretch my-auto">
-            {/* {[...Array(6)].map((_, index) => (
-              <div
-                key={index}
-                className={`flex shrink-0 w-2 h-2 rounded-full ${
-                  index === 0 ? "bg-black" : "bg-stone-300"
-                }`}
-              />
-            ))} */}
-          </div>
+          <div className="flex gap-2 items-start self-stretch my-auto"></div>
           <div className="flex gap-4 items-start self-stretch my-auto">
-            <button className="flex gap-2 justify-center items-center px-3 w-12 h-12 bg-white border border-black border-solid rounded-[50px]">
+            <button
+              className="flex gap-2 justify-center items-center px-3 w-12 h-12 bg-white border border-gray-300 border-solid rounded-full"
+              onClick={() => {
+                console.log("Previous button clicked");
+                handlePreviousPage();
+              }}
+              disabled={pageIndex === 0}
+            >
               <img
                 loading="lazy"
                 src={previous}
@@ -171,7 +146,14 @@ function RecentNews({
               />
             </button>
             {!isError ? (
-              <button className="flex gap-2 justify-center items-center px-3 w-12 h-12 bg-white border border-black border-solid rounded-[50px]">
+              <button
+                className="flex gap-2 justify-center items-center px-3 w-12 h-12 bg-white border border-gray-300 border-solid rounded-full"
+                onClick={() => {
+                  console.log("Next button clicked");
+                  handleNextPage();
+                }}
+                disabled={data && data.pages.length <= pageIndex + 1}
+              >
                 <img
                   loading="lazy"
                   src={next}
@@ -180,13 +162,15 @@ function RecentNews({
                 />
               </button>
             ) : (
-              <button className="flex gap-2 justify-center items-center px-3 w-12 h-12 bg-white border border-black border-solid rounded-[50px]">
+              <button
+                className="flex gap-2 justify-center items-center px-3 w-12 h-12 bg-white border border-gray-300 border-solid rounded-full"
+                disabled
+              >
                 <img
                   loading="lazy"
                   src={next}
                   alt="Next"
                   className="object-contain self-stretch my-auto w-6 aspect-square"
-                  disabled
                 />
               </button>
             )}
