@@ -21,7 +21,7 @@ def get_researcher_thumbnail(
 ):
     researcher = db.query(Researcher)
     if laboratory_id:
-        researcher = researcher.filter(Researcher.lab_id == laboratory_id)
+        researcher = researcher.filter(Researcher.user_id == laboratory_id)
     offset = (page - 1) * amount
     researchers = researcher.offset(offset).limit(amount).all()
     return [UT01.to_researcher_thumbnail(researcher) for researcher in researchers]

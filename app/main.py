@@ -10,15 +10,10 @@ load_dotenv()
 
 app = FastAPI()
 
-
-origins = [
-    "http://localhost:3000",  # Replace with your frontend origin
-    "http://127.0.0.1:8000",  # Replace with your backend origin
-]
-
+# Use allow_origin_regex to match origins starting with "http://localhost:3000"
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origin_regex=r"^http://localhost:3000.*$",  # Matches all origins starting with "http://localhost:3000"
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -21,7 +21,7 @@ def get_laboratory_thumbnail(
 ):
     laboratory = db.query(Laboratory)
     if laboratory_id:
-        laboratory = laboratory.filter(Laboratory.id == laboratory_id)
+        laboratory = laboratory.filter(Laboratory.lab_id== laboratory_id)
     offset = (page - 1) * amount
     laboratories = laboratory.offset(offset).limit(amount).all()
     return [LT01.to_laboratory_thumbnail(lab) for lab in laboratories]

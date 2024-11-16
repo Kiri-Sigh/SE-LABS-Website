@@ -6,17 +6,16 @@ import TopicAndImage from "../../component/others/Big-Image/Topic-And-Image";
 
 import { getData } from "api/api-method";
 import { exampleToFetchData } from "PlaceHolder-Data/toFetch";
-
 import { useQueryGetImg } from "api/custom-hooks";
 
-function DynamicResearchPage() {
+function DynamicEventPage() {
   const { id } = useParams(); // Access the id from the route
   const { data } = getData(
-    `http://127.0.0.1:8000/user/research/thumbnail?research_id=${id}&amount=1&page=1`
+    `http://127.0.0.1:8000/user/event/thumbnail?event_id=${id}&amount=1&page=1`
   );
   const { data: img } = useQueryGetImg(
     `http://127.0.0.1:8000/user`,
-    "research",
+    "event",
     id
   );
   //lab news,lab event,lab people,lab publication,lab research
@@ -24,25 +23,9 @@ function DynamicResearchPage() {
     <>
       <TopicAndImage data={data} image={img} />
       <Description data={data} />
-
-      <RecentNews
-        toFetchedData={exampleToFetchData.recentResearchResearcher}
-        filter={{ research_id: id }}
-        componentTitle="Reseachers"
-      />
-      <RecentNews
-        toFetchedData={exampleToFetchData.recentResearchNews}
-        filter={{ research_id: id }}
-        componentTitle="Research News"
-      />
-      <RecentEvents
-        toFetchedData={exampleToFetchData.recentResearchEvent}
-        filter={{ research_id: id }}
-        componentTitle="Research Events"
-      />
     </>
   );
 }
-export default DynamicResearchPage;
+export default DynamicEventPage;
 
 //fetch lab info, fetch image, then fetch projects etc...
