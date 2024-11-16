@@ -12,6 +12,17 @@ const EventCard = ({
     status,
     location,
 }) => {
+    const formatDate = (dateString) => {
+        const options = {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+        };
+        return new Date(dateString).toLocaleDateString("en-US", options);
+    };
+
     return (
         <div className="flex flex-col justify-center p-6 w-full bg-white shadow-lg rounded-lg border border-gray-200 max-md:px-4 mb-6 hover:shadow-2xl transition-shadow duration-300">
             <div className="flex flex-col w-full">
@@ -52,7 +63,7 @@ const EventCard = ({
                             className="w-5 h-5"
                         />
                         <span>
-                            {start} - {end}
+                            {formatDate(start)} - {formatDate(end)}
                         </span>
                     </div>
                 </div>
