@@ -11,7 +11,13 @@ router = APIRouter(
     prefix="/user/research",
     tags=["research"],
 )
-
+@router.get("/thumbnail/{research_id}", response_model=ResearchThumbnail)
+def get_research_thumbnail_by_id(research_id: UUID, db = Depends(get_db)):
+    print("hello")
+    research = db.query(Research).filter(Research.research_id == research_id).first()
+    if not research:
+        raise HTTPException(status_code=404, detail="Research not found")
+    return RT01.to_research_thumbnail(research)
 @router.get("/thumbnail", response_model=List[ResearchThumbnail])
 def get_research_thumbnail(
     laboratory_id: Optional[UUID] = Query(None),
@@ -26,12 +32,6 @@ def get_research_thumbnail(
     researches =  research.offset(offset).limit(amount).all()
     return [RT01.to_research_thumbnail(research) for research in researches]
 
-@router.get("/thumbnail/{research_id}", response_model=ResearchThumbnail)
-def get_research_thumbnail_by_id(research_id: UUID, db = Depends(get_db)):
-    research = db.query(Research).filter(Research.research_id == research_id).first()
-    if not research:
-        raise HTTPException(status_code=404, detail="Research not found")
-    return RT01.to_research_thumbnail(research)
 
 @router.get("/image-high")
 def get_research_image_high(research_id: UUID, db = Depends(get_db)):
