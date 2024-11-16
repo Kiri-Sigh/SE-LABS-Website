@@ -3,46 +3,51 @@ import React from "react";
 import Quote from "./Quote";
 import TableOfContents from "./Table-Of-Content";
 import ContentSection from "./Content";
+import "./About-Description.css";
 
 const AboutDescription = () => {
   return (
-    <main className="flex overflow-hidden flex-col justify-center px-36 py-28 w-full text-black bg-sky-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
-      <div className="flex flex-wrap gap-10 justify-between items-start w-full max-md:max-w-full">
+    <main className="flex overflow-hidden flex-col justify-center px-36 pb-28 w-full text-black bg-gray-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
+      <div className="flex flex-wrap gap-20 items-start w-full max-md:max-w-full">
         <TableOfContents />
-        <article className="flex flex-col text-base leading-6 min-w-[240px] w-[768px] max-md:max-w-full">
-          <ContentSection title="Heading 2" level={2}>
-            <p className="pb-4 w-full font-bold max-md:max-w-full">
-              Dolor enim eu tortor urna sed duis nulla. Aliquam vestibulum,
-              nulla odio nisl vitae. In aliquet pellentesque aenean hac
-              vestibulum turpis mi bibendum diam. Tempor integer aliquam in
-              vitae malesuada fringilla.
-            </p>
+        <article className="flex-1 flex flex-col text-base leading-6 min-w-[240px] max-md:max-w-full">
+          <ContentSection title="Who are we?" id="heading-2" level={3}>
             <p className="pb-4 w-full max-md:max-w-full">
-              Mi tincidunt elit, id quisque ligula ac diam, amet. Vel etiam
-              suspendisse morbi eleifend faucibus eget vestibulum felis. Dictum
-              quis montes, sit sit. Tellus aliquam enim urna, etiam. Mauris
-              posuere vulputate arcu amet, vitae nisi, tellus tincidunt. At
-              feugiat sapien varius id.
+              Software engineering (SE) is an engineering discipline concerning
+              all aspects of software production, including software analysis,
+              design, development, testing, and deployment. SE requires profound
+              abstract and logical thinking and the application of mathematics,
+              logic, and computer science in order to produce efficient and
+              reliable software with the available resources.
             </p>
           </ContentSection>
-          <ContentSection title="Heading 3" level={3}>
+          <ContentSection
+            title="Why Software Engineering?"
+            id="heading-3"
+            level={3}
+          >
             <p className="pb-4 w-full max-md:max-w-full">
-              Eget quis mi enim, leo lacinia pharetra, semper. Eget in volutpat
-              mollis at volutpat lectus velit, sed auctor. Porttitor fames arcu
-              quis fusce augue enim. Quis at habitant diam at. Suscipit
-              tristique risus, at donec. In turpis vel et quam imperdiet. Ipsum
-              molestie aliquet sodales id est ac volutpat.
+              It is hard to overstate the ubiquity of software nowadays. Every
+              computer system is governed by software. Almost every human
+              activity involves software in some form. Undoubtedly software
+              industry is one of the largest and fastest growing industries in
+              the world. Consequently, skilled software engineers are in high
+              demand worldwide. As software becomes more and more complex, the
+              programming skills and the rudimentary knowledge of software
+              engineering that students obtained from traditional computer
+              science and computer engineering curriculums are insufficient.
             </p>
             <p className="pb-4 w-full max-md:max-w-full">
-              Tristique odio senectus nam posuere ornare leo metus, ultricies.
-              Blandit duis ultricies vulputate morbi feugiat cras placerat elit.
-              Aliquam tellus lorem sed ac. Montes, sed mattis pellentesque
-              suscipit accumsan. Cursus viverra aenean magna risus elementum
-              faucibus molestie pellentesque. Arcu ultricies sed mauris
-              vestibulum.
+              The development of real-world software applications requires the
+              skills in analysing the problem domain and the customer's
+              requirement and the skills in designing the software from the
+              topmost level down to the implementation level. Moreover, a
+              software engineer must be able to use proper tools, techniques,
+              and methodologies in order to produce the software in an efficient
+              manner.
             </p>
           </ContentSection>
-          <ContentSection title="Heading 4" level={4}>
+          <ContentSection title="Missions and Values" id="heading-4" level={3}>
             <p className="pb-4 w-full max-md:max-w-full">
               Morbi sed imperdiet in ipsum, adipiscing elit dui lectus. Tellus
               id scelerisque est ultricies ultricies. Duis est sit sed leo nisl,
@@ -50,7 +55,7 @@ const AboutDescription = () => {
               at scelerisque amet nulla purus habitasse.
             </p>
           </ContentSection>
-          <ContentSection title="Heading 5" level={5}>
+          <ContentSection title="Leadership" id="heading-5" level={3}>
             <p className="pb-4 w-full max-md:max-w-full">
               Morbi sed imperdiet in ipsum, adipiscing elit dui lectus. Tellus
               id scelerisque est ultricies ultricies. Duis est sit sed leo nisl,
@@ -59,7 +64,7 @@ const AboutDescription = () => {
             </p>
           </ContentSection>
           <Quote text='"Ipsum sit mattis nulla quam nulla. Gravida id gravida ac enim mauris id. Non pellentesque congue eget consectetur turpis. Sapien, dictum molestie sem tempor. Diam elit, orci, tincidunt aenean tempus."' />
-          <ContentSection title="Heading 6" level={6}>
+          <ContentSection title="Faculty" id="heading-6" level={3}>
             <p className="pb-4 w-full max-md:max-w-full">
               Nunc sed faucibus bibendum feugiat sed interdum. Ipsum egestas
               condimentum mi massa. In tincidunt pharetra consectetur sed duis
