@@ -97,12 +97,12 @@ function MainPages() {
         <>
           <TopicAndImage />
           <AboutDescription />
-          {/* <RecentNews toFetchedData={exampleToFetchData.recentNews} />
+          <RecentNews toFetchedData={exampleToFetchData.recentNews} />
           <RecentEvents
             toFetchedData={exampleToFetchData.recentEvents}
             listData={eventItems}
             topic="events"
-          /> */}
+          />
         </>
       );
     case "/events":
