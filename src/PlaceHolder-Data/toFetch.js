@@ -11,17 +11,78 @@ export const exampleToFetchData = {
     pageSize: 3,
   },
   recentLabNews: {
-    id: "abc",
-    url: "http://127.0.0.1:8000/user/new/thumbnail",
-    pageSize: 3,
-    param: { laboratory_id: "" },
+    id: "labNews",
+    url: "http://127.0.0.1:8000/user/news/thumbnail?",
+    pageSize: 4,
+    param: {}, //laboratory_id
   },
-  recentLabEvents: {
-    id: "abc",
-    url: "http://127.0.0.1:8000/user/event/thumbnail",
-    pageSize: 3,
-    param: { laboratory_id: "", research_id: "" },
+  recentLabEvent: {
+    id: "labEvent",
+    url: "http://127.0.0.1:8000/user/event/thumbnail?",
+    pageSize: 4,
+    param: {}, //laboratory_id,research_id
   },
+  recentLabPublication: {
+    id: "labPublication",
+    url: "http://127.0.0.1:8000/user/publication/thumbnail?",
+    pageSize: 4,
+    param: {}, //laboratory_id, maybe research_id
+  },
+  recentLabResearch: {
+    id: "labResearch",
+    url: "http://127.0.0.1:8000/user/research/thumbnail?",
+    pageSize: 4,
+    param: {}, //laboratory_id, maybe research_id
+  },
+  recentNewsLaboratory: {
+    id: "newsLaboratory",
+    url: "http://127.0.0.1:8000/user/laboratory/thumbnail?",
+    pageSize: 4,
+    param: {}, //laboratory_id, maybe research_id
+  },
+  recentNewsResearch: {
+    id: "newsResearch",
+    url: "http://127.0.0.1:8000/user/research/thumbnail?",
+    pageSize: 4,
+    param: {}, //laboratory_id, maybe research_id
+  },
+  recentLabResearcher: {
+    id: "labResearcher",
+    url: "http://127.0.0.1:8000/user/researcher/thumbnail?",
+    pageSize: 4,
+    param: {}, //laboratory_id, maybe research_id
+  },
+  recentResearcherLab: {
+    id: "researcherLab",
+    url: "http://127.0.0.1:8000/user/laboratory/thumbnail?",
+    pageSize: 4,
+    param: {}, //laboratory_id, maybe research_id
+  },
+  recentResearcherResearch: {
+    id: "researcherResearch",
+    url: "http://127.0.0.1:8000/user/research/thumbnail?",
+    pageSize: 4,
+    param: {}, //laboratory_id, maybe research_id
+  },
+  recentResearchResearcher: {
+    id: "researchResearcher",
+    url: "http://127.0.0.1:8000/user/researcher/thumbnail?",
+    pageSize: 4,
+    param: {}, //laboratory_id, maybe research_id
+  },
+  recentResearchNews: {
+    id: "researchResearcher",
+    url: "http://127.0.0.1:8000/user/news/thumbnail?",
+    pageSize: 4,
+    param: {}, //laboratory_id, maybe research_id
+  },
+  recentResearchEvent: {
+    id: "researchResearcher",
+    url: "http://127.0.0.1:8000/user/event/thumbnail?",
+    pageSize: 4,
+    param: {}, //laboratory_id, maybe research_id
+  },
+
   postNews: {
     title: "str",
     body: "str",
@@ -47,6 +108,11 @@ export const exampleToFetchData = {
     // type: "n",
     pageSize: 4,
   },
+  recentGridResearcher: {
+    id: "recentGridResearcher",
+    // type: "n",
+    pageSize: 8,
+  },
   recentGridPublication: {
     id: "recentGridPublication",
     // type: "n",
@@ -56,5 +122,11 @@ export const exampleToFetchData = {
     id: "recentGridResearch",
     // type: "n",
     pageSize: 6,
+  },
+  relatedNews: {
+    id: "relatedNews",
+    url: "http://127.0.0.1:8000/user/news/related_news?",
+    // type: "n",
+    pageSize: 4,
   },
 };

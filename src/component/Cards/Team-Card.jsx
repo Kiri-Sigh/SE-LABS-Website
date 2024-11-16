@@ -1,22 +1,20 @@
 import React from "react";
 import "./Card.css";
-
-const TeamCard = ({
-  title,
-  body,
-  date,
-  ID,
-  related_laboratory,
-  type,
-  name,
-  gmail,
-}) => {
+import { getImgData } from "api/api-method";
+import kmitl_logo from "../../resource/kmitl_logo.webp";
+import { useQueryGetImg } from "api/custom-hooks";
+const TeamCard = ({ UID, position, related_laboratory, name, gmail }) => {
+  const { data, isLoading, isError } = useQueryGetImg(
+    `http://127.0.0.1:8000/user`,
+    "researcher",
+    UID
+  );
   return (
     <div className="flex flex-col rounded-3xl border border-black border-solid min-w-[240px] w-[390px]">
       <img
         loading="lazy"
-        src={"a"}
-        alt={name}
+        src={isLoading ? kmitl_logo : data}
+        alt=""
         className=" w-full rounded-tl-3xl rounded-tr-3xl aspect-[1.3]"
       />
       <div className="flex flex-col p-6 w-full bg-cyan-200 rounded-none border border-black border-solid max-md:px-5 rounded-bl-3xl rounded-br-3xl">
@@ -31,7 +29,7 @@ const TeamCard = ({
             className="object-contain shrink-0 self-stretch my-auto w-12 rounded-3xl aspect-square"
           />
           <div className="flex-1 shrink self-stretch my-auto min-w-[240px]">
-            {"email"}
+            {gmail}
           </div>
         </div>
       </div>

@@ -9,6 +9,8 @@ const mainSlice = createSlice({
     leadResearcher: false,
     itemQuantity: null,
     token: null,
+    labData: null,
+    fetchedLabData: false,
   },
   reducers: {
     isAdmin: (state) => {
@@ -25,6 +27,12 @@ const mainSlice = createSlice({
       state.admin = false;
       state.researcher = true;
       state.leadResearcher = false;
+    },
+    boolFetchLabData: (state) => {
+      state.fetchedLabData = true;
+    },
+    setLabData: (state, action) => {
+      state.labData = action.payload;
     },
   },
 });

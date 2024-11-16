@@ -3,10 +3,19 @@ import "./Card.css";
 import kmitl_logo from "../../resource/kmitl_logo.webp";
 import { getData, getImgData } from "../../api/api-method";
 import { useNormalQueryGet, useQueryGetImg } from "../../api/custom-hooks";
-const NewsCard = ({ title, body, date, ID, related_laboratory, type }) => {
+import { useNavigate } from "react-router-dom";
+
+const NewsCard = ({
+  title,
+  body,
+  date,
+  ID,
+  related_laboratory,
+  type,
+  publicationLink,
+}) => {
   // console.log(title);
-  console.log("type=", type);
-  console.log("id=", ID);
+  const navigate = useNavigate();
 
   let relatedTopic;
   if (type === "News") {
@@ -62,7 +71,6 @@ const NewsCard = ({ title, body, date, ID, related_laboratory, type }) => {
       //   );
       //   setImgSmall(fetchedImg);
       // }
-      console.log("before fetch img ", relatedTopic);
 
       if (relatedTopic) {
         if (relatedTopic.PID) {
@@ -71,7 +79,6 @@ const NewsCard = ({ title, body, date, ID, related_laboratory, type }) => {
           );
           setImgSmall(fetchedImg);
         } else if (relatedTopic.RID) {
-          console.log("ayo");
           const fetchedImg = await getImgData(
             `http://127.0.0.1:8000/user/research/image-low?research_id=${relatedTopic.RID}`
           );
@@ -88,8 +95,32 @@ const NewsCard = ({ title, body, date, ID, related_laboratory, type }) => {
   }, [relatedTopic]);
   const titleClass =
     title.length <= 20 ? "title-clamp short-title" : "title-clamp";
+  const handleCardClick = () => {
+    navigate(`/${type}/${ID}`);
+  };
+  const handlePublicationLink = () => {
+    window.location.href = "https://www.se.kmitl.ac.th/"; // Navigates to Google
+  };
+  const handleSmallDivClick = (e) => {
+    e.stopPropagation(); // Prevents the card click event from triggering
+    // const type2 = toString(type);
+    navigate(
+      `/${
+        relatedTopic.PID
+          ? "publication"
+          : relatedTopic.LID
+          ? "laboratory"
+          : relatedTopic.RID
+          ? "research"
+          : "error"
+      }/${relatedTopic?.PID || relatedTopic?.LID || relatedTopic?.RID}`
+    );
+  };
   return (
-    <article className="flex flex-col rounded-3xl border border-black border-solid min-w-[240px] w-[325px]">
+    <article
+      className="flex flex-col rounded-3xl border border-black border-solid min-w-[240px] w-[325px]"
+      onClick={publicationLink ? handlePublicationLink : handleCardClick}
+    >
       <div className="relative">
         <img
           loading="lazy"
@@ -97,10 +128,9 @@ const NewsCard = ({ title, body, date, ID, related_laboratory, type }) => {
           alt={title}
           className="w-full rounded-tl-3xl rounded-tr-3xl aspect-[1.3]"
         />
-        {/* Edit button overlay */}
-        <button className="absolute top-2 right-2 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition">
+        {/* <button className="absolute top-2 right-2 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition">
           Edit
-        </button>
+        </button> */}
       </div>
       <div className="flex flex-col p-6 w-full bg-cyan-200 rounded-bl-3xl rounded-br-3xl border border-black border-solid max-md:px-5">
         <div className="flex flex-col w-full text-black">
@@ -113,7 +143,12 @@ const NewsCard = ({ title, body, date, ID, related_laboratory, type }) => {
           <p className="mt-2 text-base leading-6 line-clamp-3">{body}</p>
         </div>
         {!(isLoading && isError) && relatedTopic !== null ? (
-          <div className="flex gap-4 items-center mt-6 w-full text-sm">
+          <div
+            className="flex gap-4 items-center mt-6 w-full text-sm"
+            onClick={
+              publicationLink ? handlePublicationLink : handleSmallDivClick
+            }
+          >
             <img
               loading="lazy"
               src={imgSmall}

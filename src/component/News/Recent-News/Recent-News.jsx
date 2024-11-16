@@ -3,20 +3,52 @@ import NewsCard from "../../Cards/News-Card";
 import { useInfiniteFetch } from "../../../api/custom-hooks";
 import previous from "../../../resource/previous-button.svg";
 import next from "../../../resource/next-button.svg";
-import { getImgData } from "../../../api/api-method";
-function RecentNews({ toFetchedData = {} }) {
+import { getData, getImgData } from "../../../api/api-method";
+import TeamCard from "component/Cards/Team-Card";
+import { useSelector } from "react-redux";
+function RecentNews({
+  toFetchedData = {},
+  filter = {},
+  componentTitle = "recentNewsComp",
+  useFilterButton = false,
+  fetchedLabData = null,
+  publicationLink = null,
+}) {
   //main data = { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, error }
+
   const recentNewsQuery = useInfiniteFetch({
     id: toFetchedData.id,
     url: toFetchedData.url,
     pageSize: toFetchedData.pageSize,
+    filter,
   });
-  console.log(recentNewsQuery);
-  const { data, isLoading, isError } = recentNewsQuery;
-  const topic = data ? Object.keys(data.pages[0][0])[0] : undefined;
 
+  // const recentLabQuery = useInfiniteFetch({
+  //   id: "labResearchers",
+  //   url: "http://127.0.0.1:8000/user/researcher/thumbnail?",
+  //   pageSize: 4,
+  //   filter: { laboratory_id: "a45a9657-34db-40b7-98bf-b5f2764055b4" },
+  // });
+  // const { data: data2 } = recentLabQuery;
+
+  // if (data2) console.log("labnesdata=", data2);
+
+  // async function testGetData() {
+  //   try {
+  //     const url = "http://127.0.0.1:8000/user/researcher/thumbnail"; // Replace with your actual API
+  //     const data = await getData(url);
+  //     console.log("Fetched test Data:", data);
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // }
+
+  // testGetData();
+
+  const { data, isLoading, isError } = recentNewsQuery;
+  if (data) console.log("data:", data);
+  const topic = data?.pages?.[0]?.[0] ? Object.keys(data.pages[0][0])[0] : null;
   // const topic = firstItem ? Object.keys(firstItem)[0] : [];
-  console.log("topic=", topic);
   // const [imgs, setImg] = useState(null);
   // const img = getData(
   //   "http://127.0.0.1:8000/user/news/image-high?news_id=f6eb2c3f-efcd-4cd0-842f-05f746bf4b7b"
@@ -62,7 +94,7 @@ function RecentNews({ toFetchedData = {} }) {
       <div className="flex flex-wrap gap-10 justify-between items-end w-full max-md:max-w-full">
         <div className="flex flex-col text-black min-w-[240px] w-[768px] max-md:max-w-full">
           <h2 className="text-5xl font-bold leading-tight max-md:max-w-full max-md:text-4xl">
-            Latest News
+            {componentTitle}
           </h2>
           {/* <img src={imgs} alt="a" /> */}
           <p className="mt-6 text-lg max-md:max-w-full">
@@ -84,8 +116,6 @@ function RecentNews({ toFetchedData = {} }) {
             {/* {!isLoading ? console.log(data.pages) : null} */}
             {!isLoading ? (
               data.pages[0].map((item, index) => {
-                console.log("item[topic]", item[topic]);
-                console.log("topic", topic);
                 const topicData = item[topic];
                 const resolvedID =
                   topic === "News"
@@ -94,16 +124,26 @@ function RecentNews({ toFetchedData = {} }) {
                     ? topicData.LID
                     : topic === "Research"
                     ? topicData.RID
+                    : topic === "Publication"
+                    ? topicData.PID
+                    : topic === "Researcher"
+                    ? topicData.UID
                     : null;
 
-                return (
+                return topic !== "Event" && topic !== "Researcher" ? (
                   <NewsCard
                     key={`${index}`}
                     {...item[topic]}
                     type={`${topic}`}
                     ID={resolvedID}
+                    publicationLink={publicationLink}
                   />
-                );
+                ) : topic === "Researcher" ? (
+                  <TeamCard
+                    key={`researcher-${index}-${filter.laboratory_id}`}
+                    {...item[topic]}
+                  />
+                ) : null;
               })
             ) : (
               <div>Loading...</div>
@@ -153,7 +193,6 @@ function RecentNews({ toFetchedData = {} }) {
           </div>
         </div>
       </div>
-      {/* Pagination and navigation controls */}
     </section>
   );
 }

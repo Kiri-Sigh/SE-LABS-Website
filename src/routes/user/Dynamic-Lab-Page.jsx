@@ -1,28 +1,56 @@
+import { useParams } from "react-router-dom";
 import Description from "../../component/Description/Description";
 import RecentEvents from "../../component/Events/Recent-Events/Recent-Events";
 import RecentNews from "../../component/News/Recent-News/Recent-News";
 import TopicAndImage from "../../component/others/Big-Image/Topic-And-Image";
-import RecentPublications from "../../component/Publications/Recent-Publications";
-import RecentResearch from "../../component/Research/Recent-Research";
-import OurTeam from "../../component/Team/Our-Team";
-import {
-  eventItems,
-  newsItems,
-  teamMembers,
-  researchItems,
-  publicationItems,
-} from "../../PlaceHolder-Data/data";
+
+import { getData } from "api/api-method";
+import TeamCard from "component/Cards/Team-Card";
+import { exampleToFetchData } from "PlaceHolder-Data/toFetch";
+import {  useQueryGetImg } from "api/custom-hooks";
 
 function DynamicLabPage() {
+  const { id } = useParams(); // Access the id from the route
+  const { data } = getData(
+    `http://127.0.0.1:8000/user/laboratory/thumbnail?laboratory_id=${id}&amount=1&page=1`
+  );
+  if (data) console.log("dat?", data);
+  const { data: img } = useQueryGetImg(
+    `http://127.0.0.1:8000/user`,
+    "laboratory",
+    id
+  );
+  //lab news,lab event,lab people,lab publication,lab research
   return (
     <>
-      <TopicAndImage />
-      <Description />
-      <OurTeam teamMembers={teamMembers} />
-      <RecentResearch researchItems={researchItems} />
-      <RecentNews rowData={newsItems} />
-      <RecentPublications publicationItems={publicationItems} />
-      <RecentEvents listData={eventItems} />
+      <TopicAndImage data={data} image={img} />
+      <Description data={data} />
+      <RecentNews
+        toFetchedData={exampleToFetchData.recentLabResearch}
+        filter={{ laboratory_id: id }}
+        componentTitle="Lab Research"
+      />
+      <RecentNews
+        toFetchedData={exampleToFetchData.recentLabResearcher}
+        filter={{ laboratory_id: id }}
+        componentTitle="Lab People"
+      />
+      <RecentNews
+        toFetchedData={exampleToFetchData.recentLabPublication}
+        filter={{ laboratory_id: id }}
+        componentTitle="Lab Publication"
+        publicationLink={"https://www.se.kmitl.ac.th/"}
+      />
+      <RecentNews
+        toFetchedData={exampleToFetchData.recentLabNews}
+        filter={{ laboratory_id: id }}
+        componentTitle="Lab News"
+      />
+      <RecentEvents
+        toFetchedData={exampleToFetchData.recentLabEvent}
+        filter={{ laboratory_id: id }}
+        componentTitle="Lab Events"
+      />
     </>
   );
 }

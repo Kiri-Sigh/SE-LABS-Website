@@ -17,7 +17,26 @@ import TableComponent from "../../component/admin-Component/tables/proto2/table-
 import { exampleToFetchData } from "../../PlaceHolder-Data/toFetch";
 import MyFormComponent from "../../component/etc/exampleForm";
 import LoginComp from "component/etc/example-login";
+import { useDispatch, useSelector } from "react-redux";
+import { useNormalQueryGet } from "api/custom-hooks";
+import { mainAction } from "../../store/main-slice.js";
+
 function MainPages() {
+  const dispatch = useDispatch();
+
+  let fetchedLabData = useSelector((state) => state.mainSlice.fetchedLabData);
+
+  const { data } = useNormalQueryGet(
+    "http://127.0.0.1:8000/user/laboratory/thumbnail?amount=10",
+    "laboratory"
+  );
+  React.useEffect(() => {
+    if (data) {
+      dispatch(mainAction.setLabData(data));
+    }
+  }, [data, dispatch]);
+  const labData = useSelector((state) => state.mainSlice.labData);
+  console.log(labData);
   // axios
   //   .get(
   //     "http://127.0.0.1:8000/user/event/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980"
@@ -74,14 +93,8 @@ function MainPages() {
           <TableComponent />
           <HeroBox />
           <DividingRows />
-          <RecentNews
-            toFetchedData={exampleToFetchData.recentNews}
-            topic="news"
-          />
-          <RecentEvents
-            toFetchedData={exampleToFetchData.recentEvents}
-            topic="events"
-          />
+          <RecentNews toFetchedData={exampleToFetchData.recentNews} />
+          <RecentEvents toFetchedData={exampleToFetchData.recentEvents} />
         </>
       );
     case "/about":
@@ -89,16 +102,8 @@ function MainPages() {
         <>
           <TopicAndImage />
           <AboutDescription />
-          <RecentNews
-            toFetchedData={exampleToFetchData.recentNews}
-            topic="news"
-            rowData={newsItems}
-          />
-          <RecentEvents
-            toFetchedData={exampleToFetchData.recentEvents}
-            listData={eventItems}
-            topic="events"
-          />
+          <RecentNews toFetchedData={exampleToFetchData.recentNews} />
+          <RecentEvents toFetchedData={exampleToFetchData.recentEvents} />
         </>
       );
     case "/events":
@@ -109,6 +114,8 @@ function MainPages() {
             toFetchedData={exampleToFetchData.recentGridEvents}
             topic="events"
             url="http://127.0.0.1:8000/user/event/thumbnail?"
+            fetchedLabData={labData}
+            useFilterButton={true}
           />
         </>
       );
@@ -118,8 +125,9 @@ function MainPages() {
           <TopicHeaderText topic="News" />
           <GridCards
             toFetchedData={exampleToFetchData.recentGridNews}
-            topic="news"
             url="http://127.0.0.1:8000/user/news/thumbnail?"
+            fetchedLabData={labData}
+            useFilterButton={true}
           />
         </>
       );
@@ -130,6 +138,9 @@ function MainPages() {
           <GridCards
             toFetchedData={exampleToFetchData.recentGridNews}
             url="http://127.0.0.1:8000/user/publication/thumbnail?"
+            fetchedLabData={labData}
+            useFilterButton={true}
+            publicationLink={"https://www.se.kmitl.ac.th/"}
           />
         </>
       );
@@ -140,6 +151,8 @@ function MainPages() {
           <GridCards
             toFetchedData={exampleToFetchData.recentGridResearch}
             url="http://127.0.0.1:8000/user/research/thumbnail?"
+            fetchedLabData={labData}
+            useFilterButton={true}
           />
         </>
       );
@@ -150,6 +163,20 @@ function MainPages() {
           <GridCards
             toFetchedData={exampleToFetchData.recentGridLaboratory}
             url="http://127.0.0.1:8000/user/laboratory/thumbnail?"
+            fetchedLabData={labData}
+            useFilterButton={true}
+          />
+        </>
+      );
+    case "/people":
+      return (
+        <>
+          <TopicHeaderText topic="People" />
+          <GridCards
+            toFetchedData={exampleToFetchData.recentGridResearcher}
+            url="http://127.0.0.1:8000/user/researcher/thumbnail?"
+            fetchedLabData={labData}
+            useFilterButton={true}
           />
         </>
       );
