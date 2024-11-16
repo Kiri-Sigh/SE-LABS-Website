@@ -12,7 +12,9 @@ import { getData, getImgData } from "./api-method";
 export const useNormalQueryGet = (url, type, id = "") => {
   const results = useQuery({
     queryKey: [`get-${type}-${id}`],
-    queryFn: () => getData(url),
+    queryFn: () => {
+      return getData(url);
+    },
     onSuccess: (data) => {
       return data;
     },

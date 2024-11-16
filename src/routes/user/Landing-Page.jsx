@@ -30,11 +30,19 @@ function MainPages() {
     "http://127.0.0.1:8000/user/laboratory/thumbnail?amount=10",
     "laboratory"
   );
+  const { data: data2 } = useNormalQueryGet(
+    "http://127.0.0.1:8000/user/research/thumbnail/547882bd-5894-4b66-a4ba-385a73ae9fef",
+    "research",
+    "547882bd-5894-4b66-a4ba-385a73ae9fef"
+  );
   React.useEffect(() => {
     if (data) {
       dispatch(mainAction.setLabData(data));
     }
-  }, [data, dispatch]);
+    if (data2) {
+      console.log("data2", data2);
+    }
+  }, [data, dispatch, data2]);
   const labData = useSelector((state) => state.mainSlice.labData);
   console.log(labData);
   // axios

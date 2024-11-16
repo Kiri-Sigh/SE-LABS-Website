@@ -71,13 +71,13 @@ export const exampleToFetchData = {
     param: {}, //laboratory_id, maybe research_id
   },
   recentResearchNews: {
-    id: "researchResearcher",
+    id: "researchNews",
     url: "http://127.0.0.1:8000/user/news/thumbnail?",
     pageSize: 4,
     param: {}, //laboratory_id, maybe research_id
   },
   recentResearchEvent: {
-    id: "researchResearcher",
+    id: "researchEvent",
     url: "http://127.0.0.1:8000/user/event/thumbnail?",
     pageSize: 4,
     param: {}, //laboratory_id, maybe research_id
@@ -94,7 +94,7 @@ export const exampleToFetchData = {
     },
   },
   recentGridNews: {
-    id: "recentGridResearch",
+    id: "recentGridNews",
     // type: "n",
     pageSize: 8,
   },

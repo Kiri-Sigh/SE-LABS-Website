@@ -8,6 +8,9 @@ import MainPages from "./routes/user/Landing-Page";
 import AdminLayout from "./routes/admin/Admin-Layout";
 import ErrorPage from "routes/user/Error-Page";
 import DynamicNewsPage from "routes/user/Dynamic-News-Page";
+import DynamicPeoplePage from "routes/user/Dynamic-People-Page";
+import DynamicEventPage from "routes/user/Dynamic-Event-Page";
+import DynamicResearchPage from "routes/user/Dynamic-Research-Page";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -26,6 +29,9 @@ const router = createBrowserRouter([
       { path: "people", element: <MainPages /> },
       { path: "laboratory/:id", element: <DynamicLabPage /> },
       { path: "news/:id", element: <DynamicNewsPage /> },
+      { path: "event/:id", element: <DynamicEventPage /> },
+      { path: "people/:id", element: <DynamicPeoplePage /> },
+      { path: "research/:id", element: <DynamicResearchPage /> },
     ],
   },
   {

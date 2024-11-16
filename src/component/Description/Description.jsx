@@ -1,6 +1,7 @@
 import React from "react";
 
-const Description = () => {
+const Description = ({ data }) => {
+  if (data) console.log(data);
   return (
     <section className="flex overflow-hidden flex-col justify-center px-16 py-28 w-full text-base leading-6 text-black bg-sky-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
       <div className="flex flex-col w-full max-md:max-w-full">
