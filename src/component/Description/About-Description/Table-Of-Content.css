@@ -1,0 +1,39 @@
+.highlight-anim{
+    position:relative;
+    z-index: 2;
+    display: inline-block;
+}
+
+.highlight-anim::before{
+    content: '';
+    height:2px;
+    width: 0;
+    height: 100%;
+    z-index: -1;
+    background-color: #93C5FD;
+    position:absolute;
+    left: 0;
+    bottom:0;
+    transition: width 0.5s ease;
+}
+
+.highlight-anim::after{
+    content: '';
+    height:2px;
+    width: 0;
+    height: 100%;
+    z-index: -1;
+    background-color: #60A5FA;;
+    position:absolute;
+    left:0;
+    bottom:0;
+    transition: width 0.5s ease;
+}
+
+.highlight-anim:hover::before{
+    width:100%;
+}
+
+.highlight-anim:hover::after{
+    width:10px;
+}

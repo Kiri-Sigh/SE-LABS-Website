@@ -1,6 +1,5 @@
 import React from "react";
 import NewsCard from "../Cards/News-Card.jsx";
-
 import ViewAllButton from "../Buttons/View-All-Btn.jsx";
 import FilterButton from "../Buttons/Filter-Btn.jsx";
 import { useInfiniteFetch } from "api/custom-hooks.js";
@@ -9,22 +8,22 @@ import TeamCard from "component/Cards/Team-Card.jsx";
 import WhiteRoundedButton from "component/etc/tailgrid/buttonX.jsx";
 
 function GridCards({
-  toFetchedData = {},
-  url = "",
-  filter = null,
-  useFilterButton = false,
-  fetchedLabData = [],
-  publicationLink = null,
+    toFetchedData = {},
+    url = "",
+    filter = null,
+    useFilterButton = false,
+    fetchedLabData = [],
+    publicationLink = null,
 }) {
-  const [selectedLab, setSelectedLab] = React.useState(null);
-  console.log("selected", selectedLab);
-  if (selectedLab) filter = { laboratory_id: selectedLab.Laboratory.LID };
-  const recentNewsGridQuery = useInfiniteFetch({
-    id: toFetchedData.id,
-    url: url,
-    pageSize: toFetchedData.pageSize,
-    filter,
-  });
+    const [selectedLab, setSelectedLab] = React.useState(null);
+    console.log("selected", selectedLab);
+    if (selectedLab) filter = { laboratory_id: selectedLab.Laboratory.LID };
+    const recentNewsGridQuery = useInfiniteFetch({
+        id: toFetchedData.id,
+        url: url,
+        pageSize: toFetchedData.pageSize,
+        filter,
+    });
 
   const { data, isLoading, isError, fetchNextPage, isFetchingNextPage } =
     recentNewsGridQuery;
@@ -35,23 +34,23 @@ function GridCards({
   const hasData =
     data && data.pages && data.pages.some((page) => page.length > 0);
 
-  const handleLabChange = (event) => {
-    setSelectedLab(event);
-  };
+    const handleLabChange = (event) => {
+        setSelectedLab(event);
+    };
 
-  const chunkArray = (arr, size) => {
-    const result = [];
-    for (let i = 0; i < arr.length; i += size) {
-      result.push(arr.slice(i, i + size));
-    }
-    return result;
-  };
+    const chunkArray = (arr, size) => {
+        const result = [];
+        for (let i = 0; i < arr.length; i += size) {
+            result.push(arr.slice(i, i + size));
+        }
+        return result;
+    };
 
-  const isDataEmpty =
-    !data || data.pages.length === 0 || data.pages[0].length === 0;
-
+    const isDataEmpty =
+        !data || data.pages.length === 0 || data.pages[0].length === 0;
+  
   return (
-    <section className="flex overflow-hidden flex-col px-16 py-28 w-full bg-sky-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
+    <section className="flex overflow-hidden flex-col px-16 py-28 w-full bg-gray-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
       <div className="flex flex-wrap gap-10 justify-between items-end w-full max-md:max-w-full">
         <div className="flex flex-col text-black min-w-[240px] w-[768px] max-md:max-w-full"></div>
         <div className="flex items-center gap-4">
@@ -110,20 +109,11 @@ function GridCards({
                         ) : null;
                       })}
                     </div>
-                  ))
-                )
-              )
-            ) : (
-              <div>Loading...</div>
-            )}
+                </div>
+            </div>
           </div>
         </div>
       </div>
-      {/* {!isError && !isDataEmpty && (
-        <button className="px-8 py-5 mt-8 w-full text-lg text-black bg-white rounded-2xl border border-black border-solid max-md:px-5 max-md:max-w-full">
-          Load More
-        </button>
-      )} */}
       {!isError && hasData && (
         <button
           onClick={() => {
@@ -131,7 +121,7 @@ function GridCards({
             fetchNextPage();
           }}
           disabled={isFetchingNextPage}
-          className="px-8 py-5 mt-8 w-full text-lg text-black bg-white rounded-2xl border border-black border-solid max-md:px-5 max-md:max-w-full"
+          className="px-8 py-5 mt-8 w-full text-lg bg-blue-500 text-white border rounded-2xl border-solid max-md:px-5 max-md:max-w-full hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105"
         >
           {isFetchingNextPage ? "Loading more..." : "Load More"}
         </button>

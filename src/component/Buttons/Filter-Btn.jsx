@@ -1,4 +1,5 @@
 import dropdown from "../../resource/drop-down-filter.svg";
+
 import React, { useState } from "react";
 
 function FilterButton({ fetchedLabData = [], setSelectedLab }) {
@@ -26,7 +27,7 @@ function FilterButton({ fetchedLabData = [], setSelectedLab }) {
     <div className="relative">
       <button
         onClick={toggleDropdown}
-        className="flex gap-2 justify-center items-center self-stretch px-4 py-2 my-auto bg-white border border-black border-solid rounded-[34px]"
+         className="flex gap-2 justify-center items-center self-stretch px-4 py-3 my-auto bg-blue-500 text-white border  border-solid rounded-[34px] hover:bg-blue-600"
       >
         <span className="self-stretch my-auto">{selectedOption}</span>
         <img
@@ -56,6 +57,7 @@ function FilterButton({ fetchedLabData = [], setSelectedLab }) {
       )}
     </div>
   );
+
 }
 
 export default FilterButton;

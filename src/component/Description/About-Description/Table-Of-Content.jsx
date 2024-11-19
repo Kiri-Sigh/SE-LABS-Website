@@ -1,22 +1,27 @@
 import React from "react";
+import "./Table-Of-Content.css";
 
 const TableOfContents = () => {
   const items = [
-    { title: "Heading 2", level: 0 },
-    { title: "Heading 3", level: 1 },
-    { title: "Heading 4", level: 2 },
-    { title: "Heading 5", level: 3 },
-    { title: "Heading 6", level: 4 },
+    { title: "Who are we?", id: "heading-2" },
+    { title: "Why Software Engineering?", id: "heading-3" },
+    { title: "Missions and Values", id: "heading-4" },
+    { title: "Leadership", id: "heading-5" },
+    { title: "Faculty", id: "heading-6" },
   ];
 
   return (
-    <nav className="flex flex-col w-80 min-w-[240px]">
-      <h2 className="text-2xl font-bold leading-snug">Table of contents</h2>
-      <ul className="flex flex-col mt-4 w-full text-lg">
+    <nav className="flex flex-col w-80 min-w-[240px] bg-blue-200 rounded-xl overflow-hidden">
+      <h2 className="text-2xl font-bold leading-snug bg-blue-400 p-5">
+        Table of contents
+      </h2>
+      <ul className="flex flex-col w-full text-lg">
         {items.map((item, index) => (
-          <li key={index} className={`gap-2.5 px-${4} py-3 w-full `}>
-            {item.title}
-          </li>
+          <a href={`#${item.id}`}>
+            <li key={index} className="gap-2.5 px-5 py-3 w-full highlight-anim">
+              {item.title}
+            </li>
+          </a>
         ))}
       </ul>
     </nav>

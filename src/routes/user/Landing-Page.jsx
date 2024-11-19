@@ -17,6 +17,7 @@ import TableComponent from "../../component/admin-Component/tables/proto2/table-
 import { exampleToFetchData } from "../../PlaceHolder-Data/toFetch";
 import MyFormComponent from "../../component/etc/exampleForm";
 import LoginComp from "component/etc/example-login";
+
 import { useDispatch, useSelector } from "react-redux";
 import { useNormalQueryGet } from "api/custom-hooks";
 import { mainAction } from "../../store/main-slice.js";
@@ -34,7 +35,7 @@ function MainPages() {
   //   "http://127.0.0.1:8000/user/news/thumbnail/a163c610-7d14-47c0-8748-a8fea6bc36ee",
   //   "news",
   //   "a163c610-7d14-47c0-8748-a8fea6bc36ee"
-  // );
+//   );
   React.useEffect(() => {
     if (data) {
       dispatch(mainAction.setLabData(data));
@@ -45,7 +46,6 @@ function MainPages() {
   }, [data, dispatch]);
   const labData = useSelector((state) => state.mainSlice.labData);
   console.log(labData);
-
   const location = useLocation();
   switch (location.pathname) {
     case "/":
@@ -157,5 +157,6 @@ function MainPages() {
   // { path: "events", element: <MainPages /> },
   // { path: "people", element: <MainPages /> },
   // { path: "labs/:labID", element: <DynamicLabPage /> },
+
 }
 export default MainPages;
