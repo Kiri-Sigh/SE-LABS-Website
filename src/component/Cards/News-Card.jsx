@@ -4,6 +4,8 @@ import kmitl_logo from "../../resource/kmitl_logo.webp";
 import { getData, getImgData } from "../../api/api-method";
 import { useNormalQueryGet, useQueryGetImg } from "../../api/custom-hooks";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { editAction } from "store/edit-slice";
 
 const NewsCard = ({
     title,
@@ -14,24 +16,32 @@ const NewsCard = ({
     type,
     publicationLink,
 }) => {
-    const navigate = useNavigate();
-
-    let relatedTopic = null;
-    if (type === "News") {
-        relatedTopic =
-            related_laboratory.related_publication ||
-            related_laboratory.related_research ||
-            related_laboratory ||
-            null;
-    } else if (type === "Publication") {
-        relatedTopic = null;
-    } else if (type === "Laboratory") {
-        relatedTopic = null;
-    } else if (type === "Research") {
-        relatedTopic = related_laboratory;
-    } else {
-        relatedTopic = "something wrong";
-    }
+  // console.log(title);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  let isAdminPage = useSelector((state) => state.mainSlice.isAdminPage);
+  let relatedTopic;
+  if (type === "News") {
+    relatedTopic =
+      related_laboratory.related_publication ||
+      related_laboratory.related_research ||
+      related_laboratory ||
+      null;
+  } else if (type === "Publication") {
+    relatedTopic = null;
+  } else if (type === "Laboratory") {
+    relatedTopic = null;
+  } else if (type === "Research") {
+    relatedTopic = related_laboratory;
+  } else {
+    relatedTopic = "something wrong";
+  }
+  // console.log(relatedTopic);
+  const { data, isLoading, isError } = useQueryGetImg(
+    `http://127.0.0.1:8000/user`,
+    type,
+    ID
+  );
 
     const { data, isLoading, isError } = useQueryGetImg(
         `http://127.0.0.1:8000/user`,
@@ -62,44 +72,47 @@ const NewsCard = ({
                 }
             }
         };
-        fetchImgSmall();
-    }, [relatedTopic]);
+    fetchImgSmall();
+  }, [relatedTopic]);
+  const titleClass =
+    title.length <= 20 ? "title-clamp short-title" : "title-clamp";
+  const handleCardClick = () => {
+    if (!isAdminPage) navigate(`/${type}/${ID}`);
+    else dispatch(editAction.openModal());
+  };
+  const handlePublicationLink = () => {
+    window.location.href = "https://www.se.kmitl.ac.th/"; // Navigates to Google
+  };
+  const handleSmallDivClick = (e) => {
+    e.stopPropagation(); // Prevents the card click event from triggering
+    // const type2 = toString(type);
+    if (relatedTopic.PID) {
+      handlePublicationLink();
+    } else {
+      navigate(
+        `/${
+          relatedTopic.LID
+            ? "laboratory"
+            : relatedTopic.RID
+            ? "research"
+            : "error"
+        }/${relatedTopic?.LID || relatedTopic?.RID}`
+      );
+    }
+  };
+  return (
+    <article
+      className="flex flex-col rounded-3xl border border-black border-solid min-w-[240px] w-[325px]"
+      onClick={publicationLink ? handlePublicationLink : handleCardClick}
+    >
+      <div className="relative">
+        <img
+          loading="lazy"
+          src={isLoading ? kmitl_logo : data}
+          alt={title}
+          className="w-full rounded-tl-3xl rounded-tr-3xl aspect-[1.3]"
+        />
 
-    const titleClass =
-        title.length <= 20 ? "title-clamp short-title" : "title-clamp";
-    const handleCardClick = () => {
-        navigate(`/${type}/${ID}`);
-    };
-    const handlePublicationLink = () => {
-        window.location.href = "https://www.se.kmitl.ac.th/";
-    };
-    const handleSmallDivClick = (e) => {
-        e.stopPropagation();
-        navigate(
-            `/${
-                relatedTopic.PID
-                    ? "publication"
-                    : relatedTopic.LID
-                    ? "laboratory"
-                    : relatedTopic.RID
-                    ? "research"
-                    : "error"
-            }/${relatedTopic?.PID || relatedTopic?.LID || relatedTopic?.RID}`
-        );
-    };
-
-    return (
-        <article
-            className="flex flex-col rounded-3xl border border-gray-300 shadow-lg overflow-hidden w-[300px] h-[350px] bg-white hover:shadow-2xl transition-shadow duration-300"
-            onClick={publicationLink ? handlePublicationLink : handleCardClick}
-        >
-            <div className="relative">
-                <img
-                    loading="lazy"
-                    src={isLoading ? kmitl_logo : data}
-                    alt={title}
-                    className="w-full h-32 object-cover"
-                />
             </div>
             <div className="flex flex-col p-4 w-full bg-white flex-1">
                 <div className="flex flex-col w-full text-gray-800 flex-1">

@@ -6,14 +6,16 @@ import TopicAndImage from "../../component/others/Big-Image/Topic-And-Image";
 
 import { getData } from "api/api-method";
 import { exampleToFetchData } from "PlaceHolder-Data/toFetch";
-import { useQueryGetImg } from "api/custom-hooks";
+import { useNormalQueryGet, useQueryGetImg } from "api/custom-hooks";
 
 function DynamicEventPage() {
   const { id } = useParams(); // Access the id from the route
-  const { data } = getData(
-    `http://127.0.0.1:8000/user/event/thumbnail?event_id=${id}&amount=1&page=1`
+  const { data, isLoading } = useNormalQueryGet(
+    `http://127.0.0.1:8000/user/event/thumbnail/${id}?amount=1&page=1`,
+    "Event",
+    id
   );
-  const { data: img } = useQueryGetImg(
+  const { data: img, isLoading: isLoading2 } = useQueryGetImg(
     `http://127.0.0.1:8000/user`,
     "event",
     id
@@ -21,7 +23,12 @@ function DynamicEventPage() {
   //lab news,lab event,lab people,lab publication,lab research
   return (
     <>
-      <TopicAndImage data={data} image={img} />
+      <TopicAndImage
+        data={data}
+        image={img}
+        isLoading={isLoading}
+        isLoading2={isLoading2}
+      />{" "}
       <Description data={data} />
     </>
   );

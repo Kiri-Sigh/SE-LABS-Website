@@ -7,14 +7,18 @@ import TopicAndImage from "../../component/others/Big-Image/Topic-And-Image";
 import { getData } from "api/api-method";
 import { exampleToFetchData } from "PlaceHolder-Data/toFetch";
 
-import { useQueryGetImg } from "api/custom-hooks";
+import { useNormalQueryGet, useQueryGetImg } from "api/custom-hooks";
 
 function DynamicResearchPage() {
   const { id } = useParams(); // Access the id from the route
-  const { data } = getData(
-    `http://127.0.0.1:8000/user/research/thumbnail?research_id=${id}&amount=1&page=1`
+  console.log(id);
+  const { data, isLoading } = useNormalQueryGet(
+    `http://127.0.0.1:8000/user/research/thumbnail/${id}`,
+    "research",
+    id
   );
-  const { data: img } = useQueryGetImg(
+  if (data) console.log(data);
+  const { data: img, isLoading: isLoading2 } = useQueryGetImg(
     `http://127.0.0.1:8000/user`,
     "research",
     id
@@ -22,20 +26,26 @@ function DynamicResearchPage() {
   //lab news,lab event,lab people,lab publication,lab research
   return (
     <>
-      <TopicAndImage data={data} image={img} />
+      <TopicAndImage
+        data={data}
+        image={img}
+        isLoading={isLoading}
+        isLoading2={isLoading2}
+      />
       <Description data={data} />
 
-      <RecentNews
+      {/* <RecentNews
         toFetchedData={exampleToFetchData.recentResearchResearcher}
         filter={{ research_id: id }}
         componentTitle="Reseachers"
-      />
+      /> */}
       <RecentNews
         toFetchedData={exampleToFetchData.recentResearchNews}
         filter={{ research_id: id }}
         componentTitle="Research News"
       />
       <RecentEvents
+        // toFetchedData={exampleToFetchData.recentResearchEvent}
         toFetchedData={exampleToFetchData.recentResearchEvent}
         filter={{ research_id: id }}
         componentTitle="Research Events"

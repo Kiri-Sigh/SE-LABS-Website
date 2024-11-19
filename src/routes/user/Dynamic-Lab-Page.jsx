@@ -7,15 +7,17 @@ import TopicAndImage from "../../component/others/Big-Image/Topic-And-Image";
 import { getData } from "api/api-method";
 import TeamCard from "component/Cards/Team-Card";
 import { exampleToFetchData } from "PlaceHolder-Data/toFetch";
-import {  useQueryGetImg } from "api/custom-hooks";
+import { useNormalQueryGet, useQueryGetImg } from "api/custom-hooks";
 
 function DynamicLabPage() {
   const { id } = useParams(); // Access the id from the route
-  const { data } = getData(
-    `http://127.0.0.1:8000/user/laboratory/thumbnail?laboratory_id=${id}&amount=1&page=1`
+  const { data, isLoading } = useNormalQueryGet(
+    `http://127.0.0.1:8000/user/laboratory/thumbnail?laboratory_id=${id}&amount=1&page=1`,
+    "Laboratory",
+    id
   );
   if (data) console.log("dat?", data);
-  const { data: img } = useQueryGetImg(
+  const { data: img, isLoading: isLoading2 } = useQueryGetImg(
     `http://127.0.0.1:8000/user`,
     "laboratory",
     id
@@ -23,8 +25,14 @@ function DynamicLabPage() {
   //lab news,lab event,lab people,lab publication,lab research
   return (
     <>
-      <TopicAndImage data={data} image={img} />
-      <Description data={data} />
+      <TopicAndImage
+        data={data}
+        image={img}
+        isLoading={isLoading}
+        isLoading2={isLoading2}
+        isLab={true}
+      />
+      <Description data={data} isLab={true} isLoading={isLoading} />
       <RecentNews
         toFetchedData={exampleToFetchData.recentLabResearch}
         filter={{ laboratory_id: id }}

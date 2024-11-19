@@ -1,3 +1,5 @@
+import Header from "component/Header/Header";
+import MainNavigation from "component/Header/MainNavigation";
 import { Outlet, useNavigation } from "react-router-dom";
 // import MainNavigation from "../../component/MainNavigation";
 
@@ -6,10 +8,10 @@ function AdminLayout() {
 
   return (
     <>
-      {/* <MainNavigation />
+      <Header />
       <main>
         <Outlet />
-      </main> */}
+      </main>
     </>
   );
 }

@@ -21,18 +21,19 @@ def assign_to_be_lead_researcher(
     db = Depends(get_db),
     current_user: AuthUser = Depends(get_current_active_admin)
     ):
-    researcher = db.query(Researcher).filter(Researcher.researcher_id == researcher_id).first()
+    researcher = db.query(Researcher).filter(Researcher.user_id == researcher_id).first()
     if researcher is None:
         raise HTTPException(status_code=404, detail="Researcher not found")
     
     researcher.lab_id = laboratory_id
 
     new_person_lab = person_lab(
-        person_id=researcher_id,
+        user_id=researcher_id,
         lab_id=laboratory_id,
         role=Position.LeadResearcher
     )
 
+    db.add(new_person_lab)
     db.commit()
     db.refresh(researcher)
     return UT01.to_researcher_thumbnail(researcher)
@@ -43,13 +44,13 @@ def remove_lead_researcher(
     db = Depends(get_db),
     current_user: AuthUser = Depends(get_current_active_admin)
     ):
-    researcher = db.query(Researcher).filter(Researcher.researcher_id == researcher_id).first()
+    researcher = db.query(Researcher).filter(Researcher.user_id == researcher_id).first()
     if researcher is None:
         raise HTTPException(status_code=404, detail="Researcher not found")
     
     researcher.lab_id = None
 
-    db.query(person_lab).filter(person_lab.person_id == researcher_id).delete()
+    db.query(person_lab).filter(person_lab.user_id == researcher_id).delete()
 
     result = UT01.to_researcher_thumbnail(researcher)
 

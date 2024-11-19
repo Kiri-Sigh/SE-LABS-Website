@@ -1,11 +1,12 @@
 import React from "react";
 import EventCard from "../../Cards/Event-Card";
-import { getData } from "../../../api/api-method";
 import { useInfiniteFetch } from "api/custom-hooks";
+
 const RecentEvents = ({
   toFetchedData = {},
   topic = "events",
   filter = null,
+  ComponentTitle = "EventComp",
 }) => {
   const recentEventsQuery = useInfiniteFetch({
     id: toFetchedData.id,
@@ -13,17 +14,13 @@ const RecentEvents = ({
     pageSize: toFetchedData.pageSize,
     filter,
   });
-  // console.log(recentEventsQuery);
-  const {
-    data,
-    isLoading,
-    isError,
-    isFetching,
-    isPaused,
-    fetchNextPage,
-    isFetchingNextPage,
-  } = recentEventsQuery;
-  // console.log("news data", data);
+
+  const { data, isLoading, isError, fetchNextPage, isFetchingNextPage } =
+    recentEventsQuery;
+
+  const hasData =
+    data && data.pages && data.pages.some((page) => page.length > 0);
+
   return (
     <section className="flex overflow-hidden flex-col px-16 py-28 w-full bg-gray-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
       <div className="flex flex-col w-full text-black max-md:max-w-full">
@@ -36,21 +33,7 @@ const RecentEvents = ({
         </p>
       </div>
       <div className="flex flex-col mt-20 w-full max-md:mt-10 max-md:max-w-full">
-        {/* {!isLoading ? (
-          data.pages[0].map((item, index) => {
-            console.log(item.Event);
-            return (
-              <EventCard
-                key={`${index}`}
-                {...item.Event}
-                className="hover:shadow-2xl transition-shadow duration-300"
-              />
-            );
-          })
-        ) : (
-          <div>Loading...</div>
-        )} */}
-        {!isLoading ? (
+        {!isLoading && hasData ? (
           data.pages.map((itemArr, pageIndex) =>
             itemArr.map((item, itemIndex) => (
               <EventCard
@@ -59,31 +42,28 @@ const RecentEvents = ({
               />
             ))
           )
-        ) : (
+        ) : isLoading ? (
           <div>Loading...</div>
+        ) : (
+          <div className="text-center text-lg text-gray-500">
+            No events available at the moment.
+          </div>
         )}
-        {!isError && (
+        {!isError && hasData && (
           <button
-            onClick={() => fetchNextPage()}
-            disabled={isFetchingNextPage || isFetching || isError}
+            onClick={() => {
+              console.log("clicked");
+              fetchNextPage();
+            }}
+            disabled={isFetchingNextPage}
             className="px-8 py-5 mt-8 w-full text-lg text-black bg-white rounded-2xl border border-black border-solid max-md:px-5 max-md:max-w-full"
           >
             {isFetchingNextPage ? "Loading more..." : "Load More"}
           </button>
         )}
-        {/* {!isError && (
-          <div className="text-center mt-8 text-lg">
-            No more events to load.
-          </div>
-        )} */}
       </div>
     </section>
   );
 };
 
 export default RecentEvents;
-
-//  function fetch(topic){
-//   if (topic=news)
-//   const data = getData();
-//  }

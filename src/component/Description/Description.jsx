@@ -1,10 +1,35 @@
+import Spinner1 from "component/others/spinner";
 import React from "react";
 
-const Description = () => {
+const Description = ({ data, isLab, isLoading }) => {
+  if (data) console.log("data", data);
+  let data2, data3;
+  if (!isLab) {
+    const firstKey = data ? Object.keys(data)[0] : null;
+    if (firstKey === "Researcher") data2 = data ? data[firstKey].name : "";
+    else {
+      data2 = data ? data[firstKey].body : "";
+    }
+    if (data2) console.log("data2", data2); // Ensure data is logged
+  } else {
+    let secondkey = data ? Object.keys(data[0])[0] : null;
+    data3 = data ? data[0][secondkey].body : "";
+    if (data3) console.log("data3", data3);
+  }
   return (
     <section className="flex overflow-hidden flex-col justify-center px-16 py-28 w-full text-base leading-6 text-black bg-sky-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
       <div className="flex flex-col w-full max-md:max-w-full">
-        <h2 className="py-6 w-full text-4xl font-bold leading-tight whitespace-nowrap max-md:max-w-full">
+        {isLoading ? (
+          <>
+            loading...
+            <Spinner1 />
+          </>
+        ) : isLab ? (
+          data3
+        ) : (
+          data2
+        )}
+        {/* <h2 className="py-6 w-full text-4xl font-bold leading-tight whitespace-nowrap max-md:max-w-full">
           Introduction
         </h2>
         <p className="pb-4 w-full max-md:max-w-full">
@@ -75,7 +100,7 @@ const Description = () => {
           posuere pharetra odio consequat scelerisque et, nunc tortor. Nulla
           adipiscing erat a erat. Condimentum lorem posuere gravida enim posuere
           cursus diam.
-        </p>
+        </p> */}
       </div>
     </section>
   );

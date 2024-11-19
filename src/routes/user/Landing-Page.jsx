@@ -31,10 +31,18 @@ function MainPages() {
     "http://127.0.0.1:8000/user/laboratory/thumbnail?amount=10",
     "laboratory"
   );
+  // const { data: data2 } = useNormalQueryGet(
+  //   "http://127.0.0.1:8000/user/news/thumbnail/a163c610-7d14-47c0-8748-a8fea6bc36ee",
+  //   "news",
+  //   "a163c610-7d14-47c0-8748-a8fea6bc36ee"
+//   );
   React.useEffect(() => {
     if (data) {
       dispatch(mainAction.setLabData(data));
     }
+    // if (data2) {
+    //   console.log("data2", data2);
+    // }
   }, [data, dispatch]);
   const labData = useSelector((state) => state.mainSlice.labData);
   console.log(labData);
@@ -43,12 +51,12 @@ function MainPages() {
     case "/":
       return (
         <>
-          <Modals />
+          {/* <Modals />
           <LoginComp />
           <MyFormComponent />
-          <TableComponent />
+          <TableComponent /> */}
           <HeroBox />
-          <DividingRows />
+          {/* <DividingRows /> */}
           <RecentNews toFetchedData={exampleToFetchData.recentNews} />
           <RecentEvents toFetchedData={exampleToFetchData.recentEvents} />
         </>
