@@ -72,16 +72,17 @@ const TeamCard = ({
 
   return (
     <div
-      className="flex flex-col rounded-3xl border border-black border-solid min-w-[240px] w-[390px]"
+      className="flex flex-col m-5 rounded-3xl border border-black border-solid min-w-[240px] w-[390px] cursor-pointer shadow-lg hover:shadow-2xl transition-shadow duration-300"
+      style={{ boxSizing: "border-box" }} // Prevents border overlap
       onClick={handleCardClick}
     >
       <img
         loading="lazy"
         src={isLoading ? kmitl_logo : data}
         alt=""
-        className="w-full rounded-tl-3xl rounded-tr-3xl aspect-[1.3]"
+        className="w-full rounded-tl-3xl rounded-tr-3xl aspect-[1.3] border-black border-b"
       />
-      <div className="flex flex-col p-6 w-full bg-cyan-200 rounded-none border border-black border-solid max-md:px-5 rounded-bl-3xl rounded-br-3xl">
+      <div className="flex flex-col p-6 w-full bg-blue-200 rounded-none max-md:px-5 rounded-bl-3xl rounded-br-3xl">
         <div className="flex flex-col w-full text-2xl font-bold leading-snug text-black line-clamp-2 indent-clamp">
           <div className="w-full">{name}</div>
         </div>
@@ -97,7 +98,6 @@ const TeamCard = ({
               {gmail}
             </div>
           </div>
-          {/* {!(isLoading && isError) && relatedTopic !== null ? ( */}
           <div
             className="flex gap-4 items-center mt-2 w-full text-sm"
             onClick={

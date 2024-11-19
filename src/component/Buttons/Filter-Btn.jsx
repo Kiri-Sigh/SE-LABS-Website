@@ -27,7 +27,7 @@ function FilterButton({ fetchedLabData = [], setSelectedLab }) {
     <div className="relative">
       <button
         onClick={toggleDropdown}
-        className="flex gap-2 justify-center items-center self-stretch px-4 py-3 my-auto bg-blue-500 text-white border  border-solid rounded-[34px] hover:bg-blue-600"
+        className="flex gap-2 justify-center items-center px-4 py-3 bg-blue-500 text-white hover:bg-blue-600 rounded-full focus:outline-none transition-all duration-300 ease-in-out"
       >
         <span className="self-stretch my-auto">{selectedOption}</span>
         <img
