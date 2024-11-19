@@ -136,12 +136,12 @@ export const exampleToFetchData = {
     recentGridPublication: {
         id: "recentGridPublication",
         // type: "n",
-        pageSize: 6,
+        pageSize: 8,
     },
     recentGridResearch: {
         id: "recentGridResearch",
         // type: "n",
-        pageSize: 6,
+        pageSize: 8,
     },
     relatedNews: {
         id: "relatedNews",
