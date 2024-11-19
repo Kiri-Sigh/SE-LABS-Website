@@ -23,8 +23,8 @@ const NewsCard = ({
   let relatedTopic;
   if (type === "News") {
     relatedTopic =
-      related_laboratory.related_publication ||
-      related_laboratory.related_research ||
+      related_laboratory?.related_publication ||
+      related_laboratory?.related_research ||
       related_laboratory ||
       null;
   } else if (type === "Publication") {

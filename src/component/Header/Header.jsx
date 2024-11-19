@@ -16,7 +16,7 @@ function Header() {
       <header className="sticky-header flex flex-col justify-center px-16 w-full bg-blue-900 min-h-[72px] max-md:px-5 max-md:max-w-full">
         <div
           className={` flex flex-col justify-center px-16 w-full min-h-[72px] max-md:px-5 max-md:max-w-full ${
-            isAdminPage ? "bg-black" : "bg-cyan-600"
+            isAdminPage ? "bg-black" : "bg-blue-900"
           }`}
         >
           <div className="flex flex-wrap gap-10 justify-between items-center w-full max-md:max-w-full">
