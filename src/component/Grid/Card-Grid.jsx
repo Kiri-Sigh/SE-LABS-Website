@@ -8,22 +8,22 @@ import TeamCard from "component/Cards/Team-Card.jsx";
 import WhiteRoundedButton from "component/etc/tailgrid/buttonX.jsx";
 
 function GridCards({
-    toFetchedData = {},
-    url = "",
-    filter = null,
-    useFilterButton = false,
-    fetchedLabData = [],
-    publicationLink = null,
+  toFetchedData = {},
+  url = "",
+  filter = null,
+  useFilterButton = false,
+  fetchedLabData = [],
+  publicationLink = null,
 }) {
-    const [selectedLab, setSelectedLab] = React.useState(null);
-    console.log("selected", selectedLab);
-    if (selectedLab) filter = { laboratory_id: selectedLab.Laboratory.LID };
-    const recentNewsGridQuery = useInfiniteFetch({
-        id: toFetchedData.id,
-        url: url,
-        pageSize: toFetchedData.pageSize,
-        filter,
-    });
+  const [selectedLab, setSelectedLab] = React.useState(null);
+  console.log("selected", selectedLab);
+  if (selectedLab) filter = { laboratory_id: selectedLab.Laboratory.LID };
+  const recentNewsGridQuery = useInfiniteFetch({
+    id: toFetchedData.id,
+    url: url,
+    pageSize: toFetchedData.pageSize,
+    filter,
+  });
 
   const { data, isLoading, isError, fetchNextPage, isFetchingNextPage } =
     recentNewsGridQuery;
@@ -34,21 +34,21 @@ function GridCards({
   const hasData =
     data && data.pages && data.pages.some((page) => page.length > 0);
 
-    const handleLabChange = (event) => {
-        setSelectedLab(event);
-    };
+  const handleLabChange = (event) => {
+    setSelectedLab(event);
+  };
 
-    const chunkArray = (arr, size) => {
-        const result = [];
-        for (let i = 0; i < arr.length; i += size) {
-            result.push(arr.slice(i, i + size));
-        }
-        return result;
-    };
+  const chunkArray = (arr, size) => {
+    const result = [];
+    for (let i = 0; i < arr.length; i += size) {
+      result.push(arr.slice(i, i + size));
+    }
+    return result;
+  };
 
-    const isDataEmpty =
-        !data || data.pages.length === 0 || data.pages[0].length === 0;
-  
+  const isDataEmpty =
+    !data || data.pages.length === 0 || data.pages[0].length === 0;
+
   return (
     <section className="flex overflow-hidden flex-col px-16 py-28 w-full bg-gray-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
       <div className="flex flex-wrap gap-10 justify-between items-end w-full max-md:max-w-full">
@@ -109,8 +109,12 @@ function GridCards({
                         ) : null;
                       })}
                     </div>
-                </div>
-            </div>
+                  ))
+                )
+              )
+            ) : (
+              <div>Loading...</div>
+            )}
           </div>
         </div>
       </div>

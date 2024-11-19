@@ -1,4 +1,4 @@
-import React from "react
+import React from "react";
 import kmitl_logo from "../../../resource/kmitl_logo.webp";
 import Spinner1 from "../spinner";
 const TopicAndImage = ({

@@ -4,14 +4,14 @@ import time from "../../resource/time.svg";
 import { useNavigate } from "react-router-dom";
 
 const EventCard = ({
-    title,
-    body,
-    start,
-    end,
-    EID,
-    related_laboratory,
-    status,
-    location,
+  title,
+  body,
+  start,
+  end,
+  EID,
+  related_laboratory,
+  status,
+  location,
 }) => {
   const navigate = useNavigate();
   const handleCardClick = () => {
@@ -29,40 +29,34 @@ const EventCard = ({
           </h3>
           <span
             className={`px-2 py-1 text-sm font-medium text-white rounded-full ${
-                            status === "Coming"
-                                ? "bg-green-500"
-                                : status === "On Going"
-                                ? "bg-yellow-500"
-                                : "bg-red-500"
-                        }`}
+              status === "Coming"
+                ? "bg-green-500"
+                : status === "On Going"
+                ? "bg-yellow-500"
+                : "bg-red-500"
+            }`}
           >
             {status}
           </span>
         </div>
-        <p className="mt-2 text-sm text-gray-700 line-clamp-3 max-w-2xl">{body}</p>
+        <p className="mt-2 text-sm text-gray-700 line-clamp-3 max-w-2xl">
+          {body}
+        </p>
         <div className="flex flex-wrap gap-4 items-center mt-4 text-sm text-gray-600">
           <div className="flex gap-2 items-center">
-            <img
-              loading="lazy"
-              src={locate}
-              alt=""
-              className="w-5 h-5"
-            />
+            <img loading="lazy" src={locate} alt="" className="w-5 h-5" />
             <span>{location}</span>
           </div>
           <div className="flex gap-2 items-center">
-            <img
-              loading="lazy"
-              src={time}
-              alt=""
-              className="w-5 h-5"
-            />
+            <img loading="lazy" src={time} alt="" className="w-5 h-5" />
             <span>
               {start}-{end}
             </span>
           </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default EventCard;
