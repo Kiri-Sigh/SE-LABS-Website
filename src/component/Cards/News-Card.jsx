@@ -96,7 +96,7 @@ const NewsCard = ({
   };
   return (
     <article
-      className="flex flex-col rounded-3xl border border-black border-solid min-w-[240px] w-[325px]"
+      className="flex flex-col rounded-3xl border border-black border-solid min-w-[240px] w-[325px] cursor-pointer"
       onClick={publicationLink ? handlePublicationLink : handleCardClick}
     >
       <div className="relative">

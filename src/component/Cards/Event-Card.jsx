@@ -19,7 +19,7 @@ const EventCard = ({
   };
   return (
     <div
-      className="flex flex-col justify-center p-6 w-full bg-white shadow-lg rounded-lg border border-gray-200 max-md:px-4 mb-6 hover:shadow-2xl transition-shadow duration-300"
+      className="flex flex-col justify-center p-6 w-full bg-white shadow-lg rounded-lg border border-gray-200 max-md:px-4 mb-6 hover:shadow-2xl transition-shadow duration-300 cursor-pointer"
       onClick={handleCardClick}
     >
       <div className="flex flex-col w-full max-md:max-w-full">

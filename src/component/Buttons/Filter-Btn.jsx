@@ -27,7 +27,7 @@ function FilterButton({ fetchedLabData = [], setSelectedLab }) {
     <div className="relative">
       <button
         onClick={toggleDropdown}
-         className="flex gap-2 justify-center items-center self-stretch px-4 py-3 my-auto bg-blue-500 text-white border  border-solid rounded-[34px] hover:bg-blue-600"
+        className="flex gap-2 justify-center items-center self-stretch px-4 py-3 my-auto bg-blue-500 text-white border  border-solid rounded-[34px] hover:bg-blue-600"
       >
         <span className="self-stretch my-auto">{selectedOption}</span>
         <img
@@ -38,7 +38,7 @@ function FilterButton({ fetchedLabData = [], setSelectedLab }) {
         />
       </button>
       {isOpen && options.length > 0 && (
-        <ul className="absolute z-10 mt-1 w-full bg-white border border-black rounded-lg shadow-lg">
+        <ul className="absolute z-10 mt-1 w-full bg-white border border-black rounded-lg shadow-lg overflow-hidden">
           {options.map((option, index) => (
             <li
               key={option}
@@ -57,7 +57,6 @@ function FilterButton({ fetchedLabData = [], setSelectedLab }) {
       )}
     </div>
   );
-
 }
 
 export default FilterButton;
