@@ -32,6 +32,9 @@ def assign_to_be_lead_researcher(
         lab_id=laboratory_id,
         role=Position.LeadResearcher
     )
+    
+    if researcher.highest_role == Position.Free or researcher.highest_role == Position.Researcher:
+        researcher.highest_role = Position.LeadResearch
 
     db.add(new_person_lab)
     db.commit()
@@ -49,6 +52,11 @@ def remove_lead_researcher(
         raise HTTPException(status_code=404, detail="Researcher not found")
     
     researcher.lab_id = None
+    
+    if len(researcher.labs) == 0:
+        researcher.highest_role = Position.Researcher
+    if len(researcher.researches) == 0:
+        researcher.highest_role = Position.Free
 
     db.query(person_lab).filter(person_lab.user_id == researcher_id).delete()
 

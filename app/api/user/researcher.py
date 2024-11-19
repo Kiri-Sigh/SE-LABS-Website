@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from typing import Optional
 from uuid import UUID
 from fastapi.responses import Response
+from sqlalchemy import case
 
 from ...dependencies import get_db
 from ...model import *
@@ -22,6 +23,17 @@ def get_researcher_thumbnail(
     researcher = db.query(Researcher)
     if laboratory_id:
         researcher = researcher.filter(Researcher.user_id == laboratory_id)
+    
+    # Define custom sorting order
+    position_order = case(
+        (Researcher.highest_role == Position.LeadResearcher, 1),
+        (Researcher.highest_role == Position.Admin, 2),
+        (Researcher.highest_role == Position.Researcher, 3),
+        else_=4
+    )
+    
+    researcher = researcher.order_by(position_order)
+        
     offset = (page - 1) * amount
     researchers = researcher.offset(offset).limit(amount).all()
     return [UT01.to_researcher_thumbnail(researcher) for researcher in researchers]

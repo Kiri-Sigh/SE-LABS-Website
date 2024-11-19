@@ -96,6 +96,10 @@ def assign_researcher_to_research(
         research_id=research_id,
         role=Position.Researcher
     )
+    
+    # check the highest role of the researcher and update it if necessary
+    if researcher.highest_role == Position.Free:
+        researcher.highest_role = Position.Researcher
 
     db.add(new_person_research)
     db.commit()
@@ -123,6 +127,9 @@ def kick_from_research(
     ).first()
     if existe_person_research is None:
         raise HTTPException(status_code=404, detail="Researcher not assigned to research")
+    
+    if len(researcher.researches) == 0:
+        researcher.highest_role = Position.Free
     
     db.delete(existe_person_research)
     db.commit()

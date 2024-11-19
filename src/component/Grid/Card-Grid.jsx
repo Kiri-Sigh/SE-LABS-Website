@@ -51,7 +51,7 @@ function GridCards({
     return (
         <section className="flex overflow-hidden flex-col px-16 py-28 w-full -mt-40 bg-gray-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
             <div className="flex flex-wrap gap-10 justify-between items-end w-full max-md:max-w-full">
-                <div className="flex flex-col text-black min-w-[240px] w-[768px] max-md:max-w-full"></div>
+                <div className="flex flex-col text-black min-w-[240px] w-[325px] max-md:max-w-full"></div>
                 <div className="flex items-center gap-4">
                     {useFilterButton && (
                         <FilterButton
@@ -74,7 +74,7 @@ function GridCards({
                                     style={{
                                         gridTemplateColumns:
                                             topic == "Researcher"
-                                                ? "repeat(auto-fill, minmax(400px, 1fr))"
+                                                ? "repeat(auto-fill, minmax(300px, 1fr))"
                                                 : "repeat(auto-fill, minmax(300px, 1fr))",
                                     }}
                                 >
