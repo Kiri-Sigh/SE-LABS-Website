@@ -30,77 +30,33 @@ function MainPages() {
     "http://127.0.0.1:8000/user/laboratory/thumbnail?amount=10",
     "laboratory"
   );
-  const { data: data2 } = useNormalQueryGet(
-    "http://127.0.0.1:8000/user/research/thumbnail/547882bd-5894-4b66-a4ba-385a73ae9fef",
-    "research",
-    "547882bd-5894-4b66-a4ba-385a73ae9fef"
-  );
+  // const { data: data2 } = useNormalQueryGet(
+  //   "http://127.0.0.1:8000/user/news/thumbnail/a163c610-7d14-47c0-8748-a8fea6bc36ee",
+  //   "news",
+  //   "a163c610-7d14-47c0-8748-a8fea6bc36ee"
+  // );
   React.useEffect(() => {
     if (data) {
       dispatch(mainAction.setLabData(data));
     }
-    if (data2) {
-      console.log("data2", data2);
-    }
-  }, [data, dispatch, data2]);
+    // if (data2) {
+    //   console.log("data2", data2);
+    // }
+  }, [data, dispatch]);
   const labData = useSelector((state) => state.mainSlice.labData);
   console.log(labData);
-  // axios
-  //   .get(
-  //     "http://127.0.0.1:8000/user/event/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980"
-  //   )
-  //   .then((response) => {
-  //     console.log(response.data);
-  //   });
 
-  // console.log(
-  //   getData(
-  //     "http://localhost:8000/user/event/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980"
-  //   )
-  // );
-  // const a = [
-  //   [
-  //     {
-  //       id: "abc",
-  //       url: "http://127.0.0.1:8000/user/event/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980",
-  //       type: "n",
-  //     },
-  //     {
-  //       id: "jsf",
-  //       url: "http://127.0.0.1:8000/user/event/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980",
-  //       type: "n",
-  //     },
-  //     {
-  //       id: "jpj",
-  //       url: "http://127.0.0.1:8000/user/event/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980",
-  //       type: "n",
-  //     },
-  //   ],
-  //   [
-  //     {
-  //       id: "oijf",
-  //       url: "http://127.0.0.1:8000/user/event/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980",
-  //       type: "n",
-  //     },
-  //     {
-  //       id: "asd",
-  //       url: "http://127.0.0.1:8000/user/event/thumbnail?laboratory_id=ad7edead-e775-48df-bde7-7f334c8c0980",
-  //       type: "n",
-  //     },
-  //   ],
-  // ];
-  // console.log(DataFetcherQueue(a));
   const location = useLocation();
   switch (location.pathname) {
     case "/":
       return (
         <>
-          <Modals />
+          {/* <Modals />
           <LoginComp />
           <MyFormComponent />
-          <TableComponent />
+          <TableComponent /> */}
           <HeroBox />
-          <DividingRows />
+          {/* <DividingRows /> */}
           <RecentNews toFetchedData={exampleToFetchData.recentNews} />
           <RecentEvents toFetchedData={exampleToFetchData.recentEvents} />
         </>

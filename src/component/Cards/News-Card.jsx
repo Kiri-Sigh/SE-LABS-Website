@@ -4,6 +4,8 @@ import kmitl_logo from "../../resource/kmitl_logo.webp";
 import { getData, getImgData } from "../../api/api-method";
 import { useNormalQueryGet, useQueryGetImg } from "../../api/custom-hooks";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { editAction } from "store/edit-slice";
 
 const NewsCard = ({
   title,
@@ -16,7 +18,8 @@ const NewsCard = ({
 }) => {
   // console.log(title);
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
+  let isAdminPage = useSelector((state) => state.mainSlice.isAdminPage);
   let relatedTopic;
   if (type === "News") {
     relatedTopic =
@@ -96,7 +99,8 @@ const NewsCard = ({
   const titleClass =
     title.length <= 20 ? "title-clamp short-title" : "title-clamp";
   const handleCardClick = () => {
-    navigate(`/${type}/${ID}`);
+    if (!isAdminPage) navigate(`/${type}/${ID}`);
+    else dispatch(editAction.openModal());
   };
   const handlePublicationLink = () => {
     window.location.href = "https://www.se.kmitl.ac.th/"; // Navigates to Google
@@ -104,17 +108,19 @@ const NewsCard = ({
   const handleSmallDivClick = (e) => {
     e.stopPropagation(); // Prevents the card click event from triggering
     // const type2 = toString(type);
-    navigate(
-      `/${
-        relatedTopic.PID
-          ? "publication"
-          : relatedTopic.LID
-          ? "laboratory"
-          : relatedTopic.RID
-          ? "research"
-          : "error"
-      }/${relatedTopic?.PID || relatedTopic?.LID || relatedTopic?.RID}`
-    );
+    if (relatedTopic.PID) {
+      handlePublicationLink();
+    } else {
+      navigate(
+        `/${
+          relatedTopic.LID
+            ? "laboratory"
+            : relatedTopic.RID
+            ? "research"
+            : "error"
+        }/${relatedTopic?.LID || relatedTopic?.RID}`
+      );
+    }
   };
   return (
     <article

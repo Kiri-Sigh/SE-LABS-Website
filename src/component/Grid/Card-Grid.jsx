@@ -6,6 +6,7 @@ import FilterButton from "../Buttons/Filter-Btn.jsx";
 import { useInfiniteFetch } from "api/custom-hooks.js";
 import EventCard from "component/Cards/Event-Card.jsx";
 import TeamCard from "component/Cards/Team-Card.jsx";
+import WhiteRoundedButton from "component/etc/tailgrid/buttonX.jsx";
 
 function GridCards({
   toFetchedData = {},
@@ -25,11 +26,14 @@ function GridCards({
     filter,
   });
 
-  const { data, isLoading, isError } = recentNewsGridQuery;
+  const { data, isLoading, isError, fetchNextPage, isFetchingNextPage } =
+    recentNewsGridQuery;
 
   const topic = data?.pages?.[0]?.[0]
     ? Object.keys(data.pages[0][0])[0]
     : undefined;
+  const hasData =
+    data && data.pages && data.pages.some((page) => page.length > 0);
 
   const handleLabChange = (event) => {
     setSelectedLab(event);
@@ -57,7 +61,6 @@ function GridCards({
               setSelectedLab={handleLabChange}
             />
           )}
-          <ViewAllButton />
         </div>
       </div>
       <div className="flex flex-col mt-6 w-full max-md:mt-5 max-md:max-w-full">
@@ -116,9 +119,21 @@ function GridCards({
           </div>
         </div>
       </div>
-      {!isError && !isDataEmpty && (
+      {/* {!isError && !isDataEmpty && (
         <button className="px-8 py-5 mt-8 w-full text-lg text-black bg-white rounded-2xl border border-black border-solid max-md:px-5 max-md:max-w-full">
           Load More
+        </button>
+      )} */}
+      {!isError && hasData && (
+        <button
+          onClick={() => {
+            console.log("clicked");
+            fetchNextPage();
+          }}
+          disabled={isFetchingNextPage}
+          className="px-8 py-5 mt-8 w-full text-lg text-black bg-white rounded-2xl border border-black border-solid max-md:px-5 max-md:max-w-full"
+        >
+          {isFetchingNextPage ? "Loading more..." : "Load More"}
         </button>
       )}
     </section>

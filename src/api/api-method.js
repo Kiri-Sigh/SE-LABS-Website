@@ -16,15 +16,32 @@ export async function getDataAndHeader(datapath, header) {
   return response.data;
 }
 
-export async function getDataDynamic(datapath, header = null) {
-  const config = header
+export async function getDataDynamic(datapath, token = null) {
+  const config = token
     ? {
         headers: {
-          authorization: `${header}`,
+          "Content-Type": "application/json",
+
+          Authorization: `Bearer ${token}`, // Add the token
         },
       }
     : {};
-  const response = await axios.get(datapath, config);
+  const response = await axios.get(datapath, {}, config);
+  return response.data;
+}
+export async function fetchUserDetails(token = null) {
+  const config = token
+    ? {
+        headers: {
+          Authorization: `Bearer ${token}`, // Add the token
+        },
+      }
+    : {};
+  const response = await axios.post(
+    "http://127.0.0.1:8000/researcher/researcher/auto_login",
+    {},
+    config
+  );
   return response.data;
 }
 

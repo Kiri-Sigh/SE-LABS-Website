@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import NewsCard from "../../Cards/News-Card";
 import { useInfiniteFetch } from "../../../api/custom-hooks";
 import previous from "../../../resource/previous-button.svg";
 import next from "../../../resource/next-button.svg";
 import TeamCard from "component/Cards/Team-Card";
+import WhiteRoundedButton from "component/etc/tailgrid/buttonX";
 
 function RecentNews({
   toFetchedData = {},
@@ -12,6 +13,7 @@ function RecentNews({
   useFilterButton = false,
   publicationLink = null,
 }) {
+  const [currentPage, setCurrentPage] = useState(0);
   const recentNewsQuery = useInfiniteFetch({
     id: toFetchedData.id,
     url: toFetchedData.url,
@@ -19,11 +21,29 @@ function RecentNews({
     filter,
   });
 
-  const { data, isLoading, isError } = recentNewsQuery;
+  const { data, isLoading, fetchNextPage, isError, isFetchingNextPage } =
+    recentNewsQuery;
+
   const topic = data?.pages?.[0]?.[0] ? Object.keys(data.pages[0][0])[0] : null;
 
   // Check if there's any data
   const hasData = data?.pages?.some((page) => page.length > 0);
+
+  const handleNextPage = () => {
+    if (currentPage + 1 >= data.pages.length && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+    if (!isError) setCurrentPage((prevPage) => prevPage + 1);
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 0) setCurrentPage((prevPage) => prevPage - 1);
+  };
+
+  const currentData =
+    data?.pages[currentPage] && data.pages[currentPage].length > 0
+      ? data.pages[currentPage]
+      : [];
 
   return (
     <section className="flex overflow-hidden flex-col px-16 py-28 w-full bg-sky-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
@@ -32,52 +52,46 @@ function RecentNews({
           <h2 className="text-5xl font-bold leading-tight max-md:max-w-full max-md:text-4xl">
             {componentTitle}
           </h2>
-          <p className="mt-6 text-lg max-md:max-w-full">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          </p>
         </div>
-        <button className="flex flex-col text-base text-black w-[104px]">
-          <span className="gap-2 self-stretch px-6 py-3 max-w-full bg-white rounded-xl border border-black border-solid w-[104px] max-md:px-5">
-            View all
-          </span>
-        </button>
+        <WhiteRoundedButton
+          link={`/${topic?.toLowerCase()}`}
+          text={`View ${topic ? topic : ""}`}
+        />
       </div>
       <div className="flex flex-col mt-16 w-full max-md:mt-10 max-md:max-w-full">
         <div className="box-border flex relative flex-col shrink-0">
-          <div className="flex gap-8 items-start w-full max-md:max-w-full">
+          <div className="flex gap-8 items-start w-full max-md:max-w-full transition-transform duration-500 ease-in-out">
             {!isLoading && hasData ? (
-              data.pages.map((page, pageIndex) =>
-                page.map((item, itemIndex) => {
-                  const topicData = item[topic];
-                  const resolvedID =
-                    topic === "News"
-                      ? topicData.NID
-                      : topic === "Laboratory"
-                      ? topicData.LID
-                      : topic === "Research"
-                      ? topicData.RID
-                      : topic === "Publication"
-                      ? topicData.PID
-                      : topic === "Researcher"
-                      ? topicData.UID
-                      : null;
+              currentData.map((item, index) => {
+                const topicData = item[topic];
+                const resolvedID =
+                  topic === "News"
+                    ? topicData.NID
+                    : topic === "Laboratory"
+                    ? topicData.LID
+                    : topic === "Research"
+                    ? topicData.RID
+                    : topic === "Publication"
+                    ? topicData.PID
+                    : topic === "Researcher"
+                    ? topicData.UID
+                    : null;
 
-                  return topic !== "Event" && topic !== "Researcher" ? (
-                    <NewsCard
-                      key={`${pageIndex}-${itemIndex}`}
-                      {...item[topic]}
-                      type={`${topic}`}
-                      ID={resolvedID}
-                      publicationLink={publicationLink}
-                    />
-                  ) : topic === "Researcher" ? (
-                    <TeamCard
-                      key={`researcher-${pageIndex}-${itemIndex}`}
-                      {...item[topic]}
-                    />
-                  ) : null;
-                })
-              )
+                return topic !== "Event" && topic !== "Researcher" ? (
+                  <NewsCard
+                    key={`page-${currentPage}-item-${index}`}
+                    {...item[topic]}
+                    type={`${topic}`}
+                    ID={resolvedID}
+                    publicationLink={publicationLink}
+                  />
+                ) : topic === "Researcher" ? (
+                  <TeamCard
+                    key={`researcher-${currentPage}-${index}`}
+                    {...item[topic]}
+                  />
+                ) : null;
+              })
             ) : isLoading ? (
               <div>Loading...</div>
             ) : (
@@ -88,39 +102,30 @@ function RecentNews({
           </div>
         </div>
         <div className="flex flex-wrap gap-10 justify-between items-center mt-12 w-full max-md:mt-10 max-md:max-w-full">
-          <div className="flex gap-2 items-start self-stretch my-auto"></div>
-          <div className="flex gap-4 items-start self-stretch my-auto">
-            <button className="flex gap-2 justify-center items-center px-3 w-12 h-12 bg-white border border-black border-solid rounded-[50px]">
-              <img
-                loading="lazy"
-                src={previous}
-                alt="Previous"
-                className="object-contain self-stretch my-auto w-6 aspect-square"
-              />
-            </button>
-            {!isError ? (
-              <button className="flex gap-2 justify-center items-center px-3 w-12 h-12 bg-white border border-black border-solid rounded-[50px]">
-                <img
-                  loading="lazy"
-                  src={next}
-                  alt="Next"
-                  className="object-contain self-stretch my-auto w-6 aspect-square"
-                />
-              </button>
-            ) : (
-              <button
-                className="flex gap-2 justify-center items-center px-3 w-12 h-12 bg-white border border-black border-solid rounded-[50px]"
-                disabled
-              >
-                <img
-                  loading="lazy"
-                  src={next}
-                  alt="Next"
-                  className="object-contain self-stretch my-auto w-6 aspect-square"
-                />
-              </button>
-            )}
-          </div>
+          <button
+            onClick={handlePreviousPage}
+            disabled={currentPage === 0}
+            className="flex gap-2 justify-center items-center px-3 w-12 h-12 bg-white border border-black border-solid rounded-[50px]"
+          >
+            <img
+              loading="lazy"
+              src={previous}
+              alt="Previous"
+              className="object-contain self-stretch my-auto w-6 aspect-square"
+            />
+          </button>
+          <button
+            onClick={handleNextPage}
+            disabled={isFetchingNextPage}
+            className="flex gap-2 justify-center items-center px-3 w-12 h-12 bg-white border border-black border-solid rounded-[50px]"
+          >
+            <img
+              loading="lazy"
+              src={next}
+              alt="Next"
+              className="object-contain self-stretch my-auto w-6 aspect-square"
+            />
+          </button>
         </div>
       </div>
     </section>

@@ -3,15 +3,19 @@ import {
   useInfiniteQuery,
   // useMutation,
   useQuery,
+  useMutation,
 } from "@tanstack/react-query";
-import { getData, getImgData } from "./api-method";
+import { fetchUserDetails, getData, getImgData } from "./api-method";
+import { useState, useEffect } from "react";
+import { getDataDynamic } from "api/api-method";
+
 // import { useState } from "react";
 //   //map [{url,id},{}] to {id:{data},id:{data}}
 //   //using getData each of the obejects in array
 //   //and using useQueries
 export const useNormalQueryGet = (url, type, id = "") => {
   const results = useQuery({
-    queryKey: [`get-${type}-${id}`],
+    queryKey: [`get-${url}-${type}-${id}`],
     queryFn: () => {
       return getData(url);
     },
@@ -24,7 +28,7 @@ export const useNormalQueryGet = (url, type, id = "") => {
 };
 export const useQueryGetImg = (url, type, id) => {
   const results = useQuery({
-    queryKey: [`get-${type}-${id}`],
+    queryKey: [`get-${url}-${type}-${id}`],
     staleTime: 1000 * 60, // Data stays fresh for 1 minute
     cacheTime: 1000 * 60 * 5, // Cache remains for 5 minutes
 
@@ -45,7 +49,7 @@ export const useQueryGetImg = (url, type, id) => {
 export const useParallelData = (urlArr) => {
   const results = useQueries(
     urlArr.map((obj, i) => ({
-      queryKey: [`${"get-" + obj.id + "-" + i}`],
+      queryKey: [`${"get-" + obj.url + "-" + obj.id + "-" + i}`],
       queryFn: () => getData(obj.url),
       onSuccess: (data) => {
         console.log("fetched par data", urlArr[1]);
@@ -59,31 +63,46 @@ export const useParallelData = (urlArr) => {
   return results;
 };
 
-// [
-//   {
-//     queryKey: ["get", "1", 0],
-//     isLoading: false,
-//     isSuccess: true,
-//     data: {
-//       id: 1,
-//       title: "Post 1",
-//       body: "This is the body of post 1."
-//     },
-//     error: null,
-//   },
-//   {
-//     queryKey: ["get", "2", 1],
-//     isLoading: false,
-//     isSuccess: true,
-//     data: {
-//       id: 2,
-//       title: "Post 2",
-//       body: "This is the body of post 2."
-//     },
-//     error: null,
-//   }
-// ];
+export const useGetData = (url, token = null) => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        // Call the utility function with or without the token
+        const response = await getDataDynamic(
+          url,
+          token ? `Bearer ${token}` : null
+        );
+        setData(response);
+      } catch (err) {
+        setError(err.message || "Error fetching data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [url, token]);
+
+  return { data, loading, error };
+};
+export const useAutoLogin = () => {
+  return useMutation({
+    mutationFn: fetchUserDetails, // The function to call
+    onSuccess: (data) => {
+      console.log("Auto login successful:", data);
+    },
+    onError: (error) => {
+      console.error("Error logging in:", error);
+    },
+  });
+};
 // Hook for handling a single infinite fetch query
 export const useInfiniteFetch = (obj) => {
   const result = useInfiniteQuery({

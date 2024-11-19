@@ -3,174 +3,239 @@
 //global = global news/events with no relation with any labs/research
 
 export const editFrame = {
-  // editNews: {
-  //   //NewsID
-  //   ImageHigh: "file",
-  //   NewsName: "text",
-  //   Body: "u",
-  //   Date: "text",
-  //   //Posted:bool
-  //   LabID: "text",
-  //   ProjectID: "text",
-  //   PublicationID: "text",
-  // },
-  // editEvents: {
-  //   //EventID
-  //   ImageHigh: "file",
-  //   EventName: "text",
-  //   Body: "u",
-  //   Location: "text",
-  //   DateStart: "text",
-  //   DateEnd: "text",
-  //   //Posted:bool
-  //   LabID: "text",
-  //   ProjectID: "text",
-  //   PublicationID: "text",
-  // },
-  editLab: { LabName: "text", ImageHigh: "file", Body: "u" },
+  //ok
+  editLab: {
+    type: "patch",
+    param: [
+      { key: "laboratory", LID: "text", title: "text", body: "textArea" },
+      { laboratory_id: "text" },
+    ],
+    body: [{ image: "file" }],
+    url: "http://127.0.0.1:8000/lead_researcher/laboratory",
+  },
+  //ok
   editResearch: {
-    lead_researcher: ["research-free"],
-    admin: ["research-free"],
-    LabID: null,
-    // ResearchID: "text",
-    ResearchName: "text",
-    ImageHigh: "file",
-    Body: "u",
+    type: "patch",
+    param: [{ laboratory_id: "text" }],
+    body: [
+      {
+        key: "research",
+        RID: "text",
+        title: "text",
+        body: "textArea",
+        related_laboratory: "",
+      },
+      { image: "file" },
+    ],
+    url: "http://127.0.0.1:8000/lead_researcher/research",
   },
-  editPublication: {
-    lead_researcher: [null],
-    admin: [null],
-    // PublicationID: "text",
-    PublicationName: "text",
-    ImageHigh: "file",
-    Body: "u",
-    // LabID: "text",
-    PublicationLink: "text",
-  },
+  //ok
+  putResearchToPublication: {
+    type: "put",
+    param: [
+      { research_id: "text" },
+      { url: "text" },
+      { laboratory_id: "text" },
+    ],
 
-  editPeople: { UserID: "text", Gmail: "text", FullName: "text" },
+    url: "http://127.0.0.1:8000/lead_researcher/research",
+  },
+  //ok
+  assignToResearch: {
+    type: "patch",
+    param: [
+      { researcher_id: "text" },
+      { research_id: "text" },
+      { laboratory_id: "text" },
+    ],
+
+    url: "http://127.0.0.1:8000/lead_researcher/researcher",
+  },
+  //ok
+  assignAsLeadR: {
+    type: "patch",
+    param: [{ researcher_id: "text" }, { laboratory_id: "text" }],
+
+    url: "http://127.0.0.1:8000/admin/researcher",
+  },
+  //ok
+  editPublication: {
+    type: "patch",
+    param: [
+      {
+        key: "publication",
+        PID: "research_id",
+        title: "text",
+        body: "text",
+        link: "text",
+      },
+      { laboratory_id: "text" },
+    ],
+    body: [{ image: "file" }],
+    url: "http://127.0.0.1:8000/lead_researcher/publication",
+  },
 };
 
 export const createFrame = {
-  createNews: {
-    //NewsID
-    researcher: ["research"],
-    lead_researcher: ["research-free", "research", "lab", "global"],
-    admin: ["research-free", "research", "lab", "global"], //
-    ImageHigh: "file",
-    NewsName: "text",
-    Body: "u",
-    Date: "text",
-    //Posted:bool
-    LabID: "text", //nullable
-    ProjectID: "text", //nullable
-    PublicationID: "text", //nullable
-  },
-  createEvents: {
-    //EventID
-    researcher: ["research"],
-    lead_researcher: ["research-free", "research", "lab", "global"],
-    admin: ["research-free", "research", "lab", "global"], //
-    ImageHigh: "file", //nullable
-    EventName: "text",
-    Body: "u",
-    Location: "text",
-    DateStart: "text", //nullable
-    DateEnd: "text", //nullable
-    //Posted:bool
-    LabID: "text", //nullable
-    ProjectID: "text", //nullable
-    PublicationID: "text", //nullable
-  },
-
+  //ok
   createLab: {
-    admin: [null], //
-    LabName: "text",
-    ImageHigh: "file",
-    Body: "u",
+    type: "post",
+    param: [
+      {
+        key: "laboratory",
+        title: "text",
+
+        body: "textArea",
+      },
+    ],
+    body: [{ image: "file" }],
+    url: "http://127.0.0.1:8000/admin/laboratory",
   },
+  //ok
+  createNews: {
+    type: "post",
+    param: [{ research_id: "text" }, { laboratory_id: "text" }],
+
+    body: [
+      {
+        key: "news",
+        title: "text",
+
+        body: "textArea",
+        related_laboratory: "",
+      },
+      { image: "file" },
+    ],
+    url: "http://127.0.0.1:8000/researcher/news",
+  },
+  //err
+  createEvent: {
+    type: "post",
+    param: [{ research_id: "text" }, { laboratory_id: "text" }],
+
+    body: [
+      {
+        key: "event",
+        title: "text",
+
+        body: "textArea",
+        location: "text",
+        start: "text",
+        end: "text",
+        related_laboratory: "",
+      },
+      { image: "file" },
+    ],
+    url: "http://127.0.0.1:8000/researcher/event",
+  },
+  //ok
   createResearch: {
-    lead_researcher: ["research-free", "lab"],
-    admin: ["research-free", "lab"],
-    // ResearchID: "text",
-    ResearchName: "text",
-    ImageHigh: "file",
-    Body: "u",
-    LabID: "text",
-    researcher: [null],
+    type: "post",
+    param: [{ laboratory_id: "text" }],
+
+    body: [
+      {
+        key: "research",
+        title: "text",
+        body: "textArea",
+
+        related_laboratory: "",
+      },
+      { image: "file" },
+    ],
+    url: "http://127.0.0.1:8000/lead_researcher/research",
   },
-  createPublication: {
-    // PublicationID: "text",
-    PublicationName: "text",
-    ImageHigh: "file",
-    Body: "u",
-    LabID: "text", //nullable
-    PublicationLink: "text",
-  },
+  //ok
   createPeople: {
-    lead_researcher: ["research-free", "research", "lab", "role"],
-    admin: ["research-free", "research", "lab", "role"],
-    UserID: "text",
-    Gmail: "text",
-    FullName: "text",
+    type: "post",
+    param: [
+      { key: "researcher", password: "text", name: "text", mail: "string" },
+      { laboratory_id: "text" },
+    ],
+
+    body: [{ image: "file" }],
+    url: "http://127.0.0.1:8000/lead_researcher/researcher",
   },
 };
 
 export const submitFrame = {
-  submitNews: {
-    //NewsID
-    researcher: ["research"],
-    lead_researcher: ["research-free", "research", "lab", "global"],
-    admin: ["research-free", "research", "lab", "global"], //
-    ImageHigh: "file",
-    NewsName: "text",
-    Body: "u",
-    Date: "text",
-    //Posted:bool
-    LabID: "text", //nullable
-    ProjectID: "text", //nullable
-    PublicationID: "text", //nullable
-  },
-  submitEvents: {
-    //EventID
-    researcher: ["research"],
-    lead_researcher: ["research-free", "research", "lab", "global"],
-    admin: ["research-free", "research", "lab", "global"], //
-    ImageHigh: "file", //nullable
-    EventName: "text",
-    Body: "u",
-    Location: "text",
-    DateStart: "text", //nullable
-    DateEnd: "text", //nullable
-    //Posted:bool
-    LabID: "text", //nullable
-    ProjectID: "text", //nullable
-    PublicationID: "text", //nullable
-  },
+  //unautherized
+  submitEvent: {
+    type: "patch",
+    param: [
+      { event_id: "text" },
+      { laboratory_id: "text" },
+      { research_id: "text" },
+      { is_approved: "checkbox" },
+    ],
 
-  submitLab: {
-    admin: [null], //
-    LabName: "text",
-    ImageHigh: "file",
-    Body: "u",
+    url: "http://127.0.0.1:8000/lead_researcher/event",
   },
-  createResearch: {
-    lead_researcher: ["research-free", "lab"],
-    admin: ["research-free", "lab"],
-    // ResearchID: "text",
-    ResearchName: "text",
-    ImageHigh: "file",
-    Body: "u",
-    LabID: "text",
-    researcher: [null],
+  submitNews: {
+    type: "patch",
+    param: [
+      { news_id: "text" },
+      { laboratory_id: "text" },
+      { research_id: "text" },
+      { is_approved: "checkbox" },
+    ],
+
+    url: "http://127.0.0.1:8000/lead_researcher/news",
   },
-  submitPublication: {
-    // PublicationID: "text",
-    PublicationName: "text",
-    ImageHigh: "file",
-    Body: "u",
-    LabID: "text", //nullable
-    PublicationLink: "text",
+};
+export const deleteFrame = {
+  deleteEvent: {
+    type: "delete",
+    param: [
+      { event_id: "text" },
+      { laboratory_id: "text" },
+      { research_id: "text" },
+    ],
+
+    url: "http://127.0.0.1:8000/lead_researcher/event",
   },
-  submitPeople: { UserID: "text", Gmail: "text", FullName: "text" },
+  deleteNews: {
+    type: "delete",
+    param: [
+      { news_id: "text" },
+      { laboratory_id: "text" },
+      { research_id: "text" },
+    ],
+
+    url: "http://127.0.0.1:8000/lead_researcher/news",
+  },
+  deleteLab: {
+    type: "delete",
+    param: [{ laboratory_id: "text" }],
+
+    url: "http://127.0.0.1:8000/admin/laboratory",
+  },
+  deletePublication: {
+    type: "delete",
+    param: [{ publication_id: "text" }, { laboratory_id: "text" }],
+
+    url: "http://127.0.0.1:8000/lead_researcher/publication",
+  },
+  deleteResearch: {
+    type: "delete",
+    param: [{ research_id: "text" }, { laboratory_id: "text" }],
+
+    url: "http://127.0.0.1:8000/lead_researcher/research",
+  },
+  kickFromResearch: {
+    type: "delete",
+    param: [
+      { researcher_id: "text" },
+      { research_id: "text" },
+      { laboratory_id: "text" },
+    ],
+
+    url: "http://127.0.0.1:8000/lead_researcher/researcher",
+  },
+  removeLeadResearcher: {
+    type: "delete",
+    param: [{ researcher_id: "text" }],
+
+    url: "http://127.0.0.1:8000/admin/researcher",
+  },
 };

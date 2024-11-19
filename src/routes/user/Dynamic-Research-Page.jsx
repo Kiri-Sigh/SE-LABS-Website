@@ -13,7 +13,7 @@ function DynamicResearchPage() {
   const { id } = useParams(); // Access the id from the route
   console.log(id);
   const { data, isLoading } = useNormalQueryGet(
-    `http://127.0.0.1:8000/user/research/thumbnail?research_id=${id}`,
+    `http://127.0.0.1:8000/user/research/thumbnail/${id}`,
     "research",
     id
   );
