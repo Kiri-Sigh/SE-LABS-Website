@@ -35,9 +35,12 @@ function GridCards({
         hasNextPage,
     } = recentNewsGridQuery;
 
+    console.log("data", data);
+
     const topic = data?.pages?.[0]?.[0]
         ? Object.keys(data.pages[0][0])[0]
         : undefined;
+    console.log("topic", topic);
     const hasData =
         data && data.pages && data.pages.some((page) => page.length > 0);
 
