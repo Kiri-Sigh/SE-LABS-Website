@@ -115,53 +115,53 @@ export const exampleToFetchData = {
     param: {}, //laboratory_id, maybe research_id
   },
 
-  postNews: {
-    title: "str",
-    body: "str",
-    related_laboratory: {
-      LID: "str",
-      related_research: {
-        RID: "str",
-      },
+    postNews: {
+        title: "str",
+        body: "str",
+        related_laboratory: {
+            LID: "str",
+            related_research: {
+                RID: "str",
+            },
+        },
     },
-  },
-  recentGridNews: {
-    id: "recentGridNews",
-    // type: "n",
-    pageSize: 8,
-  },
-  recentGridEvents: {
-    id: "recentGridEvents",
-    // type: "n",
-    pageSize: 8,
-  },
-  recentGridLaboratory: {
-    id: "recentGridLaboratory",
-    // type: "n",
-    pageSize: 4,
-  },
-  recentGridResearcher: {
-    id: "recentGridResearcher",
-    // type: "n",
-    pageSize: 8,
-  },
-  recentGridPublication: {
-    id: "recentGridPublication",
-    // type: "n",
-    pageSize: 6,
-  },
-  recentGridResearch: {
-    id: "recentGridResearch",
-    // type: "n",
-    pageSize: 6,
-  },
-  relatedNews: {
-    id: "relatedNews",
-    url: "http://127.0.0.1:8000/user/news/related_news?",
-    // type: "n",
-    pageSize: 4,
-  },
-  editLab: {},
-  createNews: {},
-  createResearch: {},
+    recentGridNews: {
+        id: "recentGridNews",
+        // type: "n",
+        pageSize: 8,
+    },
+    recentGridEvents: {
+        id: "recentGridEvents",
+        // type: "n",
+        pageSize: 8,
+    },
+    recentGridLaboratory: {
+        id: "recentGridLaboratory",
+        // type: "n",
+        pageSize: 4,
+    },
+    recentGridResearcher: {
+        id: "recentGridResearcher",
+        // type: "n",
+        pageSize: 8,
+    },
+    recentGridPublication: {
+        id: "recentGridPublication",
+        // type: "n",
+        pageSize: 8,
+    },
+    recentGridResearch: {
+        id: "recentGridResearch",
+        // type: "n",
+        pageSize: 8,
+    },
+    relatedNews: {
+        id: "relatedNews",
+        url: "http://127.0.0.1:8000/user/news/related_news?",
+        // type: "n",
+        pageSize: 4,
+    },
+    editLab: {},
+    createNews: {},
+    createResearch: {},
 };

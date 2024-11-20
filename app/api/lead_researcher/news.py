@@ -2,12 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File
 from typing import Optional
 from uuid import UUID
 
-from ...dependencies import get_db
-from ...model import *
-from ...auth import get_current_active_authorized_user
-from ...schemas.auth_user import AuthUser
-from ...schemas.news_thumbnail import NewsThumbnail, NT01
-from ...crud.news import read_news, update_news_post_stage, delete_news
+from dependencies import get_db
+from model import *
+from auth import get_current_active_authorized_user
+from schemas.auth_user import AuthUser
+from schemas.news_thumbnail import NewsThumbnail, NT01
+from crud.news import read_news, update_news_post_stage, delete_news
 
 router = APIRouter(
     prefix="/lead_researcher/news",

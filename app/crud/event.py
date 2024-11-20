@@ -2,9 +2,11 @@ from fastapi import UploadFile, HTTPException
 from sqlalchemy.orm import Session
 from typing import Tuple, Optional, List
 from uuid import UUID
-from ..schemas.event_io import EventCreate
-from ..dependencies import process_image
-from ..model import Event
+from schemas.event_io import EventCreate
+from dependencies import process_image
+from model import Event
+from sqlalchemy import case
+from datetime import datetime
 
 async def create_event(event: EventCreate, image: UploadFile, db: Session,
                 research_id: Optional[UUID] = None, laboratory_id: Optional[UUID] = None
@@ -48,7 +50,7 @@ def read_event(db: Session, posted: bool = True,
                amount: int = 10, page: int = 1, 
                research_id: Optional[UUID] = None,
                laboratory_id: Optional[UUID] = None, 
-               event_id: Optional[UUID] = None, ) -> List[Event]:
+               event_id: Optional[UUID] = None) -> List[Event]:
     event = db.query(Event).filter(Event.posted == posted)
     if laboratory_id:
         event = event.filter(Event.lab_id == laboratory_id)
@@ -56,7 +58,17 @@ def read_event(db: Session, posted: bool = True,
         event = event.filter(Event.research_id == research_id)
     if event_id:
         event = event.filter(Event.event_id == event_id)
-    event = event.order_by(Event.date_start.desc())
+    
+    now = datetime.now()
+    event = event.order_by(
+        case(
+            (Event.date_end < now, 2),      # Finished events
+            (Event.date_start <= now, 0),  # Ongoing events
+            (Event.date_start > now, 1),   # Upcoming events
+        ),
+        Event.date_start.asc()  # Secondary sort by start date
+    )
+    
     offset = (page - 1) * amount
     events = event.offset(offset).limit(amount).all()
     if not events:

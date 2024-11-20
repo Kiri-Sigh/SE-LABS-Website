@@ -4,10 +4,10 @@ from sqlalchemy.orm import Session
 from uuid import UUID
 from fastapi.responses import Response
 
-from ...dependencies import get_db
-from ...model import *
-from ...schemas.news_thumbnail import NewsThumbnail, NT01
-from ...crud.news import read_news
+from dependencies import get_db
+from model import *
+from schemas.news_thumbnail import NewsThumbnail, NT01
+from crud.news import read_news
 
 router = APIRouter(
     prefix="/user/news",
@@ -60,7 +60,7 @@ def get_related_news_API(news_id: UUID, db = Depends(get_db)):
         page=1,
         laboratory_id=news.lab_id
     )
-    related_news = list(set(news_from_research + news_from_laboratory))
+    related_news = list(set(news_from_research + news_from_laboratory) - {news})
 
     return [NT01.to_news_thumbnail(news) for news in related_news]
     

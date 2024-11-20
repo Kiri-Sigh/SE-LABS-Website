@@ -1,11 +1,25 @@
-import React from "react";
+import React, { useRef } from "react";
 import TeamCard from "../Cards/Team-Card";
 import previous from "../../resource/previous-button.svg";
 import next from "../../resource/next-button.svg";
 
 const OurTeam = ({ teamMembers }) => {
+  const scrollRef = useRef(null);
+
+  const scrollLeft = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: -300, behavior: "smooth" });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: 300, behavior: "smooth" });
+    }
+  };
+
   return (
-    <section className="flex overflow-hidden flex-col px-16 py-28 w-full bg-sky-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
+    <section className="flex flex-col px-16 py-28 w-full bg-sky-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
       <div className="flex flex-wrap gap-10 justify-between items-end w-full max-md:max-w-full">
         <div className="flex flex-col text-black min-w-[240px] w-[768px] max-md:max-w-full">
           <h2 className="text-5xl font-bold leading-tight max-md:max-w-full max-md:text-4xl">
@@ -19,42 +33,35 @@ const OurTeam = ({ teamMembers }) => {
           View all
         </button>
       </div>
-      <div className="flex flex-col mt-16 w-full max-md:mt-10 max-md:max-w-full">
-        <div className="flex gap-8 items-start w-full max-md:max-w-full">
+      <div className="relative mt-16 w-full max-md:mt-10 max-md:max-w-full">
+        <button
+          onClick={scrollLeft}
+          className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md hover:bg-gray-200"
+        >
+          <img src={previous} alt="Previous" className="w-6 h-6" />
+        </button>
+        <div ref={scrollRef} className="flex overflow-x-auto space-x-4 p-4">
           {teamMembers.map((member, index) => (
-            <TeamCard key={index} {...member} />
+            <div key={index} className="flex-shrink-0 w-64">
+              <TeamCard
+                title={member.title}
+                body={member.body}
+                date={member.date}
+                ID={member.ID}
+                related_laboratory={member.related_laboratory}
+                type={member.type}
+                name={member.name}
+                gmail={member.gmail}
+              />
+            </div>
           ))}
         </div>
-        <div className="flex flex-wrap gap-10 justify-between items-center mt-12 w-full max-md:mt-10 max-md:max-w-full">
-          <div className="flex gap-2 items-start self-stretch my-auto">
-            {[...Array(6)].map((_, index) => (
-              <div
-                key={index}
-                className={`flex shrink-0 w-2 h-2 rounded-full ${
-                  index === 0 ? "bg-black" : "bg-stone-300"
-                }`}
-              />
-            ))}
-          </div>
-          <div className="flex gap-4 items-start self-stretch my-auto">
-            <button className="flex gap-2 justify-center items-center px-3 w-12 h-12 bg-white border border-black border-solid rounded-[50px]">
-              <img
-                loading="lazy"
-                src={previous}
-                alt="Previous"
-                className="object-contain self-stretch my-auto w-6 aspect-square"
-              />
-            </button>
-            <button className="flex gap-2 justify-center items-center px-3 w-12 h-12 bg-white border border-black border-solid rounded-[50px]">
-              <img
-                loading="lazy"
-                src={next}
-                alt="Next"
-                className="object-contain self-stretch my-auto w-6 aspect-square"
-              />
-            </button>
-          </div>
-        </div>
+        <button
+          onClick={scrollRight}
+          className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md hover:bg-gray-200"
+        >
+          <img src={next} alt="Next" className="w-6 h-6" />
+        </button>
       </div>
     </section>
   );

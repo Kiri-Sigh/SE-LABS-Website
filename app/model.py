@@ -8,8 +8,8 @@ from uuid import UUID, uuid4
 from PIL import Image
 import io
 
-from .database import Base
-from .schemas.ult.position import Position
+from database import Base
+from schemas.ult.position import Position
 
 class person_lab(Base):
     __tablename__ = 'person_lab'
@@ -159,4 +159,4 @@ class Researcher(Base):
 
     # Many-to-Many relationships
     labs: Mapped[List['Laboratory']] = relationship(secondary=person_lab.__table__, backref=backref('people', lazy='dynamic'))
-    researches: Mapped[List['Research']] = relationship(secondary=person_research.__table__, backref=backref('people', lazy='dynamic'))
+    researches: Mapped[List['Research']] = relationship(secondary=person_research.__table__, backref=backref('researchers', lazy='dynamic'))

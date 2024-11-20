@@ -4,6 +4,7 @@ import RecentNews from "../../component/News/Recent-News/Recent-News";
 import RecentEvents from "../../component/Events/Recent-Events/Recent-Events";
 import { useLocation } from "react-router-dom";
 import AboutDescription from "../../component/Description/About-Description/About-Description";
+import About_Title from "component/Description/About-Description/About-Title";
 import TopicAndImage from "../../component/others/Big-Image/Topic-And-Image";
 import { eventItems, labData, newsItems } from "../../PlaceHolder-Data/data";
 import TopicHeaderText from "../../component/Topic-Header";
@@ -17,6 +18,7 @@ import TableComponent from "../../component/admin-Component/tables/proto2/table-
 import { exampleToFetchData } from "../../PlaceHolder-Data/toFetch";
 import MyFormComponent from "../../component/etc/exampleForm";
 import LoginComp from "component/etc/example-login";
+
 import { useDispatch, useSelector } from "react-redux";
 import { useNormalQueryGet } from "api/custom-hooks";
 import { mainAction } from "../../store/main-slice.js";
@@ -34,7 +36,7 @@ function MainPages() {
   //   "http://127.0.0.1:8000/user/news/thumbnail/a163c610-7d14-47c0-8748-a8fea6bc36ee",
   //   "news",
   //   "a163c610-7d14-47c0-8748-a8fea6bc36ee"
-  // );
+  //   );
   React.useEffect(() => {
     if (data) {
       dispatch(mainAction.setLabData(data));
@@ -45,7 +47,6 @@ function MainPages() {
   }, [data, dispatch]);
   const labData = useSelector((state) => state.mainSlice.labData);
   console.log(labData);
-
   const location = useLocation();
   switch (location.pathname) {
     case "/":
@@ -64,7 +65,7 @@ function MainPages() {
     case "/about":
       return (
         <>
-          <TopicAndImage />
+          <About_Title />
           <AboutDescription />
           <RecentNews toFetchedData={exampleToFetchData.recentNews} />
           <RecentEvents toFetchedData={exampleToFetchData.recentEvents} />

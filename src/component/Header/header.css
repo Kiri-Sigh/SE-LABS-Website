@@ -32,6 +32,27 @@
   transform: scale(1.05);
 }
 
+.underline-anim{
+  color: white;
+  position:relative;
+}
+
+.underline-anim::after{
+  content: '';
+  height:2px;
+  width: 100%;
+  background-color: white;
+  position:absolute;
+  left:0;
+  bottom:0;
+  width:0;
+  transition: width 0.3s ease;
+}
+
+.underline-anim:hover::after{
+  width:100%;
+}
+
 /* Dropdown Menu */
 .overlay-dropdown {
   position: absolute;

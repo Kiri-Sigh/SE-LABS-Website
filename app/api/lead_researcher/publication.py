@@ -4,12 +4,12 @@ from uuid import UUID
 import json
 from pydantic import ValidationError
 
-from ...dependencies import get_db, process_image
-from ...model import *
-from ...auth import get_current_active_lead_researcher
-from ...schemas.auth_user import AuthUser
-from ...schemas.publication_io import PublicationUpdate
-from ...schemas.publication_thumbnail import PublicationThumbnail, PT01
+from dependencies import get_db, process_image
+from model import *
+from auth import get_current_active_lead_researcher
+from schemas.auth_user import AuthUser
+from schemas.publication_io import PublicationUpdate
+from schemas.publication_thumbnail import PublicationThumbnail, PT01
 
 router = APIRouter(
     prefix="/lead_researcher/publication",

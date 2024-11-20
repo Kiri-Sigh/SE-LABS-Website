@@ -1,14 +1,17 @@
 import dropdown from "../../resource/drop-down-filter.svg";
+
 import React, { useState } from "react";
 
 function FilterButton({ fetchedLabData = [], setSelectedLab }) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Filter by Lab");
 
-  const options =
-    Array.isArray(fetchedLabData) && fetchedLabData.length > 0
+  const options = [
+    "No Filter",
+    ...(Array.isArray(fetchedLabData) && fetchedLabData.length > 0
       ? fetchedLabData.map((item) => item.Laboratory.title)
-      : [];
+      : []),
+  ];
 
   console.log("fetchedLabData", fetchedLabData);
 
@@ -17,8 +20,14 @@ function FilterButton({ fetchedLabData = [], setSelectedLab }) {
   };
 
   const handleOptionClick = (option, index) => {
-    setSelectedOption(option);
-    setSelectedLab(fetchedLabData[index]);
+    if (index === 0) {
+      // No Filter
+      setSelectedOption("Filter by Lab");
+      setSelectedLab(null);
+    } else {
+      setSelectedOption(option);
+      setSelectedLab(fetchedLabData[index - 1]);
+    }
     setIsOpen(false);
   };
 
@@ -26,7 +35,7 @@ function FilterButton({ fetchedLabData = [], setSelectedLab }) {
     <div className="relative">
       <button
         onClick={toggleDropdown}
-        className="flex gap-2 justify-center items-center self-stretch px-4 py-2 my-auto bg-white border border-black border-solid rounded-[34px]"
+        className="flex gap-2 justify-center items-center px-4 py-3 bg-blue-500 text-white hover:bg-blue-600 rounded-full focus:outline-none transition-all duration-300 ease-in-out"
       >
         <span className="self-stretch my-auto">{selectedOption}</span>
         <img
@@ -37,7 +46,7 @@ function FilterButton({ fetchedLabData = [], setSelectedLab }) {
         />
       </button>
       {isOpen && options.length > 0 && (
-        <ul className="absolute z-10 mt-1 w-full bg-white border border-black rounded-lg shadow-lg">
+        <ul className="absolute z-10 mt-1 w-full bg-white border border-black rounded-lg shadow-lg overflow-hidden">
           {options.map((option, index) => (
             <li
               key={option}

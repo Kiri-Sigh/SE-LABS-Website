@@ -1,0 +1,16 @@
+.underline-topic {
+  color: black;
+  position: relative;
+}
+
+.underline-topic::after {
+  content: "";
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(to right, #1e3a8a, #60a5fa);
+  position: absolute;
+  left: 0;
+  bottom: -7px;
+  width: 100%;
+  transition: width 0.3s ease;
+}
