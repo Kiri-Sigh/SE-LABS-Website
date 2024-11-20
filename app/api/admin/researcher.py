@@ -2,12 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File
 from typing import Optional
 from uuid import UUID
 
-from ...dependencies import get_db
-from ...model import *
-from ...auth import get_current_active_admin
-from ...schemas.auth_user import AuthUser
-from ...schemas.researcher_thumbnail import ResearcherThumbnail, UT01
-from ...schemas.ult.position import Position
+from dependencies import get_db
+from model import *
+from auth import get_current_active_admin
+from schemas.auth_user import AuthUser
+from schemas.researcher_thumbnail import ResearcherThumbnail, UT01
+from schemas.ult.position import Position
 
 router = APIRouter(
     prefix="/admin/researcher",

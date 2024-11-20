@@ -4,9 +4,9 @@ from uuid import UUID
 from fastapi.responses import Response
 from sqlalchemy import case
 
-from ...dependencies import get_db
-from ...model import *
-from ...schemas.researcher_thumbnail import ResearcherThumbnail, UT01
+from dependencies import get_db
+from model import *
+from schemas.researcher_thumbnail import ResearcherThumbnail, UT01
 
 router = APIRouter(
     prefix="/user/researcher",

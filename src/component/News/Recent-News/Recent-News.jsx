@@ -77,7 +77,7 @@ function RecentNews({
                 />
             </div>
             <div className="flex flex-col mt-16 w-full max-md:mt-10 max-md:max-w-full">
-                <div className="box-border flex relative flex-col shrink-0">
+                <div className="box-border flex relative flex-col shrink-0 overflow-hidden">
                     <div className="flex gap-8 items-start w-full max-md:max-w-full transition-transform duration-500 ease-in-out transform">
                         {!isLoading && hasData ? (
                             visibleData.map((item, index) => {

@@ -83,7 +83,7 @@ const TeamCard = ({
 
     return (
         <div
-            className={`flex flex-col m-5 rounded-3xl border border-black border-solid min-w-[240px] w-[325px] h-[425px] cursor-pointer shadow-lg hover:shadow-2xl transition-shadow duration-300`}
+            className={`flex flex-col m-5 rounded-3xl border border-black border-solid min-w-[240px] w-[275px] md:w-[275px] 2xl:w-[325px] md:h-[385px] 2xl:h-[425px] cursor-pointer shadow-lg hover:shadow-2xl transition-shadow duration-300`}
             style={{ boxSizing: "border-box" }} // Prevents border overlap
             onClick={handleCardClick}
         >

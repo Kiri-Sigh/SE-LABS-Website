@@ -4,10 +4,10 @@ from sqlalchemy.orm import Session
 from uuid import UUID
 from fastapi.responses import Response
 
-from ...dependencies import get_db
-from ...model import *
-from ...schemas.news_thumbnail import NewsThumbnail, NT01
-from ...crud.news import read_news
+from dependencies import get_db
+from model import *
+from schemas.news_thumbnail import NewsThumbnail, NT01
+from crud.news import read_news
 
 router = APIRouter(
     prefix="/user/news",

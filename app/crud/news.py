@@ -2,9 +2,9 @@ from fastapi import UploadFile, HTTPException
 from sqlalchemy.orm import Session
 from typing import Tuple, Optional, List
 from uuid import UUID
-from ..schemas.news_io import NewsCreate
-from ..dependencies import process_image
-from ..model import News
+from schemas.news_io import NewsCreate
+from dependencies import process_image
+from model import News
 
 async def create_news(news: NewsCreate, image: UploadFile, db: Session,
                       research_id: Optional[UUID] = None, laboratory_id: Optional[UUID] = None
