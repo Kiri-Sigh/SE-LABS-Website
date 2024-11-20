@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const IP_URL = "http://10.66.15.51:8000"; // Your IP address
+const IP_URL = "http://10.25.15.102:8000"; // Your IP address
 const LOCAL_URL = "http://127.0.0.1:8000"; // Local URL
 const LOCALHOST_URL = "http://localhost:8000"; // Localhost URL
 

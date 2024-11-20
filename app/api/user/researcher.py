@@ -34,6 +34,8 @@ def get_researcher_thumbnail(
             .join(Researcher.labs)
             .filter(Laboratory.lab_id == laboratory_id)
         )
+        
+    query = query.filter(Researcher.highest_role != Position.Admin)
     
     # Define position-based ordering
     position_order = case(
