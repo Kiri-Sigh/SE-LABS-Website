@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import NewsCard from "../Cards/News-Card.jsx";
 import ViewAllButton from "../Buttons/View-All-Btn.jsx";
 import FilterButton from "../Buttons/Filter-Btn.jsx";
@@ -15,7 +15,6 @@ function GridCards({
     publicationLink = null,
 }) {
     const [selectedLab, setSelectedLab] = React.useState(null);
-    console.log("selected", selectedLab);
 
     if (selectedLab) filter = { laboratory_id: selectedLab.Laboratory.LID };
 
@@ -35,14 +34,18 @@ function GridCards({
         hasNextPage,
     } = recentNewsGridQuery;
 
-    console.log("data", data);
+    useEffect(() => {
+        if (data) {
+            console.log("Fetched data:", data);
+        }
+    }, [data]);
 
     const topic = data?.pages?.[0]?.[0]
         ? Object.keys(data.pages[0][0])[0]
         : undefined;
-    console.log("topic", topic);
     const hasData =
-        data && data.pages && data.pages.some((page) => page.length > 0);
+        data?.pages?.some((page) => Array.isArray(page) && page.length > 0) ||
+        false;
 
     const handleLabChange = (event) => {
         setSelectedLab(event);
