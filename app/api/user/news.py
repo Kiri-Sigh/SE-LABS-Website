@@ -60,7 +60,7 @@ def get_related_news_API(news_id: UUID, db = Depends(get_db)):
         page=1,
         laboratory_id=news.lab_id
     )
-    related_news = list(set(news_from_research + news_from_laboratory))
+    related_news = list(set(news_from_research + news_from_laboratory) - {news})
 
     return [NT01.to_news_thumbnail(news) for news in related_news]
     

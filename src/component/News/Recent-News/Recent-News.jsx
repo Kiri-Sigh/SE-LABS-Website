@@ -30,8 +30,8 @@ function RecentNews({
 
   const topic = data?.pages?.[0]?.[0] ? Object.keys(data.pages[0][0])[0] : null;
 
-  // Check if there's any data
-  const hasData = data?.pages?.some((page) => page.length > 0);
+    // Check if there's any data
+    const hasData = data?.pages?.some((page) => page?.length > 0);
 
   const currentData =
     data?.pages?.reduce((acc, page) => acc.concat(page), []) || [];
