@@ -20,10 +20,13 @@ function SocialLinks() {
   ];
 
   return (
-    <nav className="flex overflow-hidden flex-1 shrink gap-6 items-start text-base font-semibold text-black basis-0 min-w-[240px]">
-      <ul className="flex flex-row flex-1 shrink w-full basis-0 min-w-[240px] list-none p-0">
+    <nav className="flex flex-col mt-6 w-full max-md:max-w-full">
+      <h2 className="font-semibold text-gray-800 max-md:max-w-full">
+        Follow us:
+      </h2>
+      <ul className="flex gap-4 mt-2">
         {socialLinks.map((link, index) => (
-          <li key={index} className={index > 0 ? "ml-3" : ""}>
+          <li key={index}>
             <a
               href={link.url}
               target="_blank"

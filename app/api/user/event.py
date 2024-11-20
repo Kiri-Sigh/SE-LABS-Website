@@ -4,10 +4,10 @@ from sqlalchemy.orm import Session
 from typing import Optional, List
 from uuid import UUID
 
-from ...schemas.event_thumbnail import EventThumbnail, ET01
-from ...crud.event import read_event
-from ...model import Event
-from ...dependencies import get_db
+from schemas.event_thumbnail import EventThumbnail, ET01
+from crud.event import read_event
+from model import Event
+from dependencies import get_db
 
 router = APIRouter(
     prefix="/user/event",

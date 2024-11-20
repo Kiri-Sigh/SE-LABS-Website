@@ -8,10 +8,10 @@ from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from typing import Union, Optional
 
-from .model import *
-from .schemas.auth_user import  AuthUser, TokenData, Token, AU01
-from .dependencies import get_db
-from .schemas.ult.position import Position
+from model import *
+from schemas.auth_user import  AuthUser, TokenData, Token, AU01
+from dependencies import get_db
+from schemas.ult.position import Position
 
 load_dotenv()
 

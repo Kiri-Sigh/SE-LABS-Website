@@ -1,6 +1,6 @@
 import React from "react";
 
-const ContentSection = ({ title, level, children }) => {
+const ContentSection = ({ id, title, level, children }) => {
   const HeadingTag = `h${level}`;
   const headingClasses = {
     2: "text-5xl font-bold leading-tight pb-4",
@@ -11,7 +11,7 @@ const ContentSection = ({ title, level, children }) => {
   };
 
   return (
-    <section className="w-full max-md:max-w-full">
+    <section id={id} className="w-full max-md:max-w-full scroll-mt-20">
       <HeadingTag className={headingClasses[level]}>{title}</HeadingTag>
       {children}
     </section>
