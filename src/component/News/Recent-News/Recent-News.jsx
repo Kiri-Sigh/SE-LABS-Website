@@ -40,12 +40,12 @@ function RecentNews({
     if (currentData.length < 5 && !isFetchingNextPage && hasData) {
       fetchNextPage();
     }
-    // console.log(currentData[currentIndex]);
   }, [currentData, isFetchingNextPage, hasData]);
 
   const handleNextPage = () => {
     if (!hasData || currentIndex + 5 >= currentData.length) {
       fetchNextPage();
+      return;
     }
 
     setCurrentPage((prevPage) => prevPage + 1);
