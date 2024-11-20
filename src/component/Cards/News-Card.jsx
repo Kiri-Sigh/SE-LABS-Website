@@ -28,6 +28,10 @@ const NewsCard = ({
               related_laboratory
             : type === "Research"
             ? related_laboratory
+            : type === "Publication"
+            ? related_laboratory
+            : type === "Laboratory"
+            ? null
             : null;
 
     const { data, isLoading, isError } = useQueryGetImg(
@@ -87,8 +91,10 @@ const NewsCard = ({
         hour12: true,
     });
     const cardHeight =
-        type === "Laboratory" || type === "Publication"
+        type === "Laboratory"
             ? "h-[325px]"
+            : type === "Publication"
+            ? "h-[350px]"
             : type === "Research"
             ? "h-[350px]"
             : "h-[375px]";
@@ -137,7 +143,7 @@ const NewsCard = ({
                             <div className="font-semibold text-gray-800 line-clamp-2">
                                 {relatedTopic?.title}
                             </div>
-                            {type !== "Research" && (
+                            {type === "News" && (
                                 <div className="text-gray-600">
                                     {formattedDate}
                                 </div>
