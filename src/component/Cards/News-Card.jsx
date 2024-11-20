@@ -130,7 +130,11 @@ const NewsCard = ({
   return (
     <article
       className="flex flex-col rounded-3xl border border-black border-solid min-w-[240px] w-[325px]"
-      onClick={publicationLink ? handlePublicationLink : handleCardClick}
+      onClick={
+        publicationLink && !isAdminPage
+          ? handlePublicationLink
+          : handleCardClick
+      }
     >
       <div className="relative">
         <img

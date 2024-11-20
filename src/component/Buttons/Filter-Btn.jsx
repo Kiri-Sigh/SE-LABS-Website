@@ -40,7 +40,7 @@ function FilterButton({ fetchedLabData = [], setSelectedLab }) {
         <ul className="absolute z-10 mt-1 w-full bg-white border border-black rounded-lg shadow-lg">
           {options.map((option, index) => (
             <li
-              key={option}
+              key={`${option}-${index}`}
               onClick={() => handleOptionClick(option, index)}
               className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
             >

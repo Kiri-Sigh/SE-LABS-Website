@@ -2,10 +2,10 @@ import axios from "axios";
 import { submitFrame } from "./Modal/input/frame";
 import { useEffect, useState } from "react";
 
-const DynamicForm = ({ frame, data = null, send = null, type = null }) => {
+const DynamicForm = ({ frame, data = null, type = null }) => {
   const [formData, setFormData] = useState({});
   const [files, setFiles] = useState({});
-
+  console.log("DynamicForm", type);
   // Initialize formData with inherited data
   useEffect(() => {
     if (data) {
@@ -135,6 +135,7 @@ const DynamicForm = ({ frame, data = null, send = null, type = null }) => {
           console.error("Unsupported method:", method);
           return;
       }
+      console.log("wat??", type);
 
       console.log("Success:", response.data);
       if (response.status === 200) {
