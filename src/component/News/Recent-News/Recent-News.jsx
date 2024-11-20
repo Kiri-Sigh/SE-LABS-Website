@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import NewsCard from "../../Cards/News-Card";
 import { useInfiniteFetch } from "../../../api/custom-hooks";
 import previous from "../../../resource/previous-button.svg";
@@ -14,6 +14,7 @@ function RecentNews({
   publicationLink = null,
 }) {
   const [currentPage, setCurrentPage] = useState(0);
+
   const recentNewsQuery = useInfiniteFetch({
     id: toFetchedData.id,
     url: toFetchedData.url,
@@ -34,6 +35,7 @@ function RecentNews({
       fetchNextPage();
     }
     if (!isError) setCurrentPage((prevPage) => prevPage + 1);
+    if (currentData.length === 0) setCurrentPage((prevPage) => prevPage - 2);
   };
 
   const handlePreviousPage = () => {
@@ -44,7 +46,6 @@ function RecentNews({
     data?.pages[currentPage] && data.pages[currentPage].length > 0
       ? data.pages[currentPage]
       : [];
-
   return (
     <section className="flex overflow-hidden flex-col px-16 py-28 w-full bg-sky-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
       <div className="flex flex-wrap gap-10 justify-between items-end w-full max-md:max-w-full">

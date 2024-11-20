@@ -81,88 +81,88 @@ function AdminPage() {
     }
   }, [error, navigate]);
 
-  // const { data: labData2 } = useNormalQueryGet(
-  //   "http://127.0.0.1:8000/user/research/thumbnail?amount=3",
-  //   "research"
-  // );
-  // const { data: labData3 } = useNormalQueryGet(
-  //   "http://127.0.0.1:8000/user/laboratory/thumbnail?amount=3",
-  //   "laboratory"
-  // );
-  // const { data: labData4 } = useNormalQueryGet(
-  //   "http://127.0.0.1:8000/user/news/thumbnail?amount=3",
-  //   "news"
-  // );
-  // const { data: labData5 } = useNormalQueryGet(
-  //   "http://127.0.0.1:8000/user/researcher/thumbnail?amount=10",
-  //   "researcher"
-  // );
-  // const { data: labData6 } = useNormalQueryGet(
-  //   "http://127.0.0.1:8000/user/publication/thumbnail?amount=10",
-  //   "publication"
-  // );
-  // const { data: labData7 } = useNormalQueryGet(
-  //   "http://127.0.0.1:8000/user/event/thumbnail?amount=3",
-  //   "event"
-  // );
-  // const { data: labData9 } = useNormalQueryGet(
-  //   "http://127.0.0.1:8000/user/event/thumbnail?event_id=0c186d37-45f8-4767-80bc-c304dfdcc355",
-  //   "event"
-  // );
-  // const labData8 = getDataDynamic(
-  //   "http://127.0.0.1:8000/lead_researcher/news/commit",
-  //   localStorage.getItem("token")
-  // );
-  // useEffect(() => {
-  //   if (labData2) {
-  //     console.log("research", labData2);
-  //   }
-  //   if (labData3) {
-  //     console.log("lab", labData3);
-  //   }
-  //   if (labData4) {
-  //     console.log("news", labData4);
-  //   }
-  //   if (labData5) {
-  //     console.log("people", labData5);
-  //   }
-  //   if (labData6) {
-  //     console.log("publication", labData6);
-  //   }
-  //   // if (labData8) {
-  //   //   console.log("eventCommit", labData8);
-  //   // }
-  //   if (labData7) {
-  //     console.log("event", labData7);
-  //   }
-  //   if (labData9) {
-  //     console.log("an event", labData9);
-  //   }
-  // }, [
-  //   labData2,
-  //   labData3,
-  //   labData5,
-  //   labData4,
-  //   labData6,
-  //   labData7,
-  //   // labData8,
-  //   labData9,
-  // ]);
-  // const { data: data2 } = useNormalQueryGet(
-  //   "http://127.0.0.1:8000/user/news/thumbnail/a163c610-7d14-47c0-8748-a8fea6bc36ee",
-  //   "news",
-  //   "a163c610-7d14-47c0-8748-a8fea6bc36ee"
-  // );
-  // React.useEffect(() => {
-  //   if (data) {
-  //     dispatch(mainAction.setLabData(data));
-  //   }
-  //   // if (data2) {
-  //   //   console.log("data2", data2);
-  //   // }
-  // }, [data, dispatch]);
-  // const labData = useSelector((state) => state.mainSlice.labData);
-  // console.log(labData);
+  const { data: labData2 } = useNormalQueryGet(
+    "http://127.0.0.1:8000/user/research/thumbnail?amount=3",
+    "research"
+  );
+  const { data: labData3 } = useNormalQueryGet(
+    "http://127.0.0.1:8000/user/laboratory/thumbnail?amount=3",
+    "laboratory"
+  );
+  const { data: labData4 } = useNormalQueryGet(
+    "http://127.0.0.1:8000/user/news/thumbnail?amount=3",
+    "news"
+  );
+  const { data: labData5 } = useNormalQueryGet(
+    "http://127.0.0.1:8000/user/researcher/thumbnail?amount=10",
+    "researcher"
+  );
+  const { data: labData6 } = useNormalQueryGet(
+    "http://127.0.0.1:8000/user/publication/thumbnail?amount=10",
+    "publication"
+  );
+  const { data: labData7 } = useNormalQueryGet(
+    "http://127.0.0.1:8000/user/event/thumbnail?amount=3",
+    "event"
+  );
+  const { data: labData9 } = useNormalQueryGet(
+    "http://127.0.0.1:8000/user/event/thumbnail?event_id=0c186d37-45f8-4767-80bc-c304dfdcc355",
+    "event"
+  );
+  const labData8 = getDataDynamic(
+    "http://127.0.0.1:8000/lead_researcher/news/commit",
+    localStorage.getItem("token")
+  );
+  useEffect(() => {
+    if (labData2) {
+      console.log("research", labData2);
+    }
+    if (labData3) {
+      console.log("lab", labData3);
+    }
+    if (labData4) {
+      console.log("news", labData4);
+    }
+    if (labData5) {
+      console.log("people", labData5);
+    }
+    if (labData6) {
+      console.log("publication", labData6);
+    }
+    // if (labData8) {
+    //   console.log("eventCommit", labData8);
+    // }
+    if (labData7) {
+      console.log("event", labData7);
+    }
+    if (labData9) {
+      console.log("an event", labData9);
+    }
+  }, [
+    labData2,
+    labData3,
+    labData5,
+    labData4,
+    labData6,
+    labData7,
+    labData8,
+    labData9,
+  ]);
+  const { data: data2 } = useNormalQueryGet(
+    "http://127.0.0.1:8000/user/news/thumbnail/a163c610-7d14-47c0-8748-a8fea6bc36ee",
+    "news",
+    "a163c610-7d14-47c0-8748-a8fea6bc36ee"
+  );
+  React.useEffect(() => {
+    if (data) {
+      dispatch(mainAction.setLabData(data));
+    }
+    // if (data2) {
+    //   console.log("data2", data2);
+    // }
+  }, [data, dispatch]);
+  const labData = useSelector((state) => state.mainSlice.labData);
+  console.log(labData);
   //
   //admin
   //create admin - can create
@@ -220,10 +220,7 @@ function AdminPage() {
             <Modal2 />
             {/* <DynamicForm frame={createFrame.createEvent} />
             <DynamicForm frame={createFrame.createResearch} /> */}
-            <DynamicForm
-              frame={createFrame.createEvent}
-              data={{ title: "abc", research_id: "a" }}
-            />
+
             <RecentCommit toFetchedData={exampleToFetchData.recentNewsCommit} />
             <RecentCommit
               toFetchedData={exampleToFetchData.recentEventCommit}
@@ -250,7 +247,7 @@ function AdminPage() {
       } else if (highestRole === "Lead Researcher") {
         return (
           <>
-            <p>leadR</p> <Modal2 />
+            <p>leadR</p>
             <RecentNews
               toFetchedData={exampleToFetchData.recentResearcherLab}
             />

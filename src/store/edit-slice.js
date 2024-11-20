@@ -41,8 +41,7 @@ const editSlice = createSlice({
       console.log(state.specificTypeAndIDAndData);
     },
     closeSpecificModal: (state) => {
-      state.isSpecificOpen = false;
-      state.isCommit = false;
+      return initialState;
     },
     setTypeNull: (state) => {
       state.specificTypeAndIDAndData[0] = null;

@@ -7,6 +7,7 @@ import ModalFrame2 from "../Modal-Frame-2";
 import CloseButton from "../Close-Btn";
 import DynamicForm from "component/admin-Component/try-form";
 import { createFrame, deleteFrame, editFrame, submitFrame } from "./frame";
+import DeepObjectViewer from "./etc/deppObjViewer";
 
 export const modalFrameWorkButton = {
   createAdmin: {
@@ -131,7 +132,7 @@ function formatLaboratoryData(obj) {
 }
 function formatPublicationData(obj) {
   const data = {
-    publication_id: obj.PID,
+    PID: obj.PID,
     title: obj.title,
     body: obj.body,
     link: obj.link, // Always return link
@@ -214,9 +215,11 @@ const roleActions = {
         <button onClick={() => formMode(createFrame.createResearch)}>
           Create New Research
         </button>
+        <br />
         <button onClick={() => formMode(editFrame.editResearch)}>
           Update Research
         </button>
+        <br />
         <button onClick={() => formMode(deleteFrame.deleteLab)}>
           Delete Research
         </button>
@@ -227,6 +230,7 @@ const roleActions = {
         <button onClick={() => formMode(editFrame.editPublication)}>
           Update Publication
         </button>
+        <br />
         <button onClick={() => formMode(deleteFrame.deletePublication)}>
           Delete Publication
         </button>
@@ -234,12 +238,14 @@ const roleActions = {
     ),
     News: (formMode) => (
       <>
-        <button onClick={() => formMode(createFrame.createNews, true, "news")}>
+        <button onClick={() => formMode(createFrame.createNews, "A", "news")}>
           Create New News
         </button>
+        <br />
         <button onClick={() => formMode(submitFrame.submitNews)}>
           Commit News
         </button>
+        <br />
         <button onClick={() => formMode(deleteFrame.deleteNews)}>
           Delete News
         </button>
@@ -247,14 +253,14 @@ const roleActions = {
     ),
     Event: (formMode) => (
       <>
-        <button
-          onClick={() => formMode(createFrame.createEvent, true, "event")}
-        >
+        <button onClick={() => formMode(createFrame.createEvent, "a", "event")}>
           Create New Event
         </button>
+        <br />
         <button onClick={() => formMode(submitFrame.submitEvent)}>
           Commit Event
         </button>
+        <br />
         <button onClick={() => formMode(deleteFrame.deleteEvent)}>
           Delete Event
         </button>
@@ -265,15 +271,19 @@ const roleActions = {
         <button onClick={() => formMode(createFrame.createPeople)}>
           Create Researcher
         </button>
+        <br />
         <button onClick={() => formMode(editFrame.assignToResearch)}>
           assign to research
         </button>
+        <br />
         <button onClick={() => formMode(editFrame.assignAsLeadR)}>
           assign as Lead Researcher
         </button>
+        <br />
         <button onClick={() => formMode(deleteFrame.kickFromResearch)}>
           kick from research
         </button>
+        <br />
         <button onClick={() => formMode(deleteFrame.removeLeadResearcher)}>
           remove as Lead Researcher
         </button>
@@ -286,8 +296,10 @@ const roleActions = {
         <button onClick={() => formMode(createFrame.createLab)}>
           Create New Lab
         </button>
+        <br />
         <button onClick={() => formMode(editFrame.editLab)}>Update Lab</button>
         <button onClick={() => formMode(deleteFrame.deleteLab)}>
+          <br />
           Delete Lab
         </button>
       </>
@@ -297,9 +309,11 @@ const roleActions = {
         <button onClick={() => formMode(createFrame.createResearch)}>
           Create New Research
         </button>
+        <br />
         <button onClick={() => formMode(editFrame.editResearch)}>
           Update Research
         </button>
+        <br />
         <button onClick={() => formMode(deleteFrame.deleteResearch)}>
           Delete Research
         </button>
@@ -310,9 +324,11 @@ const roleActions = {
         <button onClick={() => formMode(editFrame.editPublication)}>
           Update Publication
         </button>
+        <br />
         <button onClick={() => formMode(deleteFrame.deletePublication)}>
           Delete Publication
         </button>
+        <br />
       </>
     ),
     News: (formMode) => (
@@ -320,39 +336,49 @@ const roleActions = {
         <button onClick={() => formMode(createFrame.createNews, true, "news")}>
           Create News
         </button>
+        <br />
         {/* <button onClick={() => formMode(submitFrame.submitNews)}>Commit News</button> */}
         <button onClick={() => formMode(deleteFrame.deleteNews)}>
           Delete News
         </button>
+        <br />
       </>
     ),
     Event: (formMode) => (
       <>
+        <br />
         <button
           onClick={() => formMode(createFrame.createEvent, true, "event")}
         >
+          <br />
           Create Event
         </button>
+        <br />
         {/* <button onClick={() => formMode(submitFrame.submitEvent)}>Commit Event</button> */}
         <button onClick={() => formMode(deleteFrame.deleteEvent)}>
           Delete Event
         </button>
+        <br />
       </>
     ),
   },
   Researcher: {
     News: (formMode) => (
       <>
+        <br />
         <button onClick={() => formMode(createFrame.createNews)}>
           Create News
         </button>
+        <br />
       </>
     ),
     Event: (formMode) => (
       <>
+        <br />
         <button onClick={() => formMode(createFrame.createEvent)}>
           Create Event
         </button>
+        <br />
       </>
     ),
   },
@@ -455,12 +481,19 @@ function Modal2() {
         {isDynamic && (
           <React.Fragment>
             <p>select</p>
+            <br />
             <button onClick={() => setType2("Laboratory")}>Laboratory</button>
+            <br />
             <button onClick={() => setType2("Research")}>Research</button>
+            <br />
             <button onClick={() => setType2("News")}>News</button>
+            <br />
             <button onClick={() => setType2("Event")}>Event</button>
+            <br />
             <button onClick={() => setType2("Publication")}>Publication</button>
+            <br />
             <button onClick={() => setType2("Researcher")}>Researcher</button>
+            <br />
           </React.Fragment>
         )}
         {!isCommit && isDynamic && type2 && (
@@ -470,10 +503,10 @@ function Modal2() {
             formMode={formMode}
           />
         )}
-        {!isCommit && (
+        {!isCommit && !isDynamic && (
           <RoleBasedActions
             role={highestRole}
-            entity={type ? type2 : type}
+            entity={type}
             formMode={formMode}
           />
         )}
@@ -482,7 +515,14 @@ function Modal2() {
         )}
         {isCommit ? (
           <>
-            <button>commit!</button> <button>reject..</button>
+            <strong>type: </strong>
+            {type ? type : "error"}
+            <br />
+            <DeepObjectViewer data={fullData} />
+            <br />
+            <button>commit!</button>
+            <br /> <button>reject..</button>
+            <br />
           </>
         ) : null}
         {isOpen}
@@ -492,6 +532,8 @@ function Modal2() {
             setFormConfig(null);
             setFormData(null);
             dispatch(editAction.setTypeNull());
+            setIsDynamic(false);
+            dispatch(editAction.closeSpecificModal());
           }}
         />
       </ModalFrame2>
