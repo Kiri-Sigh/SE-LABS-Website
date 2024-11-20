@@ -100,7 +100,7 @@ const NewsCard = ({
 
   return (
     <article
-      className={`flex flex-col rounded-3xl border border-black border-solid min-w-[240px] w-[275px] md:w-[275px] 2xl:w-[325px] ${cardHeight} cursor-pointer overflow-hidden hover:shadow-lg transition-shadow duration-300`}
+      className={`flex flex-col rounded-3xl border border-black border-solid w-[250px] min-w-[250px] max-w-[250px] ${cardHeight} cursor-pointer overflow-hidden hover:shadow-lg transition-shadow duration-300`}
       onClick={publicationLink ? handlePublicationLink : handleCardClick}
     >
       <div className="relative">
@@ -132,7 +132,7 @@ const NewsCard = ({
               loading="lazy"
               src={imgSmall}
               alt={`${title} avatar`}
-              className="object-contain shrink-0 self-stretch my-auto w-8 h-8 rounded-full"
+              className="shrink-0 self-stretch my-auto w-8 h-8 rounded-full object-cover"
             />
             <div className="flex flex-col flex-1 shrink self-stretch my-auto basis-0 min-w-[120px]">
               <div className="font-semibold text-gray-800 line-clamp-2">

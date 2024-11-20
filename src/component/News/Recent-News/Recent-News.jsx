@@ -30,8 +30,8 @@ function RecentNews({
 
   const topic = data?.pages?.[0]?.[0] ? Object.keys(data.pages[0][0])[0] : null;
 
-    // Check if there's any data
-    const hasData = data?.pages?.some((page) => page?.length > 0);
+  // Check if there's any data
+  const hasData = data?.pages?.some((page) => page?.length > 0);
 
   const currentData =
     data?.pages?.reduce((acc, page) => acc.concat(page), []) || [];
@@ -40,12 +40,14 @@ function RecentNews({
     if (currentData.length < 5 && !isFetchingNextPage && hasData) {
       fetchNextPage();
     }
+    // console.log(currentData[currentIndex]);
   }, [currentData, isFetchingNextPage, hasData]);
 
   const handleNextPage = () => {
-    if (currentIndex + 5 >= currentData.length && !isFetchingNextPage) {
+    if (!hasData || currentIndex + 5 >= currentData.length) {
       fetchNextPage();
     }
+
     setCurrentPage((prevPage) => prevPage + 1);
     setCurrentIndex((prevIndex) => prevIndex + 5);
   };
@@ -53,8 +55,6 @@ function RecentNews({
   const handlePreviousPage = () => {
     if (currentIndex > 0) {
       setCurrentIndex((prevIndex) => prevIndex - 5);
-    }
-    if (currentPage > 0) {
       setCurrentPage((prevPage) => prevPage - 1);
     }
   };
@@ -62,10 +62,10 @@ function RecentNews({
   const visibleData = currentData.slice(currentIndex, currentIndex + 5);
 
   return (
-    <section className="flex flex-col px-16 py-28 w-full bg-gray-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
+    <section className="flex flex-col px-16 pt-4 w-full bg-gray-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
       <div className="flex flex-wrap gap-10 justify-between items-end w-full max-md:max-w-full">
         <div className="flex flex-col text-black min-w-[240px] w-[768px] max-md:max-w-full">
-          <h2 className="text-5xl font-bold leading-tight max-md:max-w-full max-md:text-4xl">
+          <h2 className="text-5xl leading-tight max-md:max-w-full max-md:text-4xl">
             {componentTitle}
           </h2>
         </div>
@@ -74,9 +74,9 @@ function RecentNews({
           text={`View ${topic ? topic : ""}`}
         />
       </div>
-      <div className="flex flex-col mt-16 w-full max-md:mt-10 max-md:max-w-full">
+      <div className="flex flex-col mt-10 w-full max-md:mt-10 max-md:max-w-full">
         <div className="box-border flex relative flex-col shrink-0">
-          <div className="flex gap-8 items-start w-full max-md:max-w-full transition-transform duration-500 ease-in-out transform">
+          <div className="flex gap-8 items-start">
             {!isLoading && hasData ? (
               visibleData.map((item, index) => {
                 const topicData = item[topic];
@@ -100,7 +100,7 @@ function RecentNews({
                     type={`${topic}`}
                     ID={resolvedID}
                     publicationLink={publicationLink}
-                    className="transition-opacity duration-500 ease-in-out opacity-0 animate-fadeIn"
+                    className="transition-opacity w-[250px] flex-none duration-500 ease-in-out opacity-0 animate-fadeIn"
                   />
                 ) : topic === "Researcher" ? (
                   <TeamCard

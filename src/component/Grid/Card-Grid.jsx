@@ -76,16 +76,14 @@ function GridCards({
               ) : (
                 <div
                   key="card-grid"
-                  className={`grid grid-flow-row auto-rows-auto my-10 ${
+                  className={`grid grid-flow-row auto-rows-auto my-10 justify-center ${
                     topic == "Researcher" || topic == "Publication"
                       ? "gap-y-10"
                       : "gap-y-20"
                   }`}
                   style={{
                     gridTemplateColumns:
-                      topic == "Researcher" || topic == "Publication"
-                        ? "repeat(auto-fill, minmax(280px, 1fr))"
-                        : "repeat(auto-fill, minmax(280px, 1fr))",
+                      "repeat(auto-fill, minmax(270px, 1fr))",
                   }}
                 >
                   {data.pages.flatMap((itemArr, pageIndex) =>
