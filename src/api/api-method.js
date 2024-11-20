@@ -31,17 +31,6 @@ export async function getData(datapath) {
     return await fetchWithFallback(datapath);
 }
 
-export async function getDataAndHeader(datapath, header) {
-    return await fetchWithFallback(datapath, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Add the token
-        },
-      }
-    : {};
-  const response = await axios.get(datapath, config);
-  return response.data;
-
 export async function getDataDynamic(datapath, token = null) {
     const config = token
         ? {
