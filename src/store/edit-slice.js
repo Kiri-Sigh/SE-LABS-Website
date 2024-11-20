@@ -3,6 +3,11 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   isOpen: false,
+  isSpecificOpen: false,
+  specificTypeAndIDAndData: [null, null, null],
+  isCommit: false,
+  dataAfterCreate: null,
+  //
   selectedImage: null,
   // bodyText: "",
   isCreate: null,
@@ -21,9 +26,36 @@ const editSlice = createSlice({
   reducers: {
     openModal: (state) => {
       state.isOpen = true;
+      state.isSpecificOpen = false;
     },
     closeModal: (state) => {
       state.isOpen = false;
+    },
+    openSpecificModal: (state, action) => {
+      state.isSpecificOpen = true;
+      state.isOpen = false;
+
+      state.specificTypeAndIDAndData = action.payload;
+      console.log("open modal");
+
+      console.log(state.specificTypeAndIDAndData);
+    },
+    closeSpecificModal: (state) => {
+      state.isSpecificOpen = false;
+      state.isCommit = false;
+    },
+    setTypeNull: (state) => {
+      state.specificTypeAndIDAndData[0] = null;
+    },
+    isCommit: (state, action) => {
+      state.isCommit = action.payload;
+    },
+    changeDataAfterCreate: (state, action) => {
+      state.dataAfterCreate = action.payload;
+    },
+
+    reset: () => {
+      return initialState;
     },
     creating: (state) => {
       state.isCreate = true;

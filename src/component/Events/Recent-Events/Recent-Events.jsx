@@ -39,6 +39,7 @@ const RecentEvents = ({
               <EventCard
                 key={`${pageIndex}-${itemIndex}`}
                 {...item.Event} // Corrected property access
+                fullData={item.Event}
               />
             ))
           )

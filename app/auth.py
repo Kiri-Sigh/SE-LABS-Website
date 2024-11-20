@@ -134,7 +134,7 @@ async def get_current_active_researcher(research_id: Optional[UUID] = Query(None
 async def get_current_active_lead_researcher(laboratory_id: Optional[UUID] = Query(None), current_user: AuthUser = Depends(get_current_active_user)) -> AuthUser:
     if laboratory_id is None and current_user.Researcher.position != Position.Admin:
         raise HTTPException(status_code=400, detail="Only Admins access without specifying a laboratory")
-    if laboratory_id not in [lab.LID for lab in current_user.Researcher.Laboratories]:
+    if laboratory_id not in [lab.LID for lab in current_user.Researcher.Laboratories]and laboratory_id is not None:
         raise HTTPException(status_code=400, detail=f"User don't have enough permisstion for laboratory: {laboratory_id}")
     return current_user
 

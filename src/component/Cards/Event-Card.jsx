@@ -2,6 +2,8 @@ import React from "react";
 import locate from "../../resource/location.svg";
 import time from "../../resource/time.svg";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { editAction } from "store/edit-slice";
 
 const EventCard = ({
   title,
@@ -12,10 +14,18 @@ const EventCard = ({
   related_laboratory,
   status,
   location,
+  fullData,
 }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const isAdminPage = useSelector((state) => state.mainSlice.isAdminPage);
   const handleCardClick = () => {
-    navigate(`/event/${EID}`);
+    if (!isAdminPage) navigate(`/event/${EID}`);
+    else {
+      console.log("Dispatching openSpecificModal with:", ["Event", EID]);
+      dispatch(editAction.openSpecificModal(["Event", EID, fullData]));
+      console.log(fullData);
+    }
   };
   return (
     <div

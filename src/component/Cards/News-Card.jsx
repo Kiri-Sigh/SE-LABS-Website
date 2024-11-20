@@ -15,6 +15,7 @@ const NewsCard = ({
   related_laboratory,
   type,
   publicationLink,
+  fullData,
 }) => {
   // console.log(title);
   const navigate = useNavigate();
@@ -23,8 +24,8 @@ const NewsCard = ({
   let relatedTopic;
   if (type === "News") {
     relatedTopic =
-      related_laboratory.related_publication ||
-      related_laboratory.related_research ||
+      related_laboratory?.related_publication ||
+      related_laboratory?.related_research ||
       related_laboratory ||
       null;
   } else if (type === "Publication") {
@@ -100,7 +101,11 @@ const NewsCard = ({
     title.length <= 20 ? "title-clamp short-title" : "title-clamp";
   const handleCardClick = () => {
     if (!isAdminPage) navigate(`/${type}/${ID}`);
-    else dispatch(editAction.openModal());
+    else {
+      console.log("Dispatching openSpecificModal with:", [type, ID]);
+      dispatch(editAction.openSpecificModal([type, ID, fullData]));
+      console.log(fullData);
+    }
   };
   const handlePublicationLink = () => {
     window.location.href = "https://www.se.kmitl.ac.th/"; // Navigates to Google

@@ -1,4 +1,16 @@
 export const exampleToFetchData = {
+  recentNewsCommit: {
+    id: "recentNewsCommit",
+    url: "http://127.0.0.1:8000/lead_researcher/news/commit?",
+    // type: "n",
+    pageSize: 5,
+  },
+  recentEventCommit: {
+    id: "recentEventCommit",
+    url: "http://127.0.0.1:8000/lead_researcher/event/commit?",
+    // type: "n",
+    pageSize: 3,
+  },
   recentNews: {
     id: "recentNews",
     url: "http://127.0.0.1:8000/user/news/thumbnail?",

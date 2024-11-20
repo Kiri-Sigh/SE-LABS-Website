@@ -4,6 +4,8 @@ import { getImgData } from "api/api-method";
 import kmitl_logo from "../../resource/kmitl_logo.webp";
 import { useQueryGetImg } from "api/custom-hooks";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { editAction } from "store/edit-slice";
 
 const TeamCard = ({
   UID,
@@ -12,8 +14,11 @@ const TeamCard = ({
   related_research,
   name,
   gmail,
+  fullData,
 }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const isAdminPage = useSelector((state) => state.mainSlice.isAdminPage);
   const [imgSmall, setImgSmall] = React.useState(kmitl_logo);
 
   const { data, isLoading, isError } = useQueryGetImg(
@@ -32,8 +37,12 @@ const TeamCard = ({
 
   const handleCardClick = (e) => {
     e.stopPropagation();
-
-    navigate(`/people/${UID}`);
+    if (!isAdminPage) navigate(`/people/${UID}`);
+    else {
+      console.log("Dispatching openSpecificModal with:", ["Event", UID]);
+      dispatch(editAction.openSpecificModal(["Researcher", UID, fullData]));
+      console.log(fullData);
+    }
   };
 
   React.useEffect(() => {

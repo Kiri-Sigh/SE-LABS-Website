@@ -156,10 +156,10 @@ export const useInfiniteFetch = (obj) => {
   // console.log("Infinite Query Result:", result);
   return result; // Return the infinite query result
 };
-export const useInfiniteFetchFilter = (obj) => {
+export const useInfiniteFetchCommit = (obj) => {
   const result = useInfiniteQuery({
     queryKey: [
-      `infinite-${obj.id}-${obj.pageSize}`,
+      `infiniteCommit-${obj.id}-${obj.pageSize}`,
       JSON.stringify(obj.filter),
     ],
     // Include filter in key
@@ -184,7 +184,7 @@ export const useInfiniteFetchFilter = (obj) => {
       }
 
       console.log("Fetching URL:", url); // Debugging URL
-      return getData(url); // Perform the fetch
+      return getDataDynamic(url, obj.token); // Perform the fetch
     },
     getNextPageParam: (lastPage, allPages) => {
       // Adjust based on your API's response structure

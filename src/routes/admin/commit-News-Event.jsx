@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import NewsCard from "../../Cards/News-Card";
-import { useInfiniteFetch } from "../../../api/custom-hooks";
-import previous from "../../../resource/previous-button.svg";
-import next from "../../../resource/next-button.svg";
-import TeamCard from "component/Cards/Team-Card";
+import previous from "../../resource/previous-button.svg";
+import next from "../../resource/next-button.svg";
+import { useInfiniteFetchCommit } from "api/custom-hooks";
 import WhiteRoundedButton from "component/etc/tailgrid/buttonX";
+import CommitCard from "./Commit-Card";
 
-function RecentNews({
+function RecentCommit({
   toFetchedData = {},
   filter = {},
   componentTitle = "recentNewsComp",
@@ -14,16 +13,19 @@ function RecentNews({
   publicationLink = null,
 }) {
   const [currentPage, setCurrentPage] = useState(0);
-  const recentNewsQuery = useInfiniteFetch({
+  const token = localStorage.getItem("token");
+
+  const recentNewsQuery = useInfiniteFetchCommit({
     id: toFetchedData.id,
     url: toFetchedData.url,
     pageSize: toFetchedData.pageSize,
     filter,
+    token,
   });
 
   const { data, isLoading, fetchNextPage, isError, isFetchingNextPage } =
     recentNewsQuery;
-
+  if (data) console.log(data);
   const topic = data?.pages?.[0]?.[0] ? Object.keys(data.pages[0][0])[0] : null;
 
   // Check if there's any data
@@ -53,10 +55,6 @@ function RecentNews({
             {componentTitle}
           </h2>
         </div>
-        <WhiteRoundedButton
-          link={`/${topic?.toLowerCase()}`}
-          text={`View ${topic ? topic : ""}`}
-        />
       </div>
       <div className="flex flex-col mt-16 w-full max-md:mt-10 max-md:max-w-full">
         <div className="box-border flex relative flex-col shrink-0">
@@ -67,29 +65,16 @@ function RecentNews({
                 const resolvedID =
                   topic === "News"
                     ? topicData.NID
-                    : topic === "Laboratory"
-                    ? topicData.LID
-                    : topic === "Research"
-                    ? topicData.RID
-                    : topic === "Publication"
-                    ? topicData.PID
-                    : topic === "Researcher"
-                    ? topicData.UID
+                    : topic === "Event"
+                    ? topicData.EID
                     : null;
 
-                return topic !== "Event" && topic !== "Researcher" ? (
-                  <NewsCard
+                return topic === "Event" || topic === "News" ? (
+                  <CommitCard
                     key={`page-${currentPage}-item-${index}`}
                     {...item[topic]}
                     type={`${topic}`}
                     ID={resolvedID}
-                    publicationLink={publicationLink}
-                    fullData={item[topic]}
-                  />
-                ) : topic === "Researcher" ? (
-                  <TeamCard
-                    key={`researcher-${currentPage}-${index}`}
-                    {...item[topic]}
                     fullData={item[topic]}
                   />
                 ) : null;
@@ -134,4 +119,4 @@ function RecentNews({
   );
 }
 
-export default RecentNews;
+export default RecentCommit;

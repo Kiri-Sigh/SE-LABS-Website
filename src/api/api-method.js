@@ -21,12 +21,11 @@ export async function getDataDynamic(datapath, token = null) {
     ? {
         headers: {
           "Content-Type": "application/json",
-
           Authorization: `Bearer ${token}`, // Add the token
         },
       }
     : {};
-  const response = await axios.get(datapath, {}, config);
+  const response = await axios.get(datapath, config);
   return response.data;
 }
 export async function fetchUserDetails(token = null) {
