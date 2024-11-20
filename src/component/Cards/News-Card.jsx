@@ -16,24 +16,29 @@ const NewsCard = ({
   related_laboratory,
   type,
   publicationLink,
+  fullData,
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const isAdminPage = useSelector((state) => state.mainSlice.isAdminPage);
-
-  const relatedTopic =
-    type === "News"
-      ? related_laboratory?.related_publication ||
-        related_laboratory?.related_research ||
-        related_laboratory
-      : type === "Research"
-      ? related_laboratory
-      : type === "Publication"
-      ? related_laboratory
-      : type === "Laboratory"
-      ? null
-      : null;
-
+  let isAdminPage = useSelector((state) => state.mainSlice.isAdminPage);
+  let relatedTopic;
+  if (type === "News") {
+    relatedTopic =
+      related_laboratory?.related_publication ||
+      related_laboratory?.related_research ||
+      related_laboratory ||
+      null;
+  } else if (type === "Publication") {
+    relatedTopic = null;
+  } else if (type === "Laboratory") {
+    relatedTopic = null;
+  } else if (type === "Research") {
+    relatedTopic = related_laboratory;
+  } else {
+    relatedTopic = "something wrong";
+  }
+  // console.log(
+  );
   const { data, isLoading, isError } = useQueryGetImg(
     `http://127.0.0.1:8000/user`,
     type,
@@ -64,7 +69,11 @@ const NewsCard = ({
     title.length <= 20 ? "title-clamp short-title" : "title-clamp";
   const handleCardClick = () => {
     if (!isAdminPage) navigate(`/${type}/${ID}`);
-    else dispatch(editAction.openModal());
+    else {
+      console.log("Dispatching openSpecificModal with:", [type, ID]);
+      dispatch(editAction.openSpecificModal([type, ID, fullData]));
+      console.log(fullData);
+    }
   };
   const handlePublicationLink = () => {
     window.location.href = "https://www.se.kmitl.ac.th/";

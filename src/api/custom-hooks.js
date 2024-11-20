@@ -156,56 +156,57 @@ export const useInfiniteFetch = (obj) => {
     // console.log("Infinite Query Result:", result);
     return result; // Return the infinite query result
 };
-export const useInfiniteFetchFilter = (obj) => {
-    const result = useInfiniteQuery({
-        queryKey: [
-            `infinite-${obj.id}-${obj.pageSize}`,
-            JSON.stringify(obj.filter),
-        ],
-        // Include filter in key
-        queryFn: ({ pageParam = 1 }) => {
-            let url = obj.url;
-            // Handle query params dynamically
-            const params = new URLSearchParams();
-            params.append("page", pageParam);
-            params.append("amount", obj.pageSize);
 
-            if (obj.filter) {
-                Object.entries(obj.filter).forEach(([key, value]) => {
-                    params.append(key, value);
-                });
-            }
+export const useInfiniteFetchCommit = (obj) => {
+  const result = useInfiniteQuery({
+    queryKey: [
+      `infiniteCommit-${obj.id}-${obj.pageSize}`,
+      JSON.stringify(obj.filter),
+    ],
+    // Include filter in key
+    queryFn: ({ pageParam = 1 }) => {
+      let url = obj.url;
+      // Handle query params dynamically
+      const params = new URLSearchParams();
+      params.append("page", pageParam);
+      params.append("amount", obj.pageSize);
 
-            // Append serialized params to the URL
-            if (url.slice(-1) === "?") {
-                url += params.toString();
-            } else {
-                url += `&${params.toString()}`;
-            }
+      if (obj.filter) {
+        Object.entries(obj.filter).forEach(([key, value]) => {
+          params.append(key, value);
+        });
+      }
 
-            console.log("Fetching URL:", url); // Debugging URL
-            return getData(url); // Perform the fetch
-        },
-        getNextPageParam: (lastPage, allPages) => {
-            // Adjust based on your API's response structure
-            // console.log("lastpage=", lastPage);
-            // console.log("alloage=", allPages);
-            const dataLength = lastPage?.length || 0;
-            if (dataLength < obj.pageSize) {
-                // console.log("data;ennght", dataLength);
-                // console.log("no more page");
-                return undefined;
-            } // No more pages
-            return allPages.length + 1; // Increment page
-        },
-        enabled: true, // Ensure it's enabled
-        refetchOnWindowFocus: false, // Avoid refetch on tab switch
-        onSuccess: (data) => console.log("Fetched data:", data),
-        onError: (error) => console.error("Error fetching data:", error),
-    });
+      // Append serialized params to the URL
+      if (url.slice(-1) === "?") {
+        url += params.toString();
+      } else {
+        url += `&${params.toString()}`;
+      }
 
-    // console.log("Infinite Query Result:", result);
-    return result; // Return the infinite query result
+      console.log("Fetching URL:", url); // Debugging URL
+      return getDataDynamic(url, obj.token); // Perform the fetch
+    },
+    getNextPageParam: (lastPage, allPages) => {
+      // Adjust based on your API's response structure
+      // console.log("lastpage=", lastPage);
+      // console.log("alloage=", allPages);
+      const dataLength = lastPage?.length || 0;
+      if (dataLength < obj.pageSize) {
+        // console.log("data;ennght", dataLength);
+        // console.log("no more page");
+        return undefined;
+      } // No more pages
+      return allPages.length + 1; // Increment page
+    },
+    enabled: true, // Ensure it's enabled
+    refetchOnWindowFocus: false, // Avoid refetch on tab switch
+    onSuccess: (data) => console.log("Fetched data:", data),
+    onError: (error) => console.error("Error fetching data:", error),
+  });
+
+  // console.log("Infinite Query Result:", result);
+  return result; // Return the infinite query result
 };
 
 // {

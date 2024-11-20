@@ -29,9 +29,24 @@ class LRE01(BaseModel):
                 publication = p
                 break
 
-        return cls(
-            LID=lab.lab_id,
-            title=lab.lab_name,
-            related_research=RRE01.from_orm(research) if research_id else None,
-            related_publication=PRE01.from_orm(publication) if publication_id else None
-        )
+        if research is None and publication is None:
+            return cls(
+                LID=lab.lab_id,
+                title=lab.lab_name,
+                related_research=None,
+                related_publication=None
+            )
+        elif publication is None:
+            return cls(
+                LID=lab.lab_id,
+                title=lab.lab_name,
+                related_research=RRE01.from_orm(research),
+                related_publication=None
+            )
+        else:
+            return cls(
+                LID=lab.lab_id,
+                title=lab.lab_name,
+                related_research=None,
+                related_publication=PRE01.from_orm(publication)
+            )

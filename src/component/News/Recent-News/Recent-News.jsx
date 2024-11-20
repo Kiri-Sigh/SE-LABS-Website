@@ -60,7 +60,7 @@ function RecentNews({
   };
 
   const visibleData = currentData.slice(currentIndex, currentIndex + 5);
-
+  
   return (
     <section className="flex flex-col px-16 pt-4 w-full bg-gray-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
       <div className="flex flex-wrap gap-10 justify-between items-end w-full max-md:max-w-full">
@@ -101,12 +101,14 @@ function RecentNews({
                     ID={resolvedID}
                     publicationLink={publicationLink}
                     className="transition-opacity w-[250px] flex-none duration-500 ease-in-out opacity-0 animate-fadeIn"
+                    fullData={item[topic]}
                   />
                 ) : topic === "Researcher" ? (
                   <TeamCard
                     key={`researcher-${currentPage}-${index}`}
                     {...item[topic]}
                     className="transition-opacity duration-500 ease-in-out opacity-0 animate-fadeIn"
+                    fullData={item[topic]}
                   />
                 ) : null;
               })

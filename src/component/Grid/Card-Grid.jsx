@@ -107,18 +107,20 @@ function GridCards({
                           type={topic}
                           ID={resolvedID}
                           publicationLink={publicationLink}
+                          fullData={item[topic]}
                         />
                       ) : topic === "Researcher" ? (
                         <TeamCard
                           key={`${pageIndex}-${itemIndex}`}
                           {...item[topic]}
+                          fullData={item[topic]}
                         />
                       ) : topic === "Event" ? (
                         <div
                           key={`${pageIndex}-${itemIndex}`}
                           className="col-span-full w-full -my-10"
                         >
-                          <EventCard {...item[topic]} ID={resolvedID} />
+                          <EventCard {...item[topic]} ID={resolvedID} fullData={item[topic]}/>
                         </div>
                       ) : null;
                     })

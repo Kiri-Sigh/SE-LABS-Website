@@ -17,7 +17,7 @@ async def create_news(news: NewsCreate, image: UploadFile, db: Session,
 
     if news.related_laboratory is not None:
         related_laboratory = news.related_laboratory.LID
-    if news.related_laboratory.related_research is not None:
+    if news.related_laboratory is not None and news.related_laboratory.related_research is not None:
         related_research = news.related_laboratory.related_research.RID
 
     if laboratory_id != related_laboratory:

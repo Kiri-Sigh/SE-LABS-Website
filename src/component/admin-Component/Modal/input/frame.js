@@ -23,7 +23,7 @@ export const editFrame = {
         RID: "text",
         title: "text",
         body: "textArea",
-        related_laboratory: "",
+        related_laboratory: true,
       },
       { image: "file" },
     ],
@@ -102,13 +102,13 @@ export const createFrame = {
         title: "text",
 
         body: "textArea",
-        related_laboratory: "",
+        related_laboratory: true,
       },
       { image: "file" },
     ],
     url: "http://127.0.0.1:8000/researcher/news",
   },
-  //err
+  //ok
   createEvent: {
     type: "post",
     param: [{ research_id: "text" }, { laboratory_id: "text" }],
@@ -117,12 +117,11 @@ export const createFrame = {
       {
         key: "event",
         title: "text",
-
         body: "textArea",
         location: "text",
         start: "text",
         end: "text",
-        related_laboratory: "",
+        related_laboratory: "huh",
       },
       { image: "file" },
     ],
@@ -139,7 +138,7 @@ export const createFrame = {
         title: "text",
         body: "textArea",
 
-        related_laboratory: "",
+        related_laboratory: true,
       },
       { image: "file" },
     ],
@@ -162,23 +161,13 @@ export const submitFrame = {
   //unautherized
   submitEvent: {
     type: "patch",
-    param: [
-      { event_id: "text" },
-      { laboratory_id: "text" },
-      { research_id: "text" },
-      { is_approved: "checkbox" },
-    ],
+    param: [{ event_id: "text" }, { is_approved: "checkbox" }],
 
     url: "http://127.0.0.1:8000/lead_researcher/event",
   },
   submitNews: {
     type: "patch",
-    param: [
-      { news_id: "text" },
-      { laboratory_id: "text" },
-      { research_id: "text" },
-      { is_approved: "checkbox" },
-    ],
+    param: [{ news_id: "text" }, { is_approved: "checkbox" }],
 
     url: "http://127.0.0.1:8000/lead_researcher/news",
   },
@@ -186,21 +175,13 @@ export const submitFrame = {
 export const deleteFrame = {
   deleteEvent: {
     type: "delete",
-    param: [
-      { event_id: "text" },
-      { laboratory_id: "text" },
-      { research_id: "text" },
-    ],
+    param: [{ event_id: "text" }],
 
     url: "http://127.0.0.1:8000/lead_researcher/event",
   },
   deleteNews: {
     type: "delete",
-    param: [
-      { news_id: "text" },
-      { laboratory_id: "text" },
-      { research_id: "text" },
-    ],
+    param: [{ news_id: "text" }],
 
     url: "http://127.0.0.1:8000/lead_researcher/news",
   },
@@ -212,23 +193,19 @@ export const deleteFrame = {
   },
   deletePublication: {
     type: "delete",
-    param: [{ publication_id: "text" }, { laboratory_id: "text" }],
+    param: [{ publication_id: "text" }],
 
     url: "http://127.0.0.1:8000/lead_researcher/publication",
   },
   deleteResearch: {
     type: "delete",
-    param: [{ research_id: "text" }, { laboratory_id: "text" }],
+    param: [{ research_id: "text" }],
 
     url: "http://127.0.0.1:8000/lead_researcher/research",
   },
   kickFromResearch: {
     type: "delete",
-    param: [
-      { researcher_id: "text" },
-      { research_id: "text" },
-      { laboratory_id: "text" },
-    ],
+    param: [{ researcher_id: "text" }, { research_id: "text" }],
 
     url: "http://127.0.0.1:8000/lead_researcher/researcher",
   },

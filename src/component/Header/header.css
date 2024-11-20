@@ -6,13 +6,16 @@
 /* Header styles remain unchanged */
 
 /* Fixed Button */
-.fixed-button {
+/* Fixed Button Container */
+.fixed-button-container {
   position: fixed;
-  top: 10; /* Stick the header to the top */
+  top: 80px; /* Adjust as needed */
+  right: 8px; /* Adjust as needed */
+  z-index: 1000; /* Ensures it stays on top of other elements */
+}
 
-  bottom: 20px;
-  right: 20px;
-  z-index: 1000; /* Ensures it's on top of other elements */
+/* Button Styles */
+.fixed-button {
   padding: 10px 20px;
   background-color: #0096ff;
   color: white;
@@ -50,3 +53,36 @@
   width:100%;
 }
 
+/* Dropdown Menu */
+.overlay-dropdown {
+  position: absolute;
+  top: 100%; /* Position directly below the button */
+  left: 0;
+  width: 200px; /* Adjust as needed */
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1100; /* Above other UI elements */
+  display: none; /* Initially hidden */
+}
+
+.overlay-dropdown.active {
+  display: block; /* Show dropdown when active */
+}
+
+.overlay-dropdown ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.overlay-dropdown li {
+  padding: 10px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.overlay-dropdown li:hover {
+  background-color: #f0f0f0;
+}

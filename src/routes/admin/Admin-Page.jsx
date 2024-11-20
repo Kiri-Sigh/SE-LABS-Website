@@ -29,6 +29,9 @@ import {
   submitFrame,
   deleteFrame,
 } from "component/admin-Component/Modal/input/frame";
+import Modal2 from "component/admin-Component/Modal/input/modal2";
+import RecentCommit from "./commit-News-Event";
+import { createEvent } from "@testing-library/react";
 
 function AdminPage() {
   const dispatch = useDispatch();
@@ -91,11 +94,11 @@ function AdminPage() {
     "news"
   );
   const { data: labData5 } = useNormalQueryGet(
-    "http://127.0.0.1:8000/user/researcher/thumbnail?amount=3",
+    "http://127.0.0.1:8000/user/researcher/thumbnail?amount=10",
     "researcher"
   );
   const { data: labData6 } = useNormalQueryGet(
-    "http://127.0.0.1:8000/user/publication/thumbnail?amount=3",
+    "http://127.0.0.1:8000/user/publication/thumbnail?amount=10",
     "publication"
   );
   const { data: labData7 } = useNormalQueryGet(
@@ -107,7 +110,7 @@ function AdminPage() {
     "event"
   );
   const labData8 = getDataDynamic(
-    "http://127.0.0.1:8000/lead_researcher/event/commit",
+    "http://127.0.0.1:8000/lead_researcher/news/commit",
     localStorage.getItem("token")
   );
   useEffect(() => {
@@ -135,22 +138,77 @@ function AdminPage() {
     if (labData9) {
       console.log("an event", labData9);
     }
-  }, [labData2, labData3, labData5, labData4, labData6, labData7, labData9]);
-  // const { data: data2 } = useNormalQueryGet(
-  //   "http://127.0.0.1:8000/user/news/thumbnail/a163c610-7d14-47c0-8748-a8fea6bc36ee",
-  //   "news",
-  //   "a163c610-7d14-47c0-8748-a8fea6bc36ee"
-  // );
-  // React.useEffect(() => {
-  //   if (data) {
-  //     dispatch(mainAction.setLabData(data));
-  //   }
-  //   // if (data2) {
-  //   //   console.log("data2", data2);
-  //   // }
-  // }, [data, dispatch]);
-  // const labData = useSelector((state) => state.mainSlice.labData);
-  // console.log(labData);
+  }, [
+    labData2,
+    labData3,
+    labData5,
+    labData4,
+    labData6,
+    labData7,
+    labData8,
+    labData9,
+  ]);
+  const { data: data2 } = useNormalQueryGet(
+    "http://127.0.0.1:8000/user/news/thumbnail/a163c610-7d14-47c0-8748-a8fea6bc36ee",
+    "news",
+    "a163c610-7d14-47c0-8748-a8fea6bc36ee"
+  );
+  React.useEffect(() => {
+    if (data) {
+      dispatch(mainAction.setLabData(data));
+    }
+    // if (data2) {
+    //   console.log("data2", data2);
+    // }
+  }, [data, dispatch]);
+  const labData = useSelector((state) => state.mainSlice.labData);
+  console.log(labData);
+  //
+  //admin
+  //create admin - can create
+  //  lab->go to createLab
+  //  event->go to select lab/event/null-> after select lab/event then input data
+  //  news -> same as event
+  //  research ->go to create Research
+  //  people -> go to create people -> can go to assign people to research
+  //
+  //edit admin
+  //edit people -> add researcher to become leadR of a lab
+  //->put research to pulciaiton
+  //edit lab and research data
+  //add free/researcher to a research
+  //edit news events commits
+  //
+  //delete admin
+  //delete all
+  //
+  //leadR
+  //create -can create
+  //  event
+  //news
+  //poeple
+  //research
+  //
+  //edit research
+  //edit lab
+  //edit people
+  //edit news/event commits
+  //
+  //delete research,
+  //kcik researcher from research
+  //delte publication
+  //delte news/events
+  //
+  //researcher
+  //create to commit news/event
+  //edit none
+  //delete none
+  ////////////////////////////////////////////////////////////////
+  //what need to do
+  //figure out a way to mutate data
+  //create by create/edit/delete
+  // create ->select topic->select ID -> put data
+  //edit -> select
 
   const location = useLocation();
   switch (location.pathname) {
@@ -159,29 +217,34 @@ function AdminPage() {
         return (
           <>
             <p>admin</p>
-
+            <Modal2 />
             {/* <DynamicForm frame={createFrame.createEvent} />
             <DynamicForm frame={createFrame.createResearch} /> */}
-            <DynamicForm frame={submitFrame.submitEvent} />
 
-            {/* <RecentNews toFetchedData={exampleToFetchData.recentNews} />
+            <RecentCommit toFetchedData={exampleToFetchData.recentNewsCommit} />
+            <RecentCommit
+              toFetchedData={exampleToFetchData.recentEventCommit}
+            />
+            <RecentNews toFetchedData={exampleToFetchData.recentNews} />
             <RecentNews toFetchedData={exampleToFetchData.recentResearch} />
             <RecentNews toFetchedData={exampleToFetchData.recentLab} />
             <RecentNews toFetchedData={exampleToFetchData.recentPeople} />
             <RecentNews toFetchedData={exampleToFetchData.recentPublication} />
-            <RecentEvents toFetchedData={exampleToFetchData.recentEvents} /> */}
+            <RecentEvents toFetchedData={exampleToFetchData.recentEvents} />
           </>
         );
       } else if (highestRole === "Researcher") {
         return (
           <>
+            {" "}
+            <Modal2 />
             <p>rsearcher</p>
             <RecentNews
               toFetchedData={exampleToFetchData.recentResearcherResearch}
             />
           </>
         );
-      } else if (highestRole === "LeadResearcher") {
+      } else if (highestRole === "Lead Researcher") {
         return (
           <>
             <p>leadR</p>
