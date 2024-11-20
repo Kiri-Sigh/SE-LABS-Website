@@ -8,6 +8,7 @@ import CloseButton from "../Close-Btn";
 import DynamicForm from "component/admin-Component/try-form";
 import { createFrame, deleteFrame, editFrame, submitFrame } from "./frame";
 import DeepObjectViewer from "./etc/deppObjViewer";
+import { patchApproval } from "api/custom-hooks";
 
 export const modalFrameWorkButton = {
   createAdmin: {
@@ -238,7 +239,7 @@ const roleActions = {
     ),
     News: (formMode) => (
       <>
-        <button onClick={() => formMode(createFrame.createNews, "A", "news")}>
+        <button onClick={() => formMode(createFrame.createNews, "news")}>
           Create New News
         </button>
         <br />
@@ -253,7 +254,7 @@ const roleActions = {
     ),
     Event: (formMode) => (
       <>
-        <button onClick={() => formMode(createFrame.createEvent, "a", "event")}>
+        <button onClick={() => formMode(createFrame.createEvent, "event")}>
           Create New Event
         </button>
         <br />
@@ -333,7 +334,7 @@ const roleActions = {
     ),
     News: (formMode) => (
       <>
-        <button onClick={() => formMode(createFrame.createNews, true, "news")}>
+        <button onClick={() => formMode(createFrame.createNews, "news")}>
           Create News
         </button>
         <br />
@@ -347,9 +348,7 @@ const roleActions = {
     Event: (formMode) => (
       <>
         <br />
-        <button
-          onClick={() => formMode(createFrame.createEvent, true, "event")}
-        >
+        <button onClick={() => formMode(createFrame.createEvent, "event")}>
           <br />
           Create Event
         </button>
@@ -404,6 +403,8 @@ function Modal2() {
   const [formConfig, setFormConfig] = useState(null); // State to store form configuration
   const [formData, setFormData] = useState(null); // State to store form data
   const [type2, setType2] = useState(null); // State to store form data
+  const [type3, setType3] = useState(null); // State to store form data
+
   const dataAfterCreate = useSelector(
     (state) => state.editSlice.dataAfterCreate
   ); //   const handleDropdownToggle = () => setIsDropped((prev) => !prev);
@@ -426,10 +427,12 @@ function Modal2() {
       </div>
     );
   }
-  const formMode = (frame) => {
+  const formMode = (frame, type) => {
     setFormConfig(frame); // Set the frame for the form
+    console.log("fullD", fullData);
     if (fullData) setFormData(formatData(fullData));
     // Set the data for the form
+    if (type) setType3(type);
     console.log("FormMode run");
   };
   const chooseTopicToMutate = () => {
@@ -518,9 +521,10 @@ function Modal2() {
             <strong>type: </strong>
             {type ? type : "error"}
             <br />
+            {console.log(fullData)}
             <DeepObjectViewer data={fullData} />
             <br />
-            <button>commit!</button>
+            <button onClick={() => patchApproval(fullData)}>commit!</button>
             <br /> <button>reject..</button>
             <br />
           </>
@@ -534,6 +538,7 @@ function Modal2() {
             dispatch(editAction.setTypeNull());
             setIsDynamic(false);
             dispatch(editAction.closeSpecificModal());
+            setType3(null);
           }}
         />
       </ModalFrame2>
@@ -542,3 +547,4 @@ function Modal2() {
 }
 
 export default Modal2;
+//wat da fak

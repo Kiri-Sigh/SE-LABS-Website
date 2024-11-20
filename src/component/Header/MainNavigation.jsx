@@ -1,6 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import "./header.css";
+import { useSelector } from "react-redux";
 
 function MainNavigation() {
   const navItems = {
@@ -12,6 +13,7 @@ function MainNavigation() {
     news: "News",
     events: "Events",
   };
+  const isAdmin = useSelector((state) => state.mainSlice.isAdminPage);
   return (
     <nav className="flex gap-8 justify-center items-center self-stretch my-auto text-xl text-white min-w-[240px] max-md:max-w-full">
       <ul className="flex gap-4">
@@ -20,14 +22,29 @@ function MainNavigation() {
             key={key}
             className="gap-1 self-stretch my-auto whitespace-nowrap"
           >
-            <NavLink
-              to={`/${key}`}
-              className={
-                "focus:outline-none focus:ring-white focus:ring-opacity-50 underline-anim"
-              }
-            >
-              {value}
-            </NavLink>
+            {isAdmin ? (
+              <NavLink
+                to={`/admin/${key}`}
+                className={({ isActive }) =>
+                  isActive
+                    ? " focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
+                    : "hover:underline focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
+                }
+              >
+                {value}
+              </NavLink>
+            ) : (
+              <NavLink
+                to={`/${key}`}
+                className={({ isActive }) =>
+                  isActive
+                    ? " focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
+                    : "hover:underline focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
+                }
+              >
+                {value}
+              </NavLink>
+            )}
           </li>
         ))}
       </ul>

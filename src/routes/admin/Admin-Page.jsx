@@ -81,86 +81,90 @@ function AdminPage() {
     }
   }, [error, navigate]);
 
-  const { data: labData2 } = useNormalQueryGet(
-    "http://127.0.0.1:8000/user/research/thumbnail?amount=3",
-    "research"
-  );
-  const { data: labData3 } = useNormalQueryGet(
-    "http://127.0.0.1:8000/user/laboratory/thumbnail?amount=3",
+  // const { data: labData2 } = useNormalQueryGet(
+  //   "http://127.0.0.1:8000/user/research/thumbnail?amount=3",
+  //   "research"
+  // );
+  // const { data: labData3 } = useNormalQueryGet(
+  //   "http://127.0.0.1:8000/user/laboratory/thumbnail?amount=3",
+  //   "laboratory"
+  // );
+  // const { data: labData4 } = useNormalQueryGet(
+  //   "http://127.0.0.1:8000/user/news/thumbnail?amount=3",
+  //   "news"
+  // );
+  // const { data: labData5 } = useNormalQueryGet(
+  //   "http://127.0.0.1:8000/user/researcher/thumbnail?amount=10",
+  //   "researcher"
+  // );
+  // const { data: labData6 } = useNormalQueryGet(
+  //   "http://127.0.0.1:8000/user/publication/thumbnail?amount=10",
+  //   "publication"
+  // );
+  // const { data: labData7 } = useNormalQueryGet(
+  //   "http://127.0.0.1:8000/user/event/thumbnail?amount=3",
+  //   "event"
+  // );
+  // const { data: labData9 } = useNormalQueryGet(
+  //   "http://127.0.0.1:8000/user/event/thumbnail?event_id=0c186d37-45f8-4767-80bc-c304dfdcc355",
+  //   "event"
+  // );
+  // const labData8 = getDataDynamic(
+  //   "http://127.0.0.1:8000/lead_researcher/news/commit",
+  //   localStorage.getItem("token")
+  // );
+  // useEffect(() => {
+  //   if (labData2) {
+  //     console.log("research", labData2);
+  //   }
+  //   if (labData3) {
+  //     console.log("lab", labData3);
+  //   }
+  //   if (labData4) {
+  //     console.log("news", labData4);
+  //   }
+  //   if (labData5) {
+  //     console.log("people", labData5);
+  //   }
+  //   if (labData6) {
+  //     console.log("publication", labData6);
+  //   }
+  //   // if (labData8) {
+  //   //   console.log("eventCommit", labData8);
+  //   // }
+  //   if (labData7) {
+  //     console.log("event", labData7);
+  //   }
+  //   if (labData9) {
+  //     console.log("an event", labData9);
+  //   }
+  // }, [
+  //   labData2,
+  //   labData3,
+  //   labData5,
+  //   labData4,
+  //   labData6,
+  //   labData7,
+  //   labData8,
+  //   labData9,
+  // ]);
+  // const { data: data2 } = useNormalQueryGet(
+  //   "http://127.0.0.1:8000/user/news/thumbnail/a163c610-7d14-47c0-8748-a8fea6bc36ee",
+  //   "news",
+  //   "a163c610-7d14-47c0-8748-a8fea6bc36ee"
+  // );
+  const { data: Ldata } = useNormalQueryGet(
+    "http://127.0.0.1:8000/user/laboratory/thumbnail?amount=10",
     "laboratory"
   );
-  const { data: labData4 } = useNormalQueryGet(
-    "http://127.0.0.1:8000/user/news/thumbnail?amount=3",
-    "news"
-  );
-  const { data: labData5 } = useNormalQueryGet(
-    "http://127.0.0.1:8000/user/researcher/thumbnail?amount=10",
-    "researcher"
-  );
-  const { data: labData6 } = useNormalQueryGet(
-    "http://127.0.0.1:8000/user/publication/thumbnail?amount=10",
-    "publication"
-  );
-  const { data: labData7 } = useNormalQueryGet(
-    "http://127.0.0.1:8000/user/event/thumbnail?amount=3",
-    "event"
-  );
-  const { data: labData9 } = useNormalQueryGet(
-    "http://127.0.0.1:8000/user/event/thumbnail?event_id=0c186d37-45f8-4767-80bc-c304dfdcc355",
-    "event"
-  );
-  const labData8 = getDataDynamic(
-    "http://127.0.0.1:8000/lead_researcher/news/commit",
-    localStorage.getItem("token")
-  );
-  useEffect(() => {
-    if (labData2) {
-      console.log("research", labData2);
-    }
-    if (labData3) {
-      console.log("lab", labData3);
-    }
-    if (labData4) {
-      console.log("news", labData4);
-    }
-    if (labData5) {
-      console.log("people", labData5);
-    }
-    if (labData6) {
-      console.log("publication", labData6);
-    }
-    // if (labData8) {
-    //   console.log("eventCommit", labData8);
-    // }
-    if (labData7) {
-      console.log("event", labData7);
-    }
-    if (labData9) {
-      console.log("an event", labData9);
-    }
-  }, [
-    labData2,
-    labData3,
-    labData5,
-    labData4,
-    labData6,
-    labData7,
-    labData8,
-    labData9,
-  ]);
-  const { data: data2 } = useNormalQueryGet(
-    "http://127.0.0.1:8000/user/news/thumbnail/a163c610-7d14-47c0-8748-a8fea6bc36ee",
-    "news",
-    "a163c610-7d14-47c0-8748-a8fea6bc36ee"
-  );
   React.useEffect(() => {
-    if (data) {
-      dispatch(mainAction.setLabData(data));
+    if (Ldata) {
+      dispatch(mainAction.setLabData(Ldata));
     }
     // if (data2) {
     //   console.log("data2", data2);
     // }
-  }, [data, dispatch]);
+  }, [Ldata, dispatch]);
   const labData = useSelector((state) => state.mainSlice.labData);
   console.log(labData);
   //
@@ -247,7 +251,7 @@ function AdminPage() {
       } else if (highestRole === "Lead Researcher") {
         return (
           <>
-            <p>leadR</p>
+            <p>leadR</p> <Modal2 />
             <RecentNews
               toFetchedData={exampleToFetchData.recentResearcherLab}
             />
@@ -267,17 +271,12 @@ function AdminPage() {
       }
 
     case "/admin/about":
-      return (
-        <>
-          <TopicAndImage />
-          <AboutDescription />
-          <RecentNews toFetchedData={exampleToFetchData.recentNews} />
-          <RecentEvents toFetchedData={exampleToFetchData.recentEvents} />
-        </>
-      );
+      return <>no mutation</>;
     case "/admin/events":
       return (
         <>
+          {" "}
+          <Modal2 />
           <TopicHeaderText topic="Events" />
           <GridCards
             toFetchedData={exampleToFetchData.recentGridEvents}
@@ -291,6 +290,8 @@ function AdminPage() {
     case "/admin/news":
       return (
         <>
+          {" "}
+          <Modal2 />
           <TopicHeaderText topic="News" />
           <GridCards
             toFetchedData={exampleToFetchData.recentGridNews}
@@ -303,6 +304,8 @@ function AdminPage() {
     case "/admin/publications":
       return (
         <>
+          {" "}
+          <Modal2 />
           <TopicHeaderText topic="Publications" />
           <GridCards
             toFetchedData={exampleToFetchData.recentGridNews}
@@ -316,6 +319,8 @@ function AdminPage() {
     case "/admin/research":
       return (
         <>
+          {" "}
+          <Modal2 />
           <TopicHeaderText topic="Research" />
           <GridCards
             toFetchedData={exampleToFetchData.recentGridResearch}
@@ -328,6 +333,8 @@ function AdminPage() {
     case "/admin/laboratory":
       return (
         <>
+          {" "}
+          <Modal2 />
           <TopicHeaderText topic="Laboratory" />
           <GridCards
             toFetchedData={exampleToFetchData.recentGridLaboratory}
@@ -340,6 +347,8 @@ function AdminPage() {
     case "/admin/people":
       return (
         <>
+          {" "}
+          <Modal2 />
           <TopicHeaderText topic="People" />
           <GridCards
             toFetchedData={exampleToFetchData.recentGridResearcher}
@@ -352,6 +361,8 @@ function AdminPage() {
     case "/admin/commit":
       return (
         <>
+          {" "}
+          <Modal2 />
           <TopicHeaderText topic="Commit" />
           <GridCards
             toFetchedData={exampleToFetchData.recentGridResearcher}

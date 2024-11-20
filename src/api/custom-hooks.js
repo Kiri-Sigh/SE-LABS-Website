@@ -8,6 +8,7 @@ import {
 import { fetchUserDetails, getData, getImgData } from "./api-method";
 import { useState, useEffect } from "react";
 import { getDataDynamic } from "api/api-method";
+import axios from "axios";
 
 // import { useState } from "react";
 //   //map [{url,id},{}] to {id:{data},id:{data}}
@@ -230,3 +231,52 @@ export const useInfiniteFetchCommit = (obj) => {
 //   isSuccess: true,
 //   error: null,
 // }
+
+export const patchApproval = async (data) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      console.error("Token is not available in localStorage");
+      return;
+    }
+
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    };
+
+    // Check if data has NID or EID and determine the type
+    const isNews = data.NID !== undefined;
+    const isEvent = data.EID !== undefined;
+
+    if (!isNews && !isEvent) {
+      console.error("Data must contain either NID or EID to determine type");
+      return;
+    }
+
+    const idKey = isNews ? "news_id" : "event_id";
+    const idValue = isNews ? data.NID : data.EID;
+
+    // Construct the URL
+    const baseUrl = "http://127.0.0.1:8000/lead_researcher";
+    const endpoint = isNews ? "news" : "event";
+    const url = `${baseUrl}/${endpoint}`;
+
+    // Construct the parameters
+    const params = {
+      [idKey]: idValue,
+      is_approved: true,
+    };
+
+    // Send the PATCH request
+    const response = await axios.patch(url, null, {
+      params,
+      headers,
+    });
+
+    console.log("Success:", response.data);
+  } catch (error) {
+    console.error("Error in patching approval:", error);
+  }
+};

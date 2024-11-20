@@ -1,3 +1,4 @@
+import Footer from "component/Footer/footer";
 import Header from "component/Header/Header";
 import MainNavigation from "component/Header/MainNavigation";
 import { Outlet, useNavigation } from "react-router-dom";
@@ -12,6 +13,7 @@ function AdminLayout() {
       <main>
         <Outlet />
       </main>
+      <Footer />
     </>
   );
 }

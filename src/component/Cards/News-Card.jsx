@@ -66,31 +66,40 @@ const NewsCard = ({
         fetchImgSmall();
     }, [relatedTopic]);
 
-    const titleClass =
-        title.length <= 20 ? "title-clamp short-title" : "title-clamp";
-    const handleCardClick = () => {
-        if (!isAdminPage) navigate(`/${type}/${ID}`);
-        else {
-            console.log("Dispatching openSpecificModal with:", [type, ID]);
-            dispatch(editAction.openSpecificModal([type, ID, fullData]));
-            console.log(fullData);
-        }
-    };
-    const handlePublicationLink = () => {
-        window.location.href = "https://www.se.kmitl.ac.th/";
-    };
-    const handleSmallDivClick = (e) => {
-        e.stopPropagation();
-        if (relatedTopic.PID) {
-            handlePublicationLink();
-        } else {
-            navigate(
-                `/${relatedTopic.LID ? "laboratory" : "research"}/${
-                    relatedTopic?.LID || relatedTopic?.RID
-                }`
-            );
-        }
-    };
+  const titleClass =
+    title.length <= 20 ? "title-clamp short-title" : "title-clamp";
+
+  const handleCardClick = () => {
+    if (!isAdminPage) navigate(`/${type}/${ID}`);
+    else {
+      console.log("Dispatching openSpecificModal with:", [type, ID]);
+      dispatch(editAction.openSpecificModal([type, ID, fullData]));
+      console.log(fullData);
+    }
+  };
+  
+const handlePublicationLink = () => {
+    window.location.href = "https://www.se.kmitl.ac.th/"; // Navigates to Google
+  };
+  
+  const handleSmallDivClick = (e) => {
+    e.stopPropagation(); // Prevents the card click event from triggering
+    // const type2 = toString(type);
+    if (relatedTopic.PID) {
+      handlePublicationLink();
+    } else {
+      navigate(
+        `/${
+          relatedTopic.LID
+            ? "laboratory"
+            : relatedTopic.RID
+            ? "research"
+            : "error"
+        }/${relatedTopic?.LID || relatedTopic?.RID}`
+      );
+    }
+  };
+  
     const formattedDate = new Date(date).toLocaleString("en-US", {
         day: "2-digit",
         month: "short",
@@ -99,6 +108,7 @@ const NewsCard = ({
         minute: "2-digit",
         hour12: true,
     });
+  
     const cardHeight =
         type === "Laboratory"
             ? "h-[325px]"
