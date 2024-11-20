@@ -4,15 +4,15 @@ from datetime import datetime
 import json
 from pydantic import ValidationError
 from typing import Optional
-from schemas.ult.position import Position
 
-from dependencies import get_db, process_image
-from auth import get_current_active_authorized_user
-from model import *
-from schemas.auth_user import AuthUser
-from schemas.news_io import NewsCreate
-from schemas.news_thumbnail import NewsThumbnail, NT01
-from crud.news import create_news
+from ...schemas.ult.position import Position
+from ...dependencies import get_db, process_image
+from ...auth import get_current_active_authorized_user
+from ...model import *
+from ...schemas.auth_user import AuthUser
+from ...schemas.news_io import NewsCreate
+from ...schemas.news_thumbnail import NewsThumbnail, NT01
+from ...crud.news import create_news
 
 router = APIRouter(
     prefix="/researcher/news",

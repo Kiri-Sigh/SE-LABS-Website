@@ -2,12 +2,12 @@ from fastapi import APIRouter, Depends, Query
 from typing import Optional, List
 from uuid import UUID
 
-from dependencies import get_db
-from model import Event
-from auth import get_current_active_authorized_user
-from schemas.auth_user import AuthUser
-from schemas.event_thumbnail import EventThumbnail, ET01
-from crud.event import read_event, update_event_post_stage, delete_event
+from ...dependencies import get_db
+from ...model import Event
+from ...auth import get_current_active_authorized_user
+from ...schemas.auth_user import AuthUser
+from ...schemas.event_thumbnail import EventThumbnail, ET01
+from ...crud.event import read_event, update_event_post_stage, delete_event
 
 router = APIRouter(
     prefix="/lead_researcher/event",

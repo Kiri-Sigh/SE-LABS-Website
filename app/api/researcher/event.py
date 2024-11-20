@@ -5,12 +5,12 @@ from typing import Optional
 import json
 from pydantic import ValidationError
 
-from auth import get_current_active_authorized_user
-from schemas.auth_user import AuthUser
-from schemas.event_io import EventCreate
-from schemas.event_thumbnail import EventThumbnail, ET01
-from crud.event import create_event
-from dependencies import get_db
+from ...auth import get_current_active_authorized_user
+from ...schemas.auth_user import AuthUser
+from ...schemas.event_io import EventCreate
+from ...schemas.event_thumbnail import EventThumbnail, ET01
+from ...crud.event import create_event
+from ...dependencies import get_db
 
 router = APIRouter(
     prefix="/researcher/event",

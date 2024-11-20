@@ -4,13 +4,13 @@ from uuid import UUID, uuid4
 import json
 from pydantic import ValidationError
 
-from dependencies import get_db, process_image
-from auth import get_current_active_admin
-from schemas.auth_user import AuthUser
-from schemas.laboratory_thumbnail import LaboratoryThumbnail, LT01
-from schemas.laboratory_io import LaboratoryCreate
-from schemas.ult.position import Position
-from model import Laboratory, Event, News, Publication, Research, person_lab, person_research, Researcher
+from ...dependencies import get_db, process_image
+from ...auth import get_current_active_admin
+from ...schemas.auth_user import AuthUser
+from ...schemas.laboratory_thumbnail import LaboratoryThumbnail, LT01
+from ...schemas.laboratory_io import LaboratoryCreate
+from ...schemas.ult.position import Position
+from ...model import Laboratory, Event, News, Publication, Research, person_lab, person_research, Researcher
 
 router = APIRouter(
     prefix="/admin/laboratory",

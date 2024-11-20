@@ -2,7 +2,7 @@ from pydantic import BaseModel, ConfigDict
 from uuid import UUID
 from typing import Optional
 
-from model import Laboratory, Research, Publication
+from ...model import Laboratory, Research, Publication
 from .RRE01 import RRE01
 from .PRE01 import PRE01
 

@@ -3,9 +3,9 @@ from typing import Optional
 from uuid import UUID
 from fastapi.responses import Response
 
-from dependencies import get_db
-from model import *
-from schemas.publication_thumbnail import PublicationThumbnail, PT01
+from ...dependencies import get_db
+from ...model import *
+from ...schemas.publication_thumbnail import PublicationThumbnail, PT01
 
 router = APIRouter(
     prefix="/user/publication",

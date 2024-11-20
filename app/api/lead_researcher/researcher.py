@@ -5,12 +5,12 @@ import json
 from pydantic import ValidationError
 from passlib.context import CryptContext
 
-from dependencies import get_db, process_image
-from model import *
-from auth import get_current_active_lead_researcher
-from schemas.auth_user import AuthUser
-from schemas.researcher_io import ResearcherCreate
-from schemas.researcher_thumbnail import ResearcherThumbnail, UT01
+from ...dependencies import get_db, process_image
+from ...model import *
+from ...auth import get_current_active_lead_researcher
+from ...schemas.auth_user import AuthUser
+from ...schemas.researcher_io import ResearcherCreate
+from ...schemas.researcher_thumbnail import ResearcherThumbnail, UT01
 
 # Set up the password context
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

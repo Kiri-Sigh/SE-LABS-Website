@@ -8,8 +8,8 @@ from uuid import UUID, uuid4
 from PIL import Image
 import io
 
-from database import Base
-from schemas.ult.position import Position
+from .database import Base
+from .schemas.ult.position import Position
 
 class person_lab(Base):
     __tablename__ = 'person_lab'
