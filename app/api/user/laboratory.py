@@ -15,13 +15,16 @@ router = APIRouter(
 @router.get("/thumbnail", response_model=List[LaboratoryThumbnail])
 def get_laboratory_thumbnail(
     laboratory_id: Optional[UUID] = Query(None),
+    researcher_id: Optional[UUID] = Query(None),
     amount: Optional[int] = Query(3),
     page: Optional[int] = Query(1),
     db = Depends(get_db)
 ):
     laboratory = db.query(Laboratory)
+    if researcher_id:
+        laboratory = laboratory.join(person_lab.__table__).filter(person_lab.__table__.c.user_id == researcher_id)
     if laboratory_id:
-        laboratory = laboratory.filter(Laboratory.lab_id== laboratory_id)
+        laboratory = laboratory.filter(Laboratory.lab_id == laboratory_id)
     offset = (page - 1) * amount
     laboratories = laboratory.offset(offset).limit(amount).all()
     return [LT01.to_laboratory_thumbnail(lab) for lab in laboratories]

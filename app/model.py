@@ -159,4 +159,4 @@ class Researcher(Base):
 
     # Many-to-Many relationships
     labs: Mapped[List['Laboratory']] = relationship(secondary=person_lab.__table__, backref=backref('people', lazy='dynamic'))
-    researches: Mapped[List['Research']] = relationship(secondary=person_research.__table__, backref=backref('people', lazy='dynamic'))
+    researches: Mapped[List['Research']] = relationship(secondary=person_research.__table__, backref=backref('researchers', lazy='dynamic'))
