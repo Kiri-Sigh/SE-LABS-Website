@@ -4,8 +4,25 @@ const IP_URL = "http://10.25.15.102:8000"; // Your IP address
 const LOCAL_URL = "http://127.0.0.1:8000"; // Local URL
 const LOCALHOST_URL = "http://localhost:8000"; // Localhost URL
 
-async function fetchWithFallback(datapath, options = {}) {
+async function fetchWithFallback(datapath, options = {}, method = "GET") {
     const urls = [LOCALHOST_URL, LOCAL_URL, IP_URL];
+
+    // Check if datapath contains "/user"
+    if (!datapath.includes("/user")) {
+        try {
+            const response = await axios({
+                url: datapath
+                    .replace(LOCALHOST_URL, IP_URL)
+                    .replace(LOCAL_URL, IP_URL),
+                method: method,
+                ...options,
+                timeout: 5000,
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching data from IP_URL:", error);
+        }
+    }
 
     // Try each URL in sequence
     for (const baseUrl of urls) {
@@ -17,6 +34,7 @@ async function fetchWithFallback(datapath, options = {}) {
 
             const response = await axios({
                 url: currentPath,
+                method: method,
                 ...options,
                 // Add timeout to prevent hanging
                 timeout: 5000,
@@ -53,44 +71,57 @@ export async function fetchUserDetails(token = null) {
         : {};
     return await fetchWithFallback(
         "http://localhost:8000/researcher/researcher/auto_login",
-        config
+        config,
+        "POST"
     );
 }
 
 export async function postData(datapath, header, data) {
-    return await fetchWithFallback(datapath, {
-        method: "post",
-        data: data,
-        headers: header,
-    });
+    return await fetchWithFallback(
+        datapath,
+        {
+            data: data,
+            headers: header,
+        },
+        "POST"
+    );
 }
 
 export async function postData2(datapath, data, config) {
-    return await fetchWithFallback(datapath, {
-        method: "post",
-        data: data,
-        ...config,
-    });
+    return await fetchWithFallback(
+        datapath,
+        {
+            data: data,
+            ...config,
+        },
+        "POST"
+    );
 }
 
 export async function putData(datapath, header, data) {
-    return await fetchWithFallback(datapath, {
-        method: "put",
-        data: data,
-        headers: {
-            authorization: `${header}`,
+    return await fetchWithFallback(
+        datapath,
+        {
+            data: data,
+            headers: {
+                authorization: `${header}`,
+            },
         },
-    });
+        "PUT"
+    );
 }
 
 export async function patchData(datapath, header, data) {
-    return await fetchWithFallback(datapath, {
-        method: "patch",
-        data: data,
-        headers: {
-            authorization: `${header}`,
+    return await fetchWithFallback(
+        datapath,
+        {
+            data: data,
+            headers: {
+                authorization: `${header}`,
+            },
         },
-    });
+        "PATCH"
+    );
 }
 
 export async function getImgData(datapath) {
