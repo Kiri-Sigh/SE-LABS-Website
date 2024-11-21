@@ -106,9 +106,38 @@ const CommitCard = ({
     //   );
     // }
   };
+  // return (
+  //   <article
+  //     className="flex flex-col rounded-3xl border border-black border-solid min-w-[240px] w-[325px]"
+  //     onClick={handleCardClick}
+  //   >
+  //     <div className="relative">
+  //       <img
+  //         loading="lazy"
+  //         src={kmitl_logo}
+  //         alt={title}
+  //         className="w-full rounded-tl-3xl rounded-tr-3xl aspect-[1.3]"
+  //       />
+  //       {/* <button className="absolute top-2 right-2 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition">
+  //         Edit
+  //       </button> */}
+  //     </div>
+  //     <div className="flex flex-col p-6 w-full bg-cyan-200 rounded-bl-3xl rounded-br-3xl border border-black border-solid max-md:px-5">
+  //       <div className="flex flex-col w-full text-black">
+  //         <h3
+  //           className={`text-2xl font-bold leading-snug line-clamp-2 indent-clamp ${titleClass}`}
+  //         >
+  //           {title}
+  //           {title.length <= 20 ? <br /> : null}
+  //         </h3>
+  //         <p className="mt-2 text-base leading-6 line-clamp-3">{body}</p>
+  //       </div>
+  //     </div>
+  //   </article>
+  // );
   return (
     <article
-      className="flex flex-col rounded-3xl border border-black border-solid min-w-[240px] w-[325px]"
+      className={`flex flex-col rounded-3xl border border-black border-solid w-[250px] min-w-[250px] max-w-[250px] cursor-pointer overflow-hidden hover:shadow-lg transition-shadow duration-300`}
       onClick={handleCardClick}
     >
       <div className="relative">
@@ -116,21 +145,34 @@ const CommitCard = ({
           loading="lazy"
           src={kmitl_logo}
           alt={title}
-          className="w-full rounded-tl-3xl rounded-tr-3xl aspect-[1.3]"
+          className="w-full h-[150px] rounded-tl-3xl rounded-tr-3xl object-cover"
         />
-        {/* <button className="absolute top-2 right-2 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition">
-          Edit
-        </button> */}
       </div>
-      <div className="flex flex-col p-6 w-full bg-cyan-200 rounded-bl-3xl rounded-br-3xl border border-black border-solid max-md:px-5">
-        <div className="flex flex-col w-full text-black">
+      <div className="flex flex-col p-4 w-full bg-white flex-1 rounded-bl-3xl rounded-br-3xl">
+        <div className="flex flex-col w-full text-gray-800 flex-1">
           <h3
-            className={`text-2xl font-bold leading-snug line-clamp-2 indent-clamp ${titleClass}`}
+            className={`text-xl font-bold leading-snug line-clamp-2 indent-clamp ${titleClass}`}
           >
             {title}
             {title.length <= 20 ? <br /> : null}
           </h3>
-          <p className="mt-2 text-base leading-6 line-clamp-3">{body}</p>
+          <p className="mt-2 text-sm leading-5 line-clamp-3">{body}</p>
+        </div>
+        <div
+          className="flex gap-4 items-center mt-auto w-full text-sm"
+          onClick={() => (window.location.href = "http://localhost:3000/")}
+        >
+          <img
+            loading="lazy"
+            src={kmitl_logo}
+            alt={`${title} avatar`}
+            className="shrink-0 self-stretch my-auto w-8 h-8 rounded-full object-cover"
+          />
+          <div className="flex flex-col flex-1 shrink self-stretch my-auto basis-0 min-w-[120px]">
+            <div className="font-semibold text-gray-800 line-clamp-2">
+              KMITL Software Engineering Department
+            </div>
+          </div>
         </div>
       </div>
     </article>

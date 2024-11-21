@@ -6,9 +6,11 @@ const Signin = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState("");
   const [pw, setPw] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     const formData = new URLSearchParams();
     formData.append("username", "admintest123@gmail.com");
@@ -69,7 +71,16 @@ const Signin = () => {
                   required
                 />
                 <div className="mb-10">
-                  <input type="submit" value="Sign In" />
+                  <input
+                    type="submit"
+                    value={isLoading ? "Loading..." : "Sign In"}
+                    disabled={isLoading}
+                    className={`py-2 px-3 rounded-full border-2 ${
+                      isLoading
+                        ? "bg-black text-white cursor-not-allowed"
+                        : "border-black hover:bg-black hover:text-white"
+                    } transition-all duration-300 ease-in-out cursor-pointer`}
+                  />
                 </div>
               </form>
             </div>
@@ -89,7 +100,8 @@ const InputBox = ({ type, placeholder, name }) => {
         type={type}
         placeholder={placeholder}
         name={name}
-        className="w-full rounded-md border border-stroke bg-transparent px-5 py-3 text-base text-body-color outline-none focus:border-primary focus-visible:shadow-none dark:border-dark-3 dark:text-white"
+        className="w-full rounded-md border border-stroke bg-transparent px-5 py-3 text-base text-body-color outline-none focus:border-primary focus-visible:shadow-none dark:border-dark-3 dark:text-black hover:outline-2 hover:outline-black transition-all duration-300 ease-in-out"
+        style={{ boxSizing: "border-box" }}
       />
     </div>
   );

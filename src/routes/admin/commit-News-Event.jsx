@@ -8,7 +8,7 @@ import CommitCard from "./Commit-Card";
 function RecentCommit({
   toFetchedData = {},
   filter = {},
-  componentTitle = "recentNewsComp",
+  componentTitle = "Why",
   useFilterButton = false,
   publicationLink = null,
 }) {
@@ -48,15 +48,15 @@ function RecentCommit({
       : [];
 
   return (
-    <section className="flex overflow-hidden flex-col px-16 py-28 w-full bg-sky-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
+    <section className="flex overflow-hidden flex-col px-16 pt-4 w-full bg-sky-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
       <div className="flex flex-wrap gap-10 justify-between items-end w-full max-md:max-w-full">
         <div className="flex flex-col text-black min-w-[240px] w-[768px] max-md:max-w-full">
-          <h2 className="text-5xl font-bold leading-tight max-md:max-w-full max-md:text-4xl">
+          <h2 className="text-5xl leading-tight max-md:max-w-full max-md:text-4xl">
             {componentTitle}
           </h2>
         </div>
       </div>
-      <div className="flex flex-col mt-16 w-full max-md:mt-10 max-md:max-w-full">
+      <div className="flex flex-col mt-10 w-full max-md:mt-10 max-md:max-w-full">
         <div className="box-border flex relative flex-col shrink-0">
           <div className="flex gap-8 items-start w-full max-md:max-w-full transition-transform duration-500 ease-in-out">
             {!isLoading && hasData ? (
