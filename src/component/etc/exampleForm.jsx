@@ -63,7 +63,7 @@ const MyFormComponent = () => {
       // Send the form data using your postData function
       try {
         const response = await postData2(
-          "http://10.125.2.83:8000/researcher/news?research_id=3b8be3a4-06cf-4355-b6a5-b27de60782fb", // URL for the API endpoint
+          "http://127.0.0.1:8000/researcher/news?research_id=3b8be3a4-06cf-4355-b6a5-b27de60782fb", // URL for the API endpoint
           formData, // The formData as body of the request
           config // Configuration with headers
         );

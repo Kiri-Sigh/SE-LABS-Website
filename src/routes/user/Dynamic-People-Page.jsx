@@ -11,13 +11,13 @@ import { useNormalQueryGet, useQueryGetImg } from "api/custom-hooks";
 function DynamicPeoplePage() {
   const { id } = useParams(); // Access the id from the route
   const { data, isLoading } = useNormalQueryGet(
-    `http://10.125.2.83:8000/user/researcher/thumbnail/${id}`,
+    `http://127.0.0.1:8000/user/researcher/thumbnail/${id}`,
     "researcher",
     id
   );
   if (data) console.log("dat?", data);
   const { data: img, isLoading: isLoading2 } = useQueryGetImg(
-    `http://10.125.2.83:8000/user`,
+    `http://127.0.0.1:8000/user`,
     "researcher",
     id
   );

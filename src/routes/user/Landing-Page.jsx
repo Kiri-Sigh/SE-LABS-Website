@@ -29,11 +29,11 @@ function MainPages() {
   let fetchedLabData = useSelector((state) => state.mainSlice.fetchedLabData);
 
   const { data } = useNormalQueryGet(
-    "http://10.125.2.83:8000/user/laboratory/thumbnail?amount=10",
+    "http://127.0.0.1:8000/user/laboratory/thumbnail?amount=10",
     "laboratory"
   );
   // const { data: data2 } = useNormalQueryGet(
-  //   "http://10.125.2.83:8000/user/news/thumbnail/a163c610-7d14-47c0-8748-a8fea6bc36ee",
+  //   "http://127.0.0.1:8000/user/news/thumbnail/a163c610-7d14-47c0-8748-a8fea6bc36ee",
   //   "news",
   //   "a163c610-7d14-47c0-8748-a8fea6bc36ee"
   //   );
@@ -78,7 +78,7 @@ function MainPages() {
           <GridCards
             toFetchedData={exampleToFetchData.recentGridEvents}
             topic="events"
-            url="http://10.125.2.83:8000/user/event/thumbnail?"
+            url="http://127.0.0.1:8000/user/event/thumbnail?"
             fetchedLabData={labData}
             useFilterButton={true}
           />
@@ -90,7 +90,7 @@ function MainPages() {
           <TopicHeaderText topic="News" />
           <GridCards
             toFetchedData={exampleToFetchData.recentGridNews}
-            url="http://10.125.2.83:8000/user/news/thumbnail?"
+            url="http://127.0.0.1:8000/user/news/thumbnail?"
             fetchedLabData={labData}
             useFilterButton={true}
           />
@@ -102,7 +102,7 @@ function MainPages() {
           <TopicHeaderText topic="Publications" />
           <GridCards
             toFetchedData={exampleToFetchData.recentGridNews}
-            url="http://10.125.2.83:8000/user/publication/thumbnail?"
+            url="http://127.0.0.1:8000/user/publication/thumbnail?"
             fetchedLabData={labData}
             useFilterButton={true}
             publicationLink={"https://www.se.kmitl.ac.th/"}
@@ -115,7 +115,7 @@ function MainPages() {
           <TopicHeaderText topic="Research" />
           <GridCards
             toFetchedData={exampleToFetchData.recentGridResearch}
-            url="http://10.125.2.83:8000/user/research/thumbnail?"
+            url="http://127.0.0.1:8000/user/research/thumbnail?"
             fetchedLabData={labData}
             useFilterButton={true}
           />
@@ -127,7 +127,7 @@ function MainPages() {
           <TopicHeaderText topic="Laboratory" />
           <GridCards
             toFetchedData={exampleToFetchData.recentGridLaboratory}
-            url="http://10.125.2.83:8000/user/laboratory/thumbnail?"
+            url="http://127.0.0.1:8000/user/laboratory/thumbnail?"
             fetchedLabData={labData}
             useFilterButton={true}
           />
@@ -139,7 +139,7 @@ function MainPages() {
           <TopicHeaderText topic="People" />
           <GridCards
             toFetchedData={exampleToFetchData.recentGridResearcher}
-            url="http://10.125.2.83:8000/user/researcher/thumbnail?"
+            url="http://127.0.0.1:8000/user/researcher/thumbnail?"
             fetchedLabData={labData}
             useFilterButton={true}
           />

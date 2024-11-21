@@ -259,7 +259,7 @@ export const patchApproval = async (data) => {
     const idValue = isNews ? data.NID : data.EID;
 
     // Construct the URL
-    const baseUrl = "http://10.125.2.83:8000/lead_researcher";
+    const baseUrl = "http://127.0.0.1:8000/lead_researcher";
     const endpoint = isNews ? "news" : "event";
     const url = `${baseUrl}/${endpoint}`;
 

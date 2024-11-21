@@ -51,7 +51,7 @@ function AdminPage() {
   //   //if token expire while create/edit/commit , then will save data bf go to login page
   // }
   // const token = localStorage.getItem("token");
-  // const url = "http://10.125.2.83:8000/researcher/researcher/auto_login";
+  // const url = "http://127.0.0.1:8000/researcher/researcher/auto_login";
   // const { data, loading, error } = useGetData(url, token);
 
   const { mutate, isLoading, isError, error, isSuccess, data } = useAutoLogin();
@@ -82,35 +82,35 @@ function AdminPage() {
   }, [error, navigate]);
 
   // const { data: labData2 } = useNormalQueryGet(
-  //   "http://10.125.2.83:8000/user/research/thumbnail?amount=3",
+  //   "http://127.0.0.1:8000/user/research/thumbnail?amount=3",
   //   "research"
   // );
   // const { data: labData3 } = useNormalQueryGet(
-  //   "http://10.125.2.83:8000/user/laboratory/thumbnail?amount=3",
+  //   "http://127.0.0.1:8000/user/laboratory/thumbnail?amount=3",
   //   "laboratory"
   // );
   // const { data: labData4 } = useNormalQueryGet(
-  //   "http://10.125.2.83:8000/user/news/thumbnail?amount=3",
+  //   "http://127.0.0.1:8000/user/news/thumbnail?amount=3",
   //   "news"
   // );
   // const { data: labData5 } = useNormalQueryGet(
-  //   "http://10.125.2.83:8000/user/researcher/thumbnail?amount=10",
+  //   "http://127.0.0.1:8000/user/researcher/thumbnail?amount=10",
   //   "researcher"
   // );
   // const { data: labData6 } = useNormalQueryGet(
-  //   "http://10.125.2.83:8000/user/publication/thumbnail?amount=10",
+  //   "http://127.0.0.1:8000/user/publication/thumbnail?amount=10",
   //   "publication"
   // );
   // const { data: labData7 } = useNormalQueryGet(
-  //   "http://10.125.2.83:8000/user/event/thumbnail?amount=3",
+  //   "http://127.0.0.1:8000/user/event/thumbnail?amount=3",
   //   "event"
   // );
   // const { data: labData9 } = useNormalQueryGet(
-  //   "http://10.125.2.83:8000/user/event/thumbnail?event_id=0c186d37-45f8-4767-80bc-c304dfdcc355",
+  //   "http://127.0.0.1:8000/user/event/thumbnail?event_id=0c186d37-45f8-4767-80bc-c304dfdcc355",
   //   "event"
   // );
   // const labData8 = getDataDynamic(
-  //   "http://10.125.2.83:8000/lead_researcher/news/commit",
+  //   "http://127.0.0.1:8000/lead_researcher/news/commit",
   //   localStorage.getItem("token")
   // );
   // useEffect(() => {
@@ -149,12 +149,12 @@ function AdminPage() {
   //   labData9,
   // ]);
   // const { data: data2 } = useNormalQueryGet(
-  //   "http://10.125.2.83:8000/user/news/thumbnail/a163c610-7d14-47c0-8748-a8fea6bc36ee",
+  //   "http://127.0.0.1:8000/user/news/thumbnail/a163c610-7d14-47c0-8748-a8fea6bc36ee",
   //   "news",
   //   "a163c610-7d14-47c0-8748-a8fea6bc36ee"
   // );
   const { data: Ldata } = useNormalQueryGet(
-    "http://10.125.2.83:8000/user/laboratory/thumbnail?amount=10",
+    "http://127.0.0.1:8000/user/laboratory/thumbnail?amount=10",
     "laboratory"
   );
   React.useEffect(() => {
@@ -281,7 +281,7 @@ function AdminPage() {
           <GridCards
             toFetchedData={exampleToFetchData.recentGridEvents}
             topic="events"
-            url="http://10.125.2.83:8000/user/event/thumbnail?"
+            url="http://127.0.0.1:8000/user/event/thumbnail?"
             fetchedLabData={labData}
             useFilterButton={true}
           />
@@ -295,7 +295,7 @@ function AdminPage() {
           <TopicHeaderText topic="News" />
           <GridCards
             toFetchedData={exampleToFetchData.recentGridNews}
-            url="http://10.125.2.83:8000/user/news/thumbnail?"
+            url="http://127.0.0.1:8000/user/news/thumbnail?"
             fetchedLabData={labData}
             useFilterButton={true}
           />
@@ -309,7 +309,7 @@ function AdminPage() {
           <TopicHeaderText topic="Publications" />
           <GridCards
             toFetchedData={exampleToFetchData.recentGridNews}
-            url="http://10.125.2.83:8000/user/publication/thumbnail?"
+            url="http://127.0.0.1:8000/user/publication/thumbnail?"
             fetchedLabData={labData}
             useFilterButton={true}
             publicationLink={"https://www.se.kmitl.ac.th/"}
@@ -324,7 +324,7 @@ function AdminPage() {
           <TopicHeaderText topic="Research" />
           <GridCards
             toFetchedData={exampleToFetchData.recentGridResearch}
-            url="http://10.125.2.83:8000/user/research/thumbnail?"
+            url="http://127.0.0.1:8000/user/research/thumbnail?"
             fetchedLabData={labData}
             useFilterButton={true}
           />
@@ -338,7 +338,7 @@ function AdminPage() {
           <TopicHeaderText topic="Laboratory" />
           <GridCards
             toFetchedData={exampleToFetchData.recentGridLaboratory}
-            url="http://10.125.2.83:8000/user/laboratory/thumbnail?"
+            url="http://127.0.0.1:8000/user/laboratory/thumbnail?"
             fetchedLabData={labData}
             useFilterButton={true}
           />
@@ -352,7 +352,7 @@ function AdminPage() {
           <TopicHeaderText topic="People" />
           <GridCards
             toFetchedData={exampleToFetchData.recentGridResearcher}
-            url="http://10.125.2.83:8000/user/researcher/thumbnail?"
+            url="http://127.0.0.1:8000/user/researcher/thumbnail?"
             fetchedLabData={labData}
             useFilterButton={true}
           />
@@ -366,7 +366,7 @@ function AdminPage() {
           <TopicHeaderText topic="Commit" />
           <GridCards
             toFetchedData={exampleToFetchData.recentGridResearcher}
-            url="http://10.125.2.83:8000/user/researcher/thumbnail?"
+            url="http://127.0.0.1:8000/user/researcher/thumbnail?"
             fetchedLabData={labData}
             useFilterButton={true}
           />

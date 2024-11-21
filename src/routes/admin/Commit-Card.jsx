@@ -45,7 +45,7 @@ const CommitCard = ({
   // React.useEffect(() => {
   //   const fetchImage = async () => {
   //     const fetchedImage = await getData(
-  //       `http://10.125.2.83:8000/user/news/image-high?news_id=${NID}`
+  //       `http://127.0.0.1:8000/user/news/image-high?news_id=${NID}`
   //     );
   //     setImage(fetchedImage);
   //   };
@@ -58,17 +58,17 @@ const CommitCard = ({
   //       if (relatedTopic) {
   //         if (relatedTopic.PID) {
   //           const fetchedImg = await getImgData(
-  //             `http://10.125.2.83:8000/user/publication/image-low?publication_id=${relatedTopic.PID}`
+  //             `http://127.0.0.1:8000/user/publication/image-low?publication_id=${relatedTopic.PID}`
   //           );
   //           setImgSmall(fetchedImg);
   //         } else if (relatedTopic.RID) {
   //           const fetchedImg = await getImgData(
-  //             `http://10.125.2.83:8000/user/research/image-low?research_id=${relatedTopic.RID}`
+  //             `http://127.0.0.1:8000/user/research/image-low?research_id=${relatedTopic.RID}`
   //           );
   //           setImgSmall(fetchedImg);
   //         } else if (relatedTopic.LID) {
   //           const fetchedImg = await getImgData(
-  //             `http://10.125.2.83:8000/user/laboratory/image-low?laboratory_id=${relatedTopic.LID}`
+  //             `http://127.0.0.1:8000/user/laboratory/image-low?laboratory_id=${relatedTopic.LID}`
   //           );
   //           setImgSmall(fetchedImg);
   //         }
