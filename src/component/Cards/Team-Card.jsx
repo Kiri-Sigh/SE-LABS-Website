@@ -23,7 +23,7 @@ const TeamCard = ({
   const [imgSmall, setImgSmall] = React.useState(kmitl_logo);
 
   const { data, isLoading, isError } = useQueryGetImg(
-    `http://127.0.0.1:8000/user`,
+    `http://10.125.2.83:8000/user`,
     "researcher",
     UID
   );
@@ -61,12 +61,12 @@ const TeamCard = ({
       } else if (relatedTopic) {
         if (relatedTopic === "laboratory") {
           const fetchedImg = await getImgData(
-            `http://127.0.0.1:8000/user/laboratory/image-low?laboratory_id=${related_laboratory[0]?.LID}`
+            `http://10.125.2.83:8000/user/laboratory/image-low?laboratory_id=${related_laboratory[0]?.LID}`
           );
           setImgSmall(fetchedImg);
         } else if (relatedTopic === "research") {
           const fetchedImg = await getImgData(
-            `http://127.0.0.1:8000/user/research/image-low?research_id=${related_research[0]?.RID}`
+            `http://10.125.2.83:8000/user/research/image-low?research_id=${related_research[0]?.RID}`
           );
           setImgSmall(fetchedImg);
         }

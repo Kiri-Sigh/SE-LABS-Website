@@ -40,7 +40,7 @@ const NewsCard = ({
     // console.log(
 
     const { data, isLoading, isError } = useQueryGetImg(
-        `http://127.0.0.1:8000/user`,
+        `http://10.125.2.83:8000/user`,
         type,
         ID
     );
@@ -58,7 +58,7 @@ const NewsCard = ({
                     ? "research"
                     : "laboratory";
                 const fetchedImg = await getImgData(
-                    `http://127.0.0.1:8000/user/${typePath}/image-low?${typePath}_id=${id}`
+                    `http://10.125.2.83:8000/user/${typePath}/image-low?${typePath}_id=${id}`
                 );
                 setImgSmall(fetchedImg);
             }
