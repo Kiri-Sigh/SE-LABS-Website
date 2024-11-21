@@ -73,7 +73,7 @@ const NewsCard = ({
     else {
       console.log("Dispatching openSpecificModal with:", [type, ID]);
       dispatch(editAction.openSpecificModal([type, ID, fullData]));
-      console.log(fullData);
+      console.log("OpenSpecificModal", [type, ID, fullData]);
     }
   };
 
@@ -84,7 +84,9 @@ const NewsCard = ({
   const handleSmallDivClick = (e) => {
     e.stopPropagation(); // Prevents the card click event from triggering
     // const type2 = toString(type);
-    if (relatedTopic.PID) {
+    if (isAdminPage)
+      dispatch(editAction.openSpecificModal([type, ID, fullData]));
+    else if (relatedTopic.PID) {
       handlePublicationLink();
     } else {
       navigate(

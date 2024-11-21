@@ -125,6 +125,8 @@ function formatResearchData(obj) {
 }
 function formatLaboratoryData(obj) {
   const data = {
+    LID: obj.LID,
+
     laboratory_id: obj.LID,
     body: obj.body,
     title: obj.title,
@@ -352,30 +354,21 @@ const roleActions = {
       </div>
     ),
   },
-  LeadResearcher: {
+  "Lead Researcher": {
     Laboratory: (formMode) => (
       <div className="flex flex-row w-full justify-center rounded-full overflow-hidden">
-        <button
-          onClick={() => formMode(createFrame.createLab)}
-          className="bg-green-300 px-2 py-1 w-full hover:bg-green-500 transition-all ease-linear"
-        >
-          Create New Lab
-        </button>
-        <br />
+        
         <button
           onClick={() => formMode(editFrame.editLab)}
           className="bg-yellow-300 px-2 py-1 w-full hover:bg-yellow-500 transition-all ease-linear"
         >
           Update Lab
         </button>
-        <button
-          onClick={() => formMode(deleteFrame.deleteLab)}
-          className="bg-red-300 px-2 py-1 w-full hover:bg-red-500 transition-all ease-linear"
-        >
-          <br />
-          Delete Lab
-        </button>
+        
       </div>
+
+     
+
     ),
     Research: (formMode) => (
       <div className="flex flex-row w-full justify-center rounded-full overflow-hidden">
@@ -441,6 +434,22 @@ const roleActions = {
         {/* <button onClick={() => formMode(submitFrame.submitEvent)}>Commit Event</button> */}
         <button onClick={() => formMode(deleteFrame.deleteEvent)}>
           Delete Event
+        </button>
+        <br />
+      </>
+    ),
+    Researcher: (formMode) => (
+      <>
+        <button onClick={() => formMode(createFrame.createPeople)}>
+          Create Researcher
+        </button>
+        <br />
+        <button onClick={() => formMode(editFrame.assignToResearch)}>
+          assign to research
+        </button>
+        <br />
+        <button onClick={() => formMode(deleteFrame.kickFromResearch)}>
+          kick from research
         </button>
         <br />
       </>

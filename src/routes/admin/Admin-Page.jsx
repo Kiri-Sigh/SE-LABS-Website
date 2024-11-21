@@ -259,29 +259,130 @@ function AdminPage() {
               toFetchedData={exampleToFetchData.recentEvents}
               componentTitle="Latest Events"
             />
+
+            <RecentNews
+              toFetchedData={exampleToFetchData.recentNews}
+              componentTitle="All News"
+            />
+            <RecentNews
+              toFetchedData={exampleToFetchData.recentResearch}
+              componentTitle="All Researches"
+            />
+            <RecentNews
+              toFetchedData={exampleToFetchData.recentLab}
+              componentTitle="All Laboratory"
+            />
+            <RecentNews
+              toFetchedData={exampleToFetchData.recentPeople}
+              componentTitle="All People"
+            />
+            <RecentNews
+              toFetchedData={exampleToFetchData.recentPublication}
+              componentTitle="All Publications"
+            />
+            <RecentEvents
+              toFetchedData={exampleToFetchData.recentEvents}
+              ComponentTitle="All Events"
+            />
+
           </>
         );
       } else if (highestRole === "Researcher") {
+        const data2 = data?.Researcher?.Laboratories?.[0]?.LID;
+        const data2Title = data?.Researcher?.Laboratories?.[0]?.title;
+        const dataTitle = data?.Researcher?.name;
+        const data3 = data?.Researcher?.Researches?.[0]?.RID;
+        const data3Title = data?.Researcher?.Researches?.[0]?.title;
+
         return (
           <>
-            {" "}
             <Modal2 />
-            <p>rsearcher</p>
-            <RecentNews
-              toFetchedData={exampleToFetchData.recentResearcherResearch}
-            />
+            <h1>Normal Researcher {dataTitle}</h1>
+
+            {data2 && (
+              <RecentNews
+                toFetchedData={exampleToFetchData.recentLabNews}
+                filter={data2 ? { laboratory_id: data2 } : null}
+                componentTitle={`${data2Title} LAB News`}
+              />
+            )}
+            {data2 && (
+              <RecentEvents
+                toFetchedData={exampleToFetchData.recentLabEvent}
+                filter={data2 ? { laboratory_id: data2 } : null}
+                ComponentTitle={`${data2Title} LAB Events`}
+              />
+            )}
+            {data2 && (
+              <RecentNews
+                toFetchedData={exampleToFetchData.recentLabResearch}
+                filter={data2 ? { laboratory_id: data2 } : null}
+                componentTitle={`${dataTitle}'s Research`}
+              />
+            )}
+            {data3 && (
+              <RecentNews
+                toFetchedData={exampleToFetchData.recentResearchNews}
+                filter={data3 ? { research_id: data3 } : null}
+                componentTitle={`${data3Title} RESEARCH News`}
+              />
+            )}
+            {data3 && (
+              <RecentEvents
+                toFetchedData={exampleToFetchData.recentLabEvent}
+                filter={data3 ? { research_id: data3 } : null}
+                ComponentTitle={`${data3Title} RESEARCH Events`}
+              />
+            )}
           </>
         );
       } else if (highestRole === "Lead Researcher") {
+        const data2 = data?.Researcher?.Laboratories?.[0]?.LID;
+        const data2Title = data?.Researcher?.Laboratories?.[0]?.title;
+        const dataTitle = data?.Researcher?.name;
+        const data3 = data?.Researcher?.Researches?.[0]?.RID;
+        const data3Title = data?.Researcher?.Researches?.[0]?.title;
+
         return (
           <>
-            <p>leadR</p> <Modal2 />
-            <RecentNews
-              toFetchedData={exampleToFetchData.recentResearcherLab}
-            />
-            <RecentEvents
-              toFetchedData={exampleToFetchData.recentResearcherResearch}
-            />
+            <Modal2 />
+            <h1>Normal Researcher {dataTitle}</h1>
+
+            {data2 && (
+              <RecentNews
+                toFetchedData={exampleToFetchData.recentLabNews}
+                filter={data2 ? { laboratory_id: data2 } : null}
+                componentTitle={`${data2Title} LAB News`}
+              />
+            )}
+            {data2 && (
+              <RecentEvents
+                toFetchedData={exampleToFetchData.recentLabEvent}
+                filter={data2 ? { laboratory_id: data2 } : null}
+                ComponentTitle={`${data2Title} LAB Events`}
+              />
+            )}
+            {data2 && (
+              <RecentNews
+                toFetchedData={exampleToFetchData.recentLabResearch}
+                filter={data2 ? { laboratory_id: data2 } : null}
+                componentTitle={`${dataTitle}'s Research`}
+              />
+            )}
+            {data3 && (
+              <RecentNews
+                toFetchedData={exampleToFetchData.recentResearchNews}
+                filter={data3 ? { research_id: data3 } : null}
+                componentTitle={`${data3Title} RESEARCH News`}
+              />
+            )}
+            {data3 && (
+              <RecentEvents
+                toFetchedData={exampleToFetchData.recentLabEvent}
+                filter={data3 ? { research_id: data3 } : null}
+                ComponentTitle={`${data3Title} RESEARCH Events`}
+              />
+            )}
           </>
         );
       } else if (highestRole === "Free") {
