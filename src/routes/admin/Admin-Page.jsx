@@ -220,7 +220,7 @@ function AdminPage() {
       if (highestRole === "Admin") {
         return (
           <>
-            <Modal2 />
+            <Modal2 componentTitle="yep" />
             {/* <DynamicForm frame={createFrame.createEvent} />
             <DynamicForm frame={createFrame.createResearch} /> */}
 
@@ -228,11 +228,11 @@ function AdminPage() {
             <div className="bg-gray-300 py-10">
               <RecentCommit
                 toFetchedData={exampleToFetchData.recentNewsCommit}
-                componentTitle="Submitted News"
+                componentTitle="Unverified News"
               />
               <RecentCommit
                 toFetchedData={exampleToFetchData.recentEventCommit}
-                componentTitle="Submitted Events"
+                componentTitle="Unverified Events"
               />
             </div>
             <RecentNews

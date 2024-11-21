@@ -205,25 +205,46 @@ const DynamicForm = ({ frame, data = null, type = null }) => {
     if (frame.param) {
       frame.param.forEach((param) => {
         Object.entries(param).forEach(([key, type]) => {
-          fields.push(
-            <div key={key}>
-              <label>{key}</label>
-              <input
-                type={type}
-                value={
-                  type === "checkbox"
-                    ? formData[key] || false
-                    : formData[key] || ""
-                }
-                onChange={(e) =>
-                  handleInputChange(
-                    key,
-                    type === "checkbox" ? e.target.checked : e.target.value
-                  )
-                }
-              />
-            </div>
-          );
+          if (key === "body") {
+            fields.push(
+              <div key={key} className="my-2">
+                <label className="mr-2">{key}</label>
+                <textarea
+                  value={formData[key] || ""}
+                  onChange={(e) => handleInputChange(key, e.target.value)}
+                  onInput={(e) => {
+                    e.target.style.height = "auto"; // Reset the height to auto before expanding
+                    e.target.style.height = `${e.target.scrollHeight}px`; // Set the height to the scroll height
+                  }}
+                  className="resize-none w-full max-h-40 border-2 border-gray-200 hover:border-black transition-all duration-300"
+                />
+              </div>
+            );
+          } else {
+            // For regular fields, render an input element
+            fields.push(
+              <div key={key} className="my-2">
+                <label className="mr-2">{key}</label>
+                <input
+                  className={`border-2 border-gray-200 hover:border-black transition-all duration-300 ${
+                    type !== "checkbox" ? "w-full" : ""
+                  }`}
+                  type={type}
+                  value={
+                    type === "checkbox"
+                      ? formData[key] || false
+                      : formData[key] || ""
+                  }
+                  onChange={(e) =>
+                    handleInputChange(
+                      key,
+                      type === "checkbox" ? e.target.checked : e.target.value
+                    )
+                  }
+                />
+              </div>
+            );
+          }
         });
       });
     }
@@ -237,12 +258,16 @@ const DynamicForm = ({ frame, data = null, type = null }) => {
           );
           Object.keys(valueObject).forEach((key) => {
             fields.push(
-              <div key={key}>
-                <label>{key}</label>
-                <input
-                  type={valueObject[key] === "textArea" ? "textarea" : "text"}
+              <div key={key} className="my-2">
+                <label className="mr-2">{key}</label>
+                <textarea
                   value={formData[key] || ""}
                   onChange={(e) => handleInputChange(key, e.target.value)}
+                  onInput={(e) => {
+                    e.target.style.height = "auto"; // Reset the height to auto before expanding
+                    e.target.style.height = `${e.target.scrollHeight}px`; // Set the height to the scroll height
+                  }}
+                  className="resize-none w-full max-h-40 border-2 border-gray-200 hover:border-black transition-all duration-300"
                 />
               </div>
             );
@@ -250,8 +275,8 @@ const DynamicForm = ({ frame, data = null, type = null }) => {
         } else {
           Object.entries(bodyField).forEach(([key, type]) => {
             fields.push(
-              <div key={key}>
-                <label>{key}</label>
+              <div key={key} className="my-4">
+                <label className="mr-2">{key}</label>
                 {type === "file" ? (
                   <input
                     type="file"
@@ -276,9 +301,13 @@ const DynamicForm = ({ frame, data = null, type = null }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h4>Dynamic Form</h4>
       {renderFields()}
-      <button type="submit">Submit</button>
+      <button
+        type="submit"
+        className="bg-green-300 px-2 py-1 rounded-full border-2 border-transparent hover:border-green-700 transition-all ease-linear"
+      >
+        Submit
+      </button>
     </form>
   );
 };

@@ -11,7 +11,14 @@ const renderDeepObject = (obj, level = 0) => {
     const isObject = typeof value === "object" && value !== null;
 
     return (
-      <div key={key} style={{ marginLeft: `${level * 20}px` }}>
+      <div
+        key={key}
+        style={{
+          marginLeft: `${level * 20}px`,
+          marginBottom: "5px",
+          marginTop: "5px",
+        }}
+      >
         <strong>{key}:</strong>{" "}
         {isObject ? (
           renderDeepObject(value, level + 1) // Recursively render nested objects
@@ -30,12 +37,7 @@ const renderDeepObject = (obj, level = 0) => {
  * @returns {JSX.Element} - Rendered deep object.
  */
 const DeepObjectViewer = ({ data }) => {
-  return (
-    <div>
-      <h3>Deep Object Viewer</h3>
-      {renderDeepObject(data)}
-    </div>
-  );
+  return <div>{renderDeepObject(data)}</div>;
 };
 
 export default DeepObjectViewer;
