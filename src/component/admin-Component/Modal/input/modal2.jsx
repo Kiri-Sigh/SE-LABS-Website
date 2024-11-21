@@ -125,6 +125,8 @@ function formatResearchData(obj) {
 }
 function formatLaboratoryData(obj) {
   const data = {
+    LID: obj.LID,
+
     laboratory_id: obj.LID,
     body: obj.body,
     title: obj.title,
@@ -291,18 +293,12 @@ const roleActions = {
       </>
     ),
   },
-  LeadResearcher: {
+  "Lead Researcher": {
     Laboratory: (formMode) => (
       <>
-        <button onClick={() => formMode(createFrame.createLab)}>
-          Create New Lab
-        </button>
         <br />
         <button onClick={() => formMode(editFrame.editLab)}>Update Lab</button>
-        <button onClick={() => formMode(deleteFrame.deleteLab)}>
-          <br />
-          Delete Lab
-        </button>
+        <br />
       </>
     ),
     Research: (formMode) => (
@@ -356,6 +352,22 @@ const roleActions = {
         {/* <button onClick={() => formMode(submitFrame.submitEvent)}>Commit Event</button> */}
         <button onClick={() => formMode(deleteFrame.deleteEvent)}>
           Delete Event
+        </button>
+        <br />
+      </>
+    ),
+    Researcher: (formMode) => (
+      <>
+        <button onClick={() => formMode(createFrame.createPeople)}>
+          Create Researcher
+        </button>
+        <br />
+        <button onClick={() => formMode(editFrame.assignToResearch)}>
+          assign to research
+        </button>
+        <br />
+        <button onClick={() => formMode(deleteFrame.kickFromResearch)}>
+          kick from research
         </button>
         <br />
       </>

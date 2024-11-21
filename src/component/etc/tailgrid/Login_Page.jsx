@@ -11,10 +11,11 @@ const Signin = () => {
     e.preventDefault();
 
     const formData = new URLSearchParams();
-    formData.append("username", "admintest123@gmail.com");
+    formData.append("username", user);
     // formData.append("password", "1212312121");
     // formData.append("username", "leadresearchertest123@gmail.com");
-    formData.append("password", "1212312121");
+    formData.append("password", pw.toString());
+    console.log(user, pw);
     console.log(formData);
     try {
       const response = await postData(
@@ -82,13 +83,15 @@ const Signin = () => {
 
 export default Signin;
 
-const InputBox = ({ type, placeholder, name }) => {
+const InputBox = ({ type, placeholder, name, value, onChange }) => {
   return (
     <div className="mb-6">
       <input
         type={type}
         placeholder={placeholder}
         name={name}
+        value={value}
+        onChange={onChange}
         className="w-full rounded-md border border-stroke bg-transparent px-5 py-3 text-base text-body-color outline-none focus:border-primary focus-visible:shadow-none dark:border-dark-3 dark:text-white"
       />
     </div>

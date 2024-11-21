@@ -3,29 +3,29 @@ import EventCard from "../../Cards/Event-Card";
 import { useInfiniteFetch } from "api/custom-hooks";
 
 const RecentEvents = ({
-    toFetchedData = {},
-    topic = "events",
-    filter = null,
-    ComponentTitle = "EventComp",
+  toFetchedData = {},
+  topic = "events",
+  filter = null,
+  ComponentTitle = "EventComp",
 }) => {
-    const recentEventsQuery = useInfiniteFetch({
-        id: toFetchedData.id,
-        url: toFetchedData.url,
-        pageSize: toFetchedData.pageSize,
-        filter,
-    });
+  const recentEventsQuery = useInfiniteFetch({
+    id: toFetchedData.id,
+    url: toFetchedData.url,
+    pageSize: toFetchedData.pageSize,
+    filter,
+  });
 
-    const { data, isLoading, isError, fetchNextPage, isFetchingNextPage } =
-        recentEventsQuery;
+  const { data, isLoading, isError, fetchNextPage, isFetchingNextPage } =
+    recentEventsQuery;
 
-    const hasData =
-        data && data.pages && data.pages.some((page) => page?.length > 0);
+  const hasData =
+    data && data.pages && data.pages.some((page) => page?.length > 0);
 
   return (
     <section className="flex overflow-hidden flex-col px-16 pt-8 w-full bg-gray-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
       <div className="flex flex-col w-full text-black max-md:max-w-full">
         <h2 className="text-5xl leading-tight max-md:max-w-full max-md:text-4xl">
-          Latest Events
+          {ComponentTitle}{" "}
         </h2>
       </div>
       <div className="flex flex-col mt-10 w-full max-md:mt-10 max-md:max-w-full">
