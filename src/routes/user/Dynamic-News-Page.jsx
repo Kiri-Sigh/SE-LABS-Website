@@ -10,12 +10,12 @@ import { useNormalQueryGet, useQueryGetImg } from "api/custom-hooks";
 function DynamicNewsPage() {
   const { id } = useParams(); // Access the id from the route
   const { data, isLoading } = useNormalQueryGet(
-    `http://127.0.0.1:8000/user/news/thumbnail/${id}?amount=1&page=1`,
+    `http://10.125.2.83:8000/user/news/thumbnail/${id}?amount=1&page=1`,
     "News",
     id
   );
   const { data: img, isLoading: isLoading2 } = useQueryGetImg(
-    `http://127.0.0.1:8000/user`,
+    `http://10.125.2.83:8000/user`,
     "news",
     id
   );

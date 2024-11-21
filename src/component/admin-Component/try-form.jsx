@@ -24,7 +24,7 @@ const DynamicForm = ({ frame, data = null, type = null }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let url = frame.url || "http://127.0.0.1:8000";
+    let url = frame.url || "http://10.125.2.83:8000";
     const formBody = new FormData();
     const method = frame.type || "post";
 
@@ -177,8 +177,8 @@ const DynamicForm = ({ frame, data = null, type = null }) => {
   const getCommitData = async (type) => {
     const path =
       type === "event"
-        ? `http://127.0.0.1:8000/lead_researcher/event/commit`
-        : `http://127.0.0.1:8000/lead_researcher/news/commit`;
+        ? `http://10.125.2.83:8000/lead_researcher/event/commit`
+        : `http://10.125.2.83:8000/lead_researcher/news/commit`;
 
     try {
       const response = await axios.get(path, {
@@ -306,7 +306,7 @@ export default DynamicForm;
 //   const handleSubmit = async (e) => {
 //     e.preventDefault();
 
-//     let url = frame.url || "http://127.0.0.1:8000";
+//     let url = frame.url || "http://10.125.2.83:8000";
 //     const formBody = new FormData();
 
 //     // Build query parameters

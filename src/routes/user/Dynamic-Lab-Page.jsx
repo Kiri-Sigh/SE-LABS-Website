@@ -12,13 +12,13 @@ import { useNormalQueryGet, useQueryGetImg } from "api/custom-hooks";
 function DynamicLabPage() {
   const { id } = useParams(); // Access the id from the route
   const { data, isLoading } = useNormalQueryGet(
-    `http://127.0.0.1:8000/user/laboratory/thumbnail?laboratory_id=${id}&amount=1&page=1`,
+    `http://10.125.2.83:8000/user/laboratory/thumbnail?laboratory_id=${id}&amount=1&page=1`,
     "Laboratory",
     id
   );
   if (data) console.log("dat?", data);
   const { data: img, isLoading: isLoading2 } = useQueryGetImg(
-    `http://127.0.0.1:8000/user`,
+    `http://10.125.2.83:8000/user`,
     "laboratory",
     id
   );

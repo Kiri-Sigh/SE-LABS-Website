@@ -385,6 +385,7 @@ const roleActions = {
 
 function Modal2() {
   //   const [isDropped, setIsDropped] = useState(false);
+
   const [selectedOption, setSelectedOption] = useState(null); // Track selected option
   const [url, setUrl] = useState(""); // Track URL based on the selected option
   const [selectChoosableState, setSelectChoosableState] = useState(true);

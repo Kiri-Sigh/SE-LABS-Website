@@ -11,7 +11,7 @@ export const editFrame = {
       { laboratory_id: "text" },
     ],
     body: [{ image: "file" }],
-    url: "http://127.0.0.1:8000/lead_researcher/laboratory",
+    url: "http://10.125.2.83:8000/lead_researcher/laboratory",
   },
   //ok
   editResearch: {
@@ -27,7 +27,7 @@ export const editFrame = {
       },
       { image: "file" },
     ],
-    url: "http://127.0.0.1:8000/lead_researcher/research",
+    url: "http://10.125.2.83:8000/lead_researcher/research",
   },
   //ok
   putResearchToPublication: {
@@ -38,7 +38,7 @@ export const editFrame = {
       { laboratory_id: "text" },
     ],
 
-    url: "http://127.0.0.1:8000/lead_researcher/research",
+    url: "http://10.125.2.83:8000/lead_researcher/research",
   },
   //ok
   assignToResearch: {
@@ -49,14 +49,14 @@ export const editFrame = {
       { laboratory_id: "text" },
     ],
 
-    url: "http://127.0.0.1:8000/lead_researcher/researcher",
+    url: "http://10.125.2.83:8000/lead_researcher/researcher",
   },
   //ok
   assignAsLeadR: {
     type: "patch",
     param: [{ researcher_id: "text" }, { laboratory_id: "text" }],
 
-    url: "http://127.0.0.1:8000/admin/researcher",
+    url: "http://10.125.2.83:8000/admin/researcher",
   },
   //ok
   editPublication: {
@@ -72,7 +72,7 @@ export const editFrame = {
       { laboratory_id: "text" },
     ],
     body: [{ image: "file" }],
-    url: "http://127.0.0.1:8000/lead_researcher/publication",
+    url: "http://10.125.2.83:8000/lead_researcher/publication",
   },
 };
 
@@ -89,7 +89,7 @@ export const createFrame = {
       },
     ],
     body: [{ image: "file" }],
-    url: "http://127.0.0.1:8000/admin/laboratory",
+    url: "http://10.125.2.83:8000/admin/laboratory",
   },
   //ok
   createNews: {
@@ -106,7 +106,7 @@ export const createFrame = {
       },
       { image: "file" },
     ],
-    url: "http://127.0.0.1:8000/researcher/news",
+    url: "http://10.125.2.83:8000/researcher/news",
   },
   //ok
   createEvent: {
@@ -125,7 +125,7 @@ export const createFrame = {
       },
       { image: "file" },
     ],
-    url: "http://127.0.0.1:8000/researcher/event",
+    url: "http://10.125.2.83:8000/researcher/event",
   },
   //ok
   createResearch: {
@@ -142,7 +142,7 @@ export const createFrame = {
       },
       { image: "file" },
     ],
-    url: "http://127.0.0.1:8000/lead_researcher/research",
+    url: "http://10.125.2.83:8000/lead_researcher/research",
   },
   //ok
   createPeople: {
@@ -153,7 +153,7 @@ export const createFrame = {
     ],
 
     body: [{ image: "file" }],
-    url: "http://127.0.0.1:8000/lead_researcher/researcher",
+    url: "http://10.125.2.83:8000/lead_researcher/researcher",
   },
 };
 
@@ -163,13 +163,13 @@ export const submitFrame = {
     type: "patch",
     param: [{ event_id: "text" }, { is_approved: "checkbox" }],
 
-    url: "http://127.0.0.1:8000/lead_researcher/event",
+    url: "http://10.125.2.83:8000/lead_researcher/event",
   },
   submitNews: {
     type: "patch",
     param: [{ news_id: "text" }, { is_approved: "checkbox" }],
 
-    url: "http://127.0.0.1:8000/lead_researcher/news",
+    url: "http://10.125.2.83:8000/lead_researcher/news",
   },
 };
 export const deleteFrame = {
@@ -177,42 +177,42 @@ export const deleteFrame = {
     type: "delete",
     param: [{ event_id: "text" }],
 
-    url: "http://127.0.0.1:8000/lead_researcher/event",
+    url: "http://10.125.2.83:8000/lead_researcher/event",
   },
   deleteNews: {
     type: "delete",
     param: [{ news_id: "text" }],
 
-    url: "http://127.0.0.1:8000/lead_researcher/news",
+    url: "http://10.125.2.83:8000/lead_researcher/news",
   },
   deleteLab: {
     type: "delete",
     param: [{ laboratory_id: "text" }],
 
-    url: "http://127.0.0.1:8000/admin/laboratory",
+    url: "http://10.125.2.83:8000/admin/laboratory",
   },
   deletePublication: {
     type: "delete",
     param: [{ publication_id: "text" }],
 
-    url: "http://127.0.0.1:8000/lead_researcher/publication",
+    url: "http://10.125.2.83:8000/lead_researcher/publication",
   },
   deleteResearch: {
     type: "delete",
     param: [{ research_id: "text" }],
 
-    url: "http://127.0.0.1:8000/lead_researcher/research",
+    url: "http://10.125.2.83:8000/lead_researcher/research",
   },
   kickFromResearch: {
     type: "delete",
     param: [{ researcher_id: "text" }, { research_id: "text" }],
 
-    url: "http://127.0.0.1:8000/lead_researcher/researcher",
+    url: "http://10.125.2.83:8000/lead_researcher/researcher",
   },
   removeLeadResearcher: {
     type: "delete",
     param: [{ researcher_id: "text" }],
 
-    url: "http://127.0.0.1:8000/admin/researcher",
+    url: "http://10.125.2.83:8000/admin/researcher",
   },
 };
