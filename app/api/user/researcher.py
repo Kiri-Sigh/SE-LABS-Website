@@ -6,9 +6,9 @@ from sqlalchemy import case, select
 from sqlalchemy.orm import Session
 import logging
 
-from dependencies import get_db
-from model import *
-from schemas.researcher_thumbnail import ResearcherThumbnail, UT01
+from ...dependencies import get_db
+from ...model import *
+from ...schemas.researcher_thumbnail import ResearcherThumbnail, UT01
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 

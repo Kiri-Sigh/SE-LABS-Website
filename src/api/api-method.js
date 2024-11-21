@@ -1,139 +1,88 @@
 import axios from "axios";
 
-const IP_URL = "http://10.125.2.83:8000"; // Your IP address
-const LOCAL_URL = "http://10.125.2.83:8000"; // Local URL
-const LOCALHOST_URL = "http://localhost:8000"; // Localhost URL
-
-async function fetchWithFallback(datapath, options = {}, method = "GET") {
-  const urls = [LOCALHOST_URL, LOCAL_URL, IP_URL];
-
-  // Check if datapath contains "/user"
-  if (!datapath.includes("user")) {
-    try {
-      const response = await axios({
-        url: datapath.replace(LOCALHOST_URL, IP_URL),
-        method: method,
-        ...options,
-        timeout: 5000,
-      });
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching data from IP_URL:", error);
-    }
-  } else {
-    // Try each URL in sequence
-    for (const baseUrl of urls) {
-      try {
-        // Replace the base URL part of the path
-        const currentPath = datapath
-          .replace(LOCALHOST_URL, baseUrl)
-          .replace(LOCAL_URL, baseUrl);
-
-        const response = await axios({
-          url: currentPath,
-          method: method,
-          ...options,
-          // Add timeout to prevent hanging
-          timeout: 5000,
-        });
-
-        return response.data;
-      } catch (error) {}
-    }
-  }
+export async function getData(datapath) {
+    const response = await axios.get(datapath);
+    console.log(datapath);
+    return response.data;
 }
 
-export async function getData(datapath) {
-  return await fetchWithFallback(datapath);
+export async function getDataAndHeader(datapath, header) {
+    const response = await axios.get(datapath, {
+        headers: {
+            authorization: `${header}`,
+        },
+    });
+    console.log(response.data);
+    return response.data;
 }
 
 export async function getDataDynamic(datapath, token = null) {
-  const config = token
-    ? {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    : {};
-  return await fetchWithFallback(datapath, config, "GET");
+    const config = token
+        ? {
+              headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`, // Add the token
+              },
+          }
+        : {};
+    const response = await axios.get(datapath, {}, config);
+    return response.data;
 }
 
 export async function fetchUserDetails(token = null) {
-  const config = token
-    ? {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    : {};
-  return await fetchWithFallback(
-    "http://localhost:8000/researcher/researcher/auto_login",
-    config,
-    "POST"
-  );
+    const config = token
+        ? {
+              headers: {
+                  Authorization: `Bearer ${token}`, // Add the token
+              },
+          }
+        : {};
+    const response = await axios.post(
+        "http://127.0.0.1:8000/researcher/researcher/auto_login",
+        {},
+        config
+    );
+    return response.data;
 }
 
 export async function postData(datapath, header, data) {
-  return await fetchWithFallback(
-    datapath,
-    {
-      data: data,
-      headers: header,
-    },
-    "POST"
-  );
+    const response = await axios.post(datapath, data, header);
+    return response.data;
 }
 
 export async function postData2(datapath, data, config) {
-  return await fetchWithFallback(
-    datapath,
-    {
-      data: data,
-      ...config,
-    },
-    "POST"
-  );
+    try {
+        const response = await axios.post(datapath, data, config); // Send request with config
+        return response.data;
+    } catch (error) {
+        throw error; // Handle error appropriately
+    }
 }
 
 export async function putData(datapath, header, data) {
-  return await fetchWithFallback(
-    datapath,
-    {
-      data: data,
-      headers: {
-        authorization: `${header}`,
-      },
-    },
-    "PUT"
-  );
+    const response = await axios.put(datapath, data, {
+        headers: {
+            authorization: `${header}`,
+        },
+    });
+    return response.data;
 }
 
 export async function patchData(datapath, header, data) {
-  return await fetchWithFallback(
-    datapath,
-    {
-      data: data,
-      headers: {
-        authorization: `${header}`,
-      },
-    },
-    "PATCH"
-  );
+    const response = await axios.patch(datapath, data, {
+        headers: {
+            authorization: `${header}`,
+        },
+    });
+    return response.data;
 }
 
 export async function getImgData(datapath) {
-  try {
-    const response = await fetchWithFallback(
-      datapath,
-      {
-        responseType: "blob",
-      },
-      "GET"
-    );
-    return URL.createObjectURL(response);
-  } catch (error) {
-    console.error("Error fetching image data:", error);
-    throw error;
-  }
+    try {
+        const response = await axios.get(datapath, { responseType: "blob" });
+        return URL.createObjectURL(response.data);
+    } catch (error) {
+        console.error("Error fetching image data:", error);
+        throw error;
+    }
 }

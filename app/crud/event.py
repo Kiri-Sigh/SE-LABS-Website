@@ -2,9 +2,9 @@ from fastapi import UploadFile, HTTPException
 from sqlalchemy.orm import Session
 from typing import Tuple, Optional, List
 from uuid import UUID
-from schemas.event_io import EventCreate
-from dependencies import process_image
-from model import Event
+from ..schemas.event_io import EventCreate
+from ..dependencies import process_image
+from ..model import Event
 from sqlalchemy import case
 from datetime import datetime
 

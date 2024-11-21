@@ -2,7 +2,7 @@ from fastapi import Depends, UploadFile, File
 from PIL import Image
 import io
 from typing import Tuple
-from database import SessionLocal
+from .database import SessionLocal
 
 def get_db():
     db = SessionLocal()
