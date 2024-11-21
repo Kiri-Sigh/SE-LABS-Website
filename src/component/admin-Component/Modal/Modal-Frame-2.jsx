@@ -32,7 +32,7 @@ export default function ModalFrame2({ children }) {
   return createPortal(
     <dialog
       id="modalDialog"
-      className="relative w-full  bg-white p-6 rounded-lg max-h-[90vh] max-w-[45vw]  overflow-y-auto "
+      className="relative w-full bg-white p-6 rounded-xl max-h-[90vh] max-w-[45vw] overflow-y-auto"
       onClose={() => {
         dispatch(editAction.closeSpecificModal());
         dispatch(editAction.reset());

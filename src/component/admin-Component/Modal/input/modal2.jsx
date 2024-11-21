@@ -199,134 +199,216 @@ function formatData(obj) {
 const roleActions = {
   Admin: {
     Laboratory: (formMode) => (
-      <>
+      <div className="flex flex-row w-full justify-center rounded-full overflow-hidden">
         <button
           onClick={() => {
             formMode(createFrame.createLab);
           }}
+          className="bg-green-300 px-2 py-1 w-full hover:bg-green-500 transition-all ease-linear"
         >
           Create New Lab
         </button>
-        <button onClick={() => formMode(editFrame.editLab)}>Update Lab</button>
-        <button onClick={() => formMode(deleteFrame.deleteLab)}>
+        <button
+          onClick={() => formMode(editFrame.editLab)}
+          className="bg-yellow-300 px-2 py-1 w-full hover:bg-yellow-500 transition-all ease-linear"
+        >
+          Update Lab
+        </button>
+        <button
+          onClick={() => formMode(deleteFrame.deleteLab)}
+          className="bg-red-300 px-2 py-1 w-full hover:bg-red-500 transition-all ease-linear"
+        >
           Delete Lab
         </button>
-      </>
+      </div>
     ),
     Research: (formMode) => (
-      <>
-        <button onClick={() => formMode(createFrame.createResearch)}>
+      <div className="flex flex-row w-full justify-center rounded-full overflow-hidden">
+        <button
+          onClick={() => formMode(createFrame.createResearch)}
+          className="bg-green-300 px-2 py-1 w-full hover:bg-green-500 transition-all ease-linear"
+        >
           Create New Research
         </button>
         <br />
-        <button onClick={() => formMode(editFrame.editResearch)}>
+        <button
+          onClick={() => formMode(editFrame.editResearch)}
+          className="bg-yellow-300 px-2 py-1 w-full hover:bg-yellow-500 transition-all ease-linear"
+        >
           Update Research
         </button>
         <br />
-        <button onClick={() => formMode(deleteFrame.deleteLab)}>
+        <button
+          onClick={() => formMode(deleteFrame.deleteLab)}
+          className="bg-red-300 px-2 py-1 w-full hover:bg-red-500 transition-all ease-linear"
+        >
           Delete Research
         </button>
-      </>
+      </div>
     ),
     Publication: (formMode) => (
-      <>
-        <button onClick={() => formMode(editFrame.editPublication)}>
+      <div className="flex flex-row w-full justify-center rounded-full overflow-hidden">
+        <button
+          onClick={() => formMode(editFrame.editPublication)}
+          className="bg-yellow-300 px-2 py-1 w-full hover:bg-yellow-500 transition-all ease-linear"
+        >
           Update Publication
         </button>
         <br />
-        <button onClick={() => formMode(deleteFrame.deletePublication)}>
+        <button
+          onClick={() => formMode(deleteFrame.deletePublication)}
+          className="bg-red-300 px-2 py-1 w-full hover:bg-red-500 transition-all ease-linear"
+        >
           Delete Publication
         </button>
-      </>
+      </div>
     ),
     News: (formMode) => (
-      <>
-        <button onClick={() => formMode(createFrame.createNews, "news")}>
+      <div className="flex flex-row w-full justify-center rounded-full overflow-hidden">
+        <button
+          onClick={() => {
+            formMode(createFrame.createNews, "news");
+          }}
+          className="bg-green-300 px-2 py-1 w-full hover:bg-green-500 transition-all ease-linear"
+        >
           Create New News
         </button>
         <br />
-        <button onClick={() => formMode(submitFrame.submitNews)}>
+        <button
+          onClick={() => {
+            formMode(submitFrame.submitNews);
+          }}
+          className="bg-yellow-300 px-2 py-1 w-full hover:bg-yellow-500 transition-all ease-linear"
+        >
           Commit News
         </button>
         <br />
-        <button onClick={() => formMode(deleteFrame.deleteNews)}>
+        <button
+          onClick={() => {
+            formMode(deleteFrame.deleteNews);
+          }}
+          className="bg-red-300 px-2 py-1 w-full hover:bg-red-500 transition-all ease-linear"
+        >
           Delete News
         </button>
-      </>
+      </div>
     ),
     Event: (formMode) => (
-      <>
-        <button onClick={() => formMode(createFrame.createEvent, "event")}>
+      <div className="flex flex-row w-full justify-center rounded-full overflow-hidden">
+        <button
+          onClick={() => formMode(createFrame.createEvent, "event")}
+          className="bg-green-300 px-2 py-1 w-full hover:bg-green-500 transition-all ease-linear"
+        >
           Create New Event
         </button>
-        <br />
-        <button onClick={() => formMode(submitFrame.submitEvent)}>
+        <button
+          onClick={() => formMode(submitFrame.submitEvent)}
+          className="bg-yellow-300 px-2 py-1 w-full hover:bg-yellow-500 transition-all ease-linear"
+        >
           Commit Event
         </button>
-        <br />
-        <button onClick={() => formMode(deleteFrame.deleteEvent)}>
+        <button
+          onClick={() => formMode(deleteFrame.deleteEvent)}
+          className="bg-red-300 px-2 py-1 w-full hover:bg-red-500 transition-all ease-linear"
+        >
           Delete Event
         </button>
-      </>
+      </div>
     ),
     Researcher: (formMode) => (
-      <>
-        <button onClick={() => formMode(createFrame.createPeople)}>
+      <div className="flex flex-row w-full justify-center rounded-full overflow-hidden">
+        <button
+          onClick={() => formMode(createFrame.createPeople)}
+          className="bg-green-300 px-2 py-1 w-full hover:bg-green-500 transition-all ease-linear"
+        >
           Create Researcher
         </button>
         <br />
-        <button onClick={() => formMode(editFrame.assignToResearch)}>
+        <button
+          onClick={() => formMode(editFrame.assignToResearch)}
+          className="bg-yellow-300 px-2 py-1 w-full hover:bg-yellow-500 transition-all ease-linear"
+        >
           assign to research
         </button>
         <br />
-        <button onClick={() => formMode(editFrame.assignAsLeadR)}>
+        <button
+          onClick={() => formMode(editFrame.assignAsLeadR)}
+          className="bg-orange-300 px-2 py-1 w-full hover:bg-orange-500 transition-all ease-linear"
+        >
           assign as Lead Researcher
         </button>
         <br />
-        <button onClick={() => formMode(deleteFrame.kickFromResearch)}>
+        <button
+          onClick={() => formMode(deleteFrame.kickFromResearch)}
+          className="bg-red-300 px-2 py-1 w-full hover:bg-red-500 transition-all ease-linear"
+        >
           kick from research
         </button>
         <br />
-        <button onClick={() => formMode(deleteFrame.removeLeadResearcher)}>
+        <button
+          onClick={() => formMode(deleteFrame.removeLeadResearcher)}
+          className="bg-gray-300 px-2 py-1 w-full hover:bg-gray-500 transition-all ease-linear"
+        >
           remove as Lead Researcher
         </button>
-      </>
+      </div>
     ),
   },
   "Lead Researcher": {
     Laboratory: (formMode) => (
-      <>
-        <br />
-        <button onClick={() => formMode(editFrame.editLab)}>Update Lab</button>
-        <br />
-      </>
+      <div className="flex flex-row w-full justify-center rounded-full overflow-hidden">
+        
+        <button
+          onClick={() => formMode(editFrame.editLab)}
+          className="bg-yellow-300 px-2 py-1 w-full hover:bg-yellow-500 transition-all ease-linear"
+        >
+          Update Lab
+        </button>
+        
+      </div>
+
+     
+
     ),
     Research: (formMode) => (
-      <>
-        <button onClick={() => formMode(createFrame.createResearch)}>
+      <div className="flex flex-row w-full justify-center rounded-full overflow-hidden">
+        <button
+          onClick={() => formMode(createFrame.createResearch)}
+          className="bg-green-300 px-2 py-1 w-full hover:bg-green-500 transition-all ease-linear"
+        >
           Create New Research
         </button>
-        <br />
-        <button onClick={() => formMode(editFrame.editResearch)}>
+        <button
+          onClick={() => formMode(editFrame.editResearch)}
+          className="bg-yellow-300 px-2 py-1 w-full hover:bg-yellow-500 transition-all ease-linear"
+        >
           Update Research
         </button>
-        <br />
-        <button onClick={() => formMode(deleteFrame.deleteResearch)}>
+        <button
+          onClick={() => formMode(deleteFrame.deleteResearch)}
+          className="bg-red-300 px-2 py-1 w-full hover:bg-red-500 transition-all ease-linear"
+        >
           Delete Research
         </button>
-      </>
+      </div>
     ),
     Publication: (formMode) => (
-      <>
-        <button onClick={() => formMode(editFrame.editPublication)}>
+      <div className="flex flex-row w-full justify-center rounded-full overflow-hidden">
+        <button
+          onClick={() => formMode(editFrame.editPublication)}
+          className="bg-yellow-300 px-2 py-1 w-full hover:bg-yellow-500 transition-all ease-linear"
+        >
           Update Publication
         </button>
         <br />
-        <button onClick={() => formMode(deleteFrame.deletePublication)}>
+        <button
+          onClick={() => formMode(deleteFrame.deletePublication)}
+          className="bg-red-300 px-2 py-1 w-full hover:bg-red-500 transition-all ease-linear"
+        >
           Delete Publication
         </button>
         <br />
-      </>
+      </div>
     ),
     News: (formMode) => (
       <>
@@ -476,7 +558,7 @@ function Modal2() {
     <>
       <div className="fixed-button-container">
         <button className="fixed-button" onClick={chooseTopicToMutate}>
-          Open Dropdown
+          Edit...
         </button>
         {/* <button className="fixed-button" onClick={handleDropdownToggle}>
           Open Dropdown
@@ -492,24 +574,60 @@ function Modal2() {
         )} */}
       </div>
       <ModalFrame2>
-        <h2>This is the modal content</h2>
+        <div className="flex justify-end">
+          <CloseButton
+            onClick={() => {
+              dispatch(editAction.reset());
+              setFormConfig(null);
+              setFormData(null);
+              dispatch(editAction.setTypeNull());
+              setIsDynamic(false);
+              dispatch(editAction.closeSpecificModal());
+              setType3(null);
+            }}
+          />
+        </div>
         {/* {!isCommit ? roleActions[highestRole]?.[type] : null}{" "} */}
         {isDynamic && (
           <React.Fragment>
-            <p>select</p>
-            <br />
-            <button onClick={() => setType2("Laboratory")}>Laboratory</button>
-            <br />
-            <button onClick={() => setType2("Research")}>Research</button>
-            <br />
-            <button onClick={() => setType2("News")}>News</button>
-            <br />
-            <button onClick={() => setType2("Event")}>Event</button>
-            <br />
-            <button onClick={() => setType2("Publication")}>Publication</button>
-            <br />
-            <button onClick={() => setType2("Researcher")}>Researcher</button>
-            <br />
+            <div className="grid grid-cols-3 grid-rows-2 gap-0 mb-2 w-full">
+              <button
+                onClick={() => setType2("Laboratory")}
+                className="py-4 bg-black text-white hover:bg-white hover:text-black transition-all ease-linear"
+              >
+                Laboratory
+              </button>
+              <button
+                onClick={() => setType2("Research")}
+                className="py-4 bg-black text-white hover:bg-white hover:text-black transition-all ease-linear"
+              >
+                Research
+              </button>
+              <button
+                onClick={() => setType2("News")}
+                className="py-4 bg-black text-white hover:bg-white hover:text-black transition-all ease-linear"
+              >
+                News
+              </button>
+              <button
+                onClick={() => setType2("Event")}
+                className="py-4 bg-black text-white hover:bg-white hover:text-black transition-all ease-linear"
+              >
+                Event
+              </button>
+              <button
+                onClick={() => setType2("Publication")}
+                className="py-4 bg-black text-white hover:bg-white hover:text-black transition-all ease-linear"
+              >
+                Publication
+              </button>
+              <button
+                onClick={() => setType2("Researcher")}
+                className="py-4 bg-black text-white hover:bg-white hover:text-black transition-all ease-linear"
+              >
+                Researcher
+              </button>
+            </div>
           </React.Fragment>
         )}
         {!isCommit && isDynamic && type2 && (
@@ -531,19 +649,28 @@ function Modal2() {
         )}
         {isCommit ? (
           <>
-            <strong>type: </strong>
-            {type ? type : "error"}
+            <div>
+              <strong>Type: </strong>
+              {type ? type : "error"}
+            </div>
             <br />
             {console.log(fullData)}
             <DeepObjectViewer data={fullData} />
-            <br />
-            <button onClick={() => patchApproval(fullData)}>commit!</button>
-            <br /> <button>reject..</button>
-            <br />
+            <div className="flex gap-5 py-5">
+              <button
+                onClick={() => patchApproval(fullData)}
+                className="bg-green-300 px-2 py-1 rounded-full border-2 border-transparent hover:border-green-700 transition-all ease-linear"
+              >
+                Verify!
+              </button>
+              <button className="bg-red-300 px-2 py-1 rounded-full border-2 border-transparent hover:border-red-700 transition-all ease-linear">
+                Reject..
+              </button>
+            </div>
           </>
         ) : null}
         {isOpen}
-        <CloseButton
+        {/* <CloseButton
           onClick={() => {
             dispatch(editAction.reset());
             setFormConfig(null);
@@ -553,7 +680,7 @@ function Modal2() {
             dispatch(editAction.closeSpecificModal());
             setType3(null);
           }}
-        />
+        /> */}
       </ModalFrame2>
     </>
   );
