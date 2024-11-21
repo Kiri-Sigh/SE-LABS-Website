@@ -112,6 +112,7 @@ function formatResearcherData(obj) {
 }
 function formatResearchData(obj) {
   const data = {
+    RID: obj.RID,
     research_id: obj.RID,
     body: obj.body,
     title: obj.title,
@@ -357,18 +358,13 @@ const roleActions = {
   "Lead Researcher": {
     Laboratory: (formMode) => (
       <div className="flex flex-row w-full justify-center rounded-full overflow-hidden">
-        
         <button
           onClick={() => formMode(editFrame.editLab)}
           className="bg-yellow-300 px-2 py-1 w-full hover:bg-yellow-500 transition-all ease-linear"
         >
           Update Lab
         </button>
-        
       </div>
-
-     
-
     ),
     Research: (formMode) => (
       <div className="flex flex-row w-full justify-center rounded-full overflow-hidden">

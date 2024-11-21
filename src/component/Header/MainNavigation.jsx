@@ -15,6 +15,7 @@ function MainNavigation() {
   };
 
   const isAdmin = useSelector((state) => state.mainSlice.isAdminPage);
+  const highestRole = useSelector((state) => state.mainSlice.highestRole);
 
   const navItems = isAdmin
     ? Object.fromEntries(
@@ -30,7 +31,7 @@ function MainNavigation() {
             key={key}
             className="gap-1 self-stretch my-auto whitespace-nowrap"
           >
-            {isAdmin ? (
+            {isAdmin && highestRole === "Admin" ? (
               <NavLink
                 to={`/admin/${key}`}
                 className={

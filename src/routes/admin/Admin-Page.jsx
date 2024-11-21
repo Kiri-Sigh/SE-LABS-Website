@@ -235,30 +235,6 @@ function AdminPage() {
                 componentTitle="Unverified Events"
               />
             </div>
-            <RecentNews
-              toFetchedData={exampleToFetchData.recentNews}
-              componentTitle="Latest News"
-            />
-            <RecentNews
-              toFetchedData={exampleToFetchData.recentResearch}
-              componentTitle="Research"
-            />
-            <RecentNews
-              toFetchedData={exampleToFetchData.recentLab}
-              componentTitle="Laboratory"
-            />
-            <RecentNews
-              toFetchedData={exampleToFetchData.recentPeople}
-              componentTitle="People"
-            />
-            <RecentNews
-              toFetchedData={exampleToFetchData.recentPublication}
-              componentTitle="Publications"
-            />
-            <RecentEvents
-              toFetchedData={exampleToFetchData.recentEvents}
-              componentTitle="Latest Events"
-            />
 
             <RecentNews
               toFetchedData={exampleToFetchData.recentNews}
@@ -284,7 +260,6 @@ function AdminPage() {
               toFetchedData={exampleToFetchData.recentEvents}
               ComponentTitle="All Events"
             />
-
           </>
         );
       } else if (highestRole === "Researcher") {
