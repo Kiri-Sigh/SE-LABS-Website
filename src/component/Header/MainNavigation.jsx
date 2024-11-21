@@ -4,7 +4,7 @@ import "./header.css";
 import { useSelector } from "react-redux";
 
 function MainNavigation() {
-  const navItems = {
+  const items = {
     about: "About us",
     publications: "Publications",
     laboratory: "Laboratory",
@@ -13,7 +13,15 @@ function MainNavigation() {
     news: "News",
     events: "Events",
   };
+
   const isAdmin = useSelector((state) => state.mainSlice.isAdminPage);
+
+  const navItems = isAdmin
+    ? Object.fromEntries(
+        Object.entries(items).filter(([key]) => key !== "about")
+      )
+    : items;
+
   return (
     <nav className="flex gap-8 justify-center items-center self-stretch my-auto text-xl text-white min-w-[240px] max-md:max-w-full">
       <ul className="flex gap-4">

@@ -48,7 +48,7 @@ function RecentCommit({
       : [];
 
   return (
-    <section className="flex overflow-hidden flex-col px-16 pt-4 w-full bg-sky-100 max-md:px-5 max-md:py-24 max-md:max-w-full">
+    <section className="flex overflow-hidden flex-col px-16 pt-4 w-full max-md:px-5 max-md:py-24 max-md:max-w-full">
       <div className="flex flex-wrap gap-10 justify-between items-end w-full max-md:max-w-full">
         <div className="flex flex-col text-black min-w-[240px] w-[768px] max-md:max-w-full">
           <h2 className="text-5xl leading-tight max-md:max-w-full max-md:text-4xl">
