@@ -332,7 +332,7 @@ function AdminPage() {
           <Modal2 />
           <TopicHeaderText topic="Publications" />
           <GridCards
-            toFetchedData={exampleToFetchData.recentGridNews}
+            toFetchedData={exampleToFetchData.recentGridPublication}
             url="http://127.0.0.1:8000/user/publication/thumbnail?"
             fetchedLabData={labData}
             useFilterButton={true}
