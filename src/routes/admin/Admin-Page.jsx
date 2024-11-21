@@ -220,21 +220,45 @@ function AdminPage() {
       if (highestRole === "Admin") {
         return (
           <>
-            <p>admin</p>
             <Modal2 />
             {/* <DynamicForm frame={createFrame.createEvent} />
             <DynamicForm frame={createFrame.createResearch} /> */}
 
-            <RecentCommit toFetchedData={exampleToFetchData.recentNewsCommit} />
-            <RecentCommit
-              toFetchedData={exampleToFetchData.recentEventCommit}
+            {/* things that are exclusive to admin page */}
+            <div className="bg-gray-300 py-10">
+              <RecentCommit
+                toFetchedData={exampleToFetchData.recentNewsCommit}
+                componentTitle="Submitted News"
+              />
+              <RecentCommit
+                toFetchedData={exampleToFetchData.recentEventCommit}
+                componentTitle="Submitted Events"
+              />
+            </div>
+            <RecentNews
+              toFetchedData={exampleToFetchData.recentNews}
+              componentTitle="Latest News"
             />
-            <RecentNews toFetchedData={exampleToFetchData.recentNews} />
-            <RecentNews toFetchedData={exampleToFetchData.recentResearch} />
-            <RecentNews toFetchedData={exampleToFetchData.recentLab} />
-            <RecentNews toFetchedData={exampleToFetchData.recentPeople} />
-            <RecentNews toFetchedData={exampleToFetchData.recentPublication} />
-            <RecentEvents toFetchedData={exampleToFetchData.recentEvents} />
+            <RecentNews
+              toFetchedData={exampleToFetchData.recentResearch}
+              componentTitle="Research"
+            />
+            <RecentNews
+              toFetchedData={exampleToFetchData.recentLab}
+              componentTitle="Laboratory"
+            />
+            <RecentNews
+              toFetchedData={exampleToFetchData.recentPeople}
+              componentTitle="People"
+            />
+            <RecentNews
+              toFetchedData={exampleToFetchData.recentPublication}
+              componentTitle="Publications"
+            />
+            <RecentEvents
+              toFetchedData={exampleToFetchData.recentEvents}
+              componentTitle="Latest Events"
+            />
           </>
         );
       } else if (highestRole === "Researcher") {

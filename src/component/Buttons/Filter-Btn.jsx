@@ -46,7 +46,10 @@ function FilterButton({ fetchedLabData = [], setSelectedLab }) {
         />
       </button>
       {isOpen && options.length > 0 && (
-        <ul className="absolute z-10 mt-1 w-full bg-white border border-black rounded-lg shadow-lg overflow-hidden">
+        <ul
+          className="absolute z-50 mt-1 w-full bg-white border border-black rounded-lg shadow-lg overflow-hidden"
+          style={{ position: "absolute", zIndex: 9999 }}
+        >
           {options.map((option, index) => (
             <li
               key={`${option}-${index}`}

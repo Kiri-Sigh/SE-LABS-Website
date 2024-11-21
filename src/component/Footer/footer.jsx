@@ -1,7 +1,6 @@
 import React from "react";
 import ContactInfo from "./contactInfo";
 import SocialLinks from "./Social-Links";
-import "./Footer.css";
 
 function Footer() {
   return (
