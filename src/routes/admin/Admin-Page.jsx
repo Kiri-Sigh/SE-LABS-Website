@@ -235,12 +235,30 @@ function AdminPage() {
                 componentTitle="Submitted Events"
               />
             </div>
-            <RecentNews toFetchedData={exampleToFetchData.recentNews} />
-            <RecentNews toFetchedData={exampleToFetchData.recentResearch} />
-            <RecentNews toFetchedData={exampleToFetchData.recentLab} />
-            <RecentNews toFetchedData={exampleToFetchData.recentPeople} />
-            <RecentNews toFetchedData={exampleToFetchData.recentPublication} />
-            <RecentEvents toFetchedData={exampleToFetchData.recentEvents} />
+            <RecentNews
+              toFetchedData={exampleToFetchData.recentNews}
+              componentTitle="Latest News"
+            />
+            <RecentNews
+              toFetchedData={exampleToFetchData.recentResearch}
+              componentTitle="Research"
+            />
+            <RecentNews
+              toFetchedData={exampleToFetchData.recentLab}
+              componentTitle="Laboratory"
+            />
+            <RecentNews
+              toFetchedData={exampleToFetchData.recentPeople}
+              componentTitle="People"
+            />
+            <RecentNews
+              toFetchedData={exampleToFetchData.recentPublication}
+              componentTitle="Publications"
+            />
+            <RecentEvents
+              toFetchedData={exampleToFetchData.recentEvents}
+              componentTitle="Latest Events"
+            />
           </>
         );
       } else if (highestRole === "Researcher") {
