@@ -7,6 +7,7 @@ const initialState = {
   specificTypeAndIDAndData: [null, null, null],
   isCommit: false,
   dataAfterCreate: null,
+  isSuccess: [null, null],
   //
   selectedImage: null,
   // bodyText: "",
@@ -31,6 +32,9 @@ const editSlice = createSlice({
     closeModal: (state) => {
       state.isOpen = false;
     },
+    setIsSuccess: (state, action) => {
+      state.isSuccess = action.payload;
+    },
     openSpecificModal: (state, action) => {
       state.isSpecificOpen = true;
       state.isOpen = false;
@@ -41,19 +45,32 @@ const editSlice = createSlice({
       console.log(state.specificTypeAndIDAndData);
     },
     closeSpecificModal: (state) => {
+      console.log("closeSpecificModal");
       return initialState;
     },
     setTypeNull: (state) => {
       state.specificTypeAndIDAndData[0] = null;
     },
+    isSpecificClose: (state) => {
+      state.isSpecificOpen = false;
+    },
+    resetSpecificTypeAndIDAndData: (state) => {
+      state.specificTypeAndIDAndData = null;
+    },
     isCommit: (state, action) => {
       state.isCommit = action.payload;
     },
+    resetIsCommit: (state) => {
+      state.isCommit = false;
+    },
+
     changeDataAfterCreate: (state, action) => {
       state.dataAfterCreate = action.payload;
     },
 
     reset: () => {
+      console.log("reset");
+
       return initialState;
     },
     creating: (state) => {

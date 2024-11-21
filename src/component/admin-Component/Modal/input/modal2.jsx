@@ -9,6 +9,8 @@ import DynamicForm from "component/admin-Component/try-form";
 import { createFrame, deleteFrame, editFrame, submitFrame } from "./frame";
 import DeepObjectViewer from "./etc/deppObjViewer";
 import { patchApproval } from "api/custom-hooks";
+import SuccessToast from "component/etc/tailgrid/toast2";
+import WarningToast from "component/etc/tailgrid/toast";
 
 export const modalFrameWorkButton = {
   createAdmin: {
@@ -476,39 +478,41 @@ const roleActions = {
 function Modal2() {
   //   const [isDropped, setIsDropped] = useState(false);
 
-  const [selectedOption, setSelectedOption] = useState(null); // Track selected option
-  const [url, setUrl] = useState(""); // Track URL based on the selected option
-  const [selectChoosableState, setSelectChoosableState] = useState(true);
+  // const [selectedOption, setSelectedOption] = useState(null); // Track selected option
+  // const [url, setUrl] = useState(""); // Track URL based on the selected option
+  // const [selectChoosableState, setSelectChoosableState] = useState(true);
   const dispatch = useDispatch();
-  const isAdminPage = useSelector((state) => state.mainSlice.isAdminPage);
+  // const isAdminPage = useSelector((state) => state.mainSlice.isAdminPage);
   const highestRole = useSelector((state) => state.mainSlice.highestRole);
-  const adminData = useSelector((state) => state.mainSlice.adminData);
-  const isSpecificOpen = useSelector((state) => state.editSlice.isSpecificOpen);
+  // const adminData = useSelector((state) => state.mainSlice.adminData);
+  // const isSpecificOpen = useSelector((state) => state.editSlice.isSpecificOpen);
   const [type, ID, fullData] = useSelector(
-    (state) => state.editSlice.specificTypeAndIDAndData
+    (state) => state.editSlice.specificTypeAndIDAndData || []
   );
   const [isDynamic, setIsDynamic] = useState(false);
   // const [formMode, setFormMode] = useState(false);
-  const isOpen = useSelector((state) => state.editSlice.isOpen);
+  // const isOpen = useSelector((state) => state.editSlice.isOpen);
   const isCommit = useSelector((state) => state.editSlice.isCommit);
   const [formConfig, setFormConfig] = useState(null); // State to store form configuration
   const [formData, setFormData] = useState(null); // State to store form data
   const [type2, setType2] = useState(null); // State to store form data
   const [type3, setType3] = useState(null); // State to store form data
-
-  const dataAfterCreate = useSelector(
-    (state) => state.editSlice.dataAfterCreate
-  ); //   const handleDropdownToggle = () => setIsDropped((prev) => !prev);
+  const isSuccess = useSelector((state) => state.editSlice.isSuccess);
+  // const dataAfterCreate = useSelector(
+  //   (state) => state.editSlice.dataAfterCreate
+  // );
+  //   const handleDropdownToggle = () => setIsDropped((prev) => !prev);
   console.log("isCommit", isCommit);
-  const handleOptionSelect = (option) => {
-    setSelectedOption(option); // Store the selected option
-    const fetchedUrl = fetchRequiredData(highestRole, option, "url"); // Fetch URL based on selection
-    setUrl(fetchedUrl); // Update the URL state
-    dispatch(editAction.openModal()); // Open the modal
-    setSelectChoosableState(
-      fetchRequiredData(highestRole, option, "choosable")
-    );
-  };
+  console.log("isSuc", isSuccess);
+  // const handleOptionSelect = (option) => {
+  //   setSelectedOption(option); // Store the selected option
+  //   const fetchedUrl = fetchRequiredData(highestRole, option, "url"); // Fetch URL based on selection
+  //   setUrl(fetchedUrl); // Update the URL state
+  //   dispatch(editAction.openModal()); // Open the modal
+  //   setSelectChoosableState(
+  //     fetchRequiredData(highestRole, option, "choosable")
+  //   );
+  // };
   function RoleBasedActions({ role, entity, formMode }) {
     const actions = roleActions[role]?.[entity];
 
@@ -553,32 +557,25 @@ function Modal2() {
   return (
     <>
       <div className="fixed-button-container">
-        <button className="fixed-button" onClick={chooseTopicToMutate}>
-          Edit...
-        </button>
-        {/* <button className="fixed-button" onClick={handleDropdownToggle}>
-          Open Dropdown
-        </button>
-        {isDropped && isAdminPage && !selectedOption && (
-          <div className={`overlay-dropdown ${isDropped ? "active" : ""}`}>
-            <OverlayDD
-              possiblePower={["create", "edit", "delete"]}
-              close={setIsDropped}
-              onSelect={handleOptionSelect} // Pass the selection handler
-            />
-          </div>
-        )} */}
+        {!(isSuccess[0] === "true" || isSuccess[0] === "false") && (
+          <button className="fixed-button" onClick={chooseTopicToMutate}>
+            Edit...
+          </button>
+        )}
+        {isSuccess[0] === "true" && <SuccessToast info={isSuccess[1]} />}
+        {isSuccess[0] === "false" && <WarningToast info={isSuccess[1]} />}
       </div>
+
       <ModalFrame2>
         <div className="flex justify-end">
           <CloseButton
             onClick={() => {
-              dispatch(editAction.reset());
               setFormConfig(null);
               setFormData(null);
-              dispatch(editAction.setTypeNull());
+              dispatch(editAction.isSpecificClose());
+              dispatch(editAction.resetSpecificTypeAndIDAndData());
+              dispatch(editAction.resetIsCommit());
               setIsDynamic(false);
-              dispatch(editAction.closeSpecificModal());
               setType3(null);
             }}
           />
@@ -659,24 +656,35 @@ function Modal2() {
               >
                 Verify!
               </button>
-              <button className="bg-red-300 px-2 py-1 rounded-full border-2 border-transparent hover:border-red-700 transition-all ease-linear">
+              <button
+                className="bg-red-300 px-2 py-1 rounded-full border-2 border-transparent hover:border-red-700 transition-all ease-linear"
+                onClick={() => {
+                  setFormConfig(null);
+                  setFormData(null);
+                  dispatch(editAction.isSpecificClose());
+                  dispatch(editAction.resetSpecificTypeAndIDAndData());
+                  dispatch(editAction.resetIsCommit());
+                  setIsDynamic(false);
+                  setType3(null);
+                }}
+              >
                 Reject..
               </button>
             </div>
           </>
         ) : null}
-        {isOpen}
-        {/* <CloseButton
+
+        <CloseButton
           onClick={() => {
-            dispatch(editAction.reset());
             setFormConfig(null);
             setFormData(null);
-            dispatch(editAction.setTypeNull());
+            dispatch(editAction.isSpecificClose());
+            dispatch(editAction.resetSpecificTypeAndIDAndData());
+            dispatch(editAction.resetIsCommit());
             setIsDynamic(false);
-            dispatch(editAction.closeSpecificModal());
             setType3(null);
           }}
-        /> */}
+        />
       </ModalFrame2>
     </>
   );

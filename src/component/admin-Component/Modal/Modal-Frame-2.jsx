@@ -34,8 +34,9 @@ export default function ModalFrame2({ children }) {
       id="modalDialog"
       className="relative w-full bg-white p-6 rounded-xl max-h-[90vh] max-w-[45vw] overflow-y-auto"
       onClose={() => {
-        dispatch(editAction.closeSpecificModal());
-        dispatch(editAction.reset());
+        dispatch(editAction.isSpecificClose());
+        dispatch(editAction.resetSpecificTypeAndIDAndData());
+        dispatch(editAction.resetIsCommit());
       }}
     >
       {children}

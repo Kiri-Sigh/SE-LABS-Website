@@ -1,8 +1,11 @@
 import axios from "axios";
 import { submitFrame } from "./Modal/input/frame";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { editAction } from "store/edit-slice";
 
 const DynamicForm = ({ frame, data = null, type = null }) => {
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({});
   const [files, setFiles] = useState({});
   console.log("DynamicForm", type);
@@ -12,7 +15,6 @@ const DynamicForm = ({ frame, data = null, type = null }) => {
       setFormData(data);
     }
   }, [data]);
-
   const handleInputChange = (key, value) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
@@ -138,38 +140,10 @@ const DynamicForm = ({ frame, data = null, type = null }) => {
       console.log("wat??", type);
 
       console.log("Success:", response.data);
-      if (response.status === 200) {
-        console.log("wat");
-        if (type !== null) {
-          const commitData = await getCommitData(type);
-          console.log("wat2");
-
-          if (commitData) {
-            const patchData = {
-              ...commitData,
-              is_approved: true,
-            };
-            const patchUrl =
-              type === "event"
-                ? submitFrame.submitEvent.url
-                : submitFrame.submitNews.url;
-            const patchParam =
-              type === "event"
-                ? { event_id: commitData.event_id }
-                : { news_id: commitData.news_id };
-
-            await axios.patch(
-              `${patchUrl}/${patchUrl}`,
-              {},
-              {
-                params: patchParam,
-                headers: config.headers,
-              }
-            );
-          }
-        }
-      }
+      dispatch(editAction.setIsSuccess(["true", "mutation success"]));
     } catch (error) {
+      dispatch(editAction.setIsSuccess(["false", error.message]));
+
       console.error("Error:", error);
     }
   };
